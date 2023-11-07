@@ -1,0 +1,5 @@
+1. Dictionary of US states, zoom levels, and latitude/longitude settings for map
+2. Logic for add/remove markers at address
+3. Integrate weather API
+4. Need supply volumes of material at locations
+5. Build out database layer and queries.

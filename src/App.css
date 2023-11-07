@@ -1,38 +1,48 @@
 .App {
-  text-align: center;
+  background-image: url("https://arc-anglerfish-arc2-prod-bostonglobe.s3.amazonaws.com/public/UHWFTKEL3AI6NLVIBY2RTFZ2AY.jpg");
+  background-size: cover;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  top: 0;
+  left: 0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+#main-header {
+  padding: 0.5vw;
+  color: black;
+  background: rgba(204, 204, 204, 0.6);
+  outline-style: solid;
+  font-size: 0.85em;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+#secondary-headers {
+  font-size: medium;
+  padding-left: 1vw;
+  font-size: 0.9em;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+#map-section {
+  padding: 0 0.5vw;
+  color: black;
+  background: rgba(204, 204, 204, 0.6);
+  outline-style: solid;
+  width: 69vw;
+  height: 75vh;
+}
+
+#map-control-panel-button-wrapper {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  padding: 0 0.5vw;
 }
 
-.App-link {
-  color: #61dafb;
+.map-control-panel-element {
+  padding: 0 1vw;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+#leaflet-map-image {
+  height: 55vh;
+  width: 45vw;
 }
