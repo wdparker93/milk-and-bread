@@ -1,13 +1,13 @@
 import "./App.css";
 import Axios from "axios";
-import React, { useState, useEffect, useRef } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { Icon } from "leaflet";
+import React, { useState, useEffect } from "react";
+import { MapContainer, TileLayer, Marker, Popup, Icon } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 
 function App() {
-  /*
   const mapQuestKey = "ghmpUiVTD8GQkci0Vv1pLFj1L4T9BSbA";
+  /*
   const [mapImageSource, setMapImageSource] = useState(
     "https://www.mapquestapi.com/staticmap/v5/map?key=" +
       mapQuestKey +
@@ -21,8 +21,15 @@ function App() {
   const [usRegionSelection, setUsRegionSelection] = useState("--");
   const [usStateSelection, setUsStateSelection] = useState("--");
   const [mapZoomLevel, setMapZoomLevel] = useState({ defaultZoom });
+  const markerListData = [37.5, -95.0];
 
-  const mapRef = useRef();
+  delete L.Icon.Default.prototype._getIconUrl;
+
+  L.Icon.Default.mergeOptions({
+    iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
+    iconUrl: require("leaflet/dist/images/marker-icon.png"),
+    shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
+  });
 
   const handleMapRefresh = (event) => {};
 
@@ -41,6 +48,33 @@ function App() {
       setUsStateSelection("Kansas");
     }
   };
+
+  /**
+   * Reference https://developer.mapquest.com/documentation/geocoding-api/address/get
+   * @param {*} address
+   */
+  const getGeocodeFromAddress = (address) => {
+    /*
+    var addressLine1 = address[0];
+    var addressLine2 = address[1];
+    var addressLine3 = address[2];
+    var city = address[3];
+    var state = address[4];
+    var zip = address[5];
+    */
+    var addressLine1 = "240 County Road 1328";
+    var city = "Vinemont";
+    var state = "AL";
+    var zip = "35179";
+    const data =
+      "https://www.mapquestapi.com/geocoding/v1/address?key=" +
+      mapQuestKey +
+      "&location=" +
+      "240 County Road 1328, Vinemont, AL 35179";
+    console.log(data);
+  };
+
+  getGeocodeFromAddress(null);
 
   return (
     <div className="App">
@@ -190,6 +224,17 @@ function App() {
             url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           />
+          <Marker
+            className="leaflet-map-marker"
+            key={`marker-1}`}
+            position={[37.5, -95.0]}
+          >
+            <Popup>
+              <span>
+                A pretty CSS3 popup. <br /> Easily customizable.
+              </span>
+            </Popup>
+          </Marker>
         </MapContainer>
       </div>
     </div>
