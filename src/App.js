@@ -5,6 +5,7 @@ import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L, { latLng } from "leaflet";
 import Markers from "./components/js/Markers.js";
+import UsStates from "./components/js/UsStates.js";
 
 function App() {
   const mapQuestKey = "ghmpUiVTD8GQkci0Vv1pLFj1L4T9BSbA";
@@ -16,10 +17,13 @@ function App() {
   const [usStateSelection, setUsStateSelection] = useState("--");
   const [mapZoomLevel, setMapZoomLevel] = useState({ defaultZoom });
   const [markersOutputComponent, setMarkersOutputComponent] = useState("");
-  const [latLngCoords, setLatLngCoords] = useState([
-    [37.5, -95.0],
-    [40, -90.0],
-  ]);
+  const [latLngCoords, setLatLngCoords] = useState([]);
+  const [addressLine1, setAddressLine1] = useState("");
+  const [addressLine2, setAddressLine2] = useState("");
+  const [addressLine3, setAddressLine3] = useState("");
+  const [addressCity, setAddressCity] = useState("");
+  const [addressState, setAddressState] = useState("");
+  const [addressZip, setAddressZip] = useState("");
 
   L.Icon.Default.mergeOptions({
     iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
@@ -49,24 +53,20 @@ function App() {
    * Reference https://developer.mapquest.com/documentation/geocoding-api/address/get
    * @param {*} address
    */
-  const getGeocodeFromAddress = (address) => {
-    /*
-    var addressLine1 = address[0];
-    var addressLine2 = address[1];
-    var addressLine3 = address[2];
-    var city = address[3];
-    var state = address[4];
-    var zip = address[5];
-    */
-    var addressLine1 = "240 County Road 1328";
-    var city = "Vinemont";
-    var state = "AL";
-    var zip = "35179";
+  const getGeocodeFromAddress = () => {
+    let address = addressLine1;
+    address = address.length > 0 ? address + ", " : address + "";
+    address = address + addressLine2;
+    address = addressLine2.length > 0 ? address + ", " : address + "";
+    address = address + addressLine3;
+    address = addressLine3.length > 0 ? address + ", " : address + "";
+    address = address + addressCity + ", " + addressState + " " + addressZip;
+    console.log(address);
     fetch(
       "https://www.mapquestapi.com/geocoding/v1/address?key=" +
         mapQuestKey +
         "&location=" +
-        "240 County Road 1328, Vinemont, AL 35179"
+        address
     )
       .then((response) => {
         if (!response.ok) {
@@ -77,19 +77,27 @@ function App() {
       })
       .then((data) => {
         //console.log(data.results[0].locations[0]);
-        //console.log(data.results[0].locations[0].displayLatLng["lat"]);
-        const lat = data.results[0].locations[0].displayLatLng["lat"];
-        const lng = data.results[0].locations[0].displayLatLng["lng"];
+        //console.log(data.results[0].locations[0].latLng["lat"]);
+        const lat = data.results[0].locations[0].latLng["lat"];
+        const lng = data.results[0].locations[0].latLng["lng"];
         const newCoords = [lat, lng];
         var existingCoords = latLngCoords;
-        existingCoords.push(newCoords);
-        setLatLngCoords(existingCoords);
-        //const latitude = data.results;
+        let addToMarkerLocationsArray = true;
+        for (let i = 0; i < existingCoords.length; i++) {
+          if (newCoords[0] == existingCoords[i][0]) {
+            if (newCoords[1] == existingCoords[i][1]) {
+              addToMarkerLocationsArray = false;
+            }
+          }
+        }
+        if (addToMarkerLocationsArray) {
+          existingCoords.push(newCoords);
+          setLatLngCoords(existingCoords);
+        }
+        console.log(latLngCoords);
+        updateMarkersOutputComponent();
       });
   };
-
-  //getGeocodeFromAddress(null);
-  //console.log(latLngCoords);
 
   /**
    * Adds a latitude-longitude coordinate to the latLngCoords
@@ -106,14 +114,39 @@ function App() {
    * the latLngCoords state variable for the coordinates to add.
    */
   const updateMarkersOutputComponent = () => {
-    const coordinates = [
+    /*const coordinates = [
       [37.5, -95.0],
       [40, -90.0],
-    ];
+    ];*/
+    const coordinates = latLngCoords;
     setMarkersOutputComponent(<Markers latLngCoordsData={coordinates} />);
   };
 
-  console.log("About to update the markers element");
+  const handleAddressLine1Change = (event) => {
+    setAddressLine1(event.target.value);
+  };
+
+  const handleAddressLine2Change = (event) => {
+    setAddressLine2(event.target.value);
+  };
+
+  const handleAddressLine3Change = (event) => {
+    setAddressLine3(event.target.value);
+  };
+
+  const handleAddressCityChange = (event) => {
+    setAddressCity(event.target.value);
+  };
+
+  const handleAddressStateChange = (event) => {
+    setAddressState(event.target.value);
+  };
+
+  const handleAddressZipChange = (event) => {
+    setAddressZip(event.target.value);
+  };
+
+  //console.log("About to update the markers element");
   //updateMarkersOutputComponent();
 
   return (
@@ -121,7 +154,7 @@ function App() {
       <div className="header" id="main-header">
         <div id="main-header-text">
           <h1 id="main-title">
-            Milk and Bread : Exploring Praoctive, Climate-Driven Supply Chain
+            Milk and Bread : Exploring Proactive, Climate-Driven Supply Chain
             Optimization
           </h1>
         </div>
@@ -152,123 +185,178 @@ function App() {
         </div>
       </div>
       <div id="map-section">
-        <div id="map-control-panel-wrapper">
-          <h3>Map Control Panel</h3>
-          <div id="map-control-panel-button-wrapper">
+        <div class="map-column-element">
+          <div id="interactive-map-wrapper">
+            <div id="map-control-panel-wrapper">
+              <h3>Map Control Panel</h3>
+              <div id="map-control-panel-button-wrapper">
+                <div
+                  className="map-control-panel-element"
+                  id="region-selector-wrapper"
+                >
+                  <p
+                    className="map-control-panel-element-text"
+                    id="region-selector-label"
+                  >
+                    Region Focus
+                  </p>
+                  <select id="region-selector" onChange={handleRegionChange}>
+                    <option value="--">--</option>
+                    <option value="West">West</option>
+                    <option value="Midwest">Midwest</option>
+                    <option value="South">South</option>
+                    <option value="Northeast">Northeast</option>
+                  </select>
+                </div>
+                <div
+                  className="map-control-panel-element"
+                  id="state-selector-wrapper"
+                >
+                  <p
+                    className="map-control-panel-element-text"
+                    id="state-selector-label"
+                  >
+                    State Focus
+                  </p>
+                  <select id="state-selector" onChange={handleUsStateChange}>
+                    <UsStates />
+                  </select>
+                </div>
+                <div
+                  className="map-control-panel-element"
+                  id="map-refresh-button-wrapper"
+                >
+                  <p
+                    className="map-control-panel-element-text"
+                    id="map-refresh-button-label"
+                  >
+                    Refresh Weather Data
+                  </p>
+                  <button
+                    id="refresh-button"
+                    onClick={updateMarkersOutputComponent}
+                  >
+                    Refresh Weather Data
+                  </button>
+                </div>
+              </div>
+            </div>
+            <br />
+            <MapContainer
+              id="leaflet-map-image"
+              center={defaultCenter}
+              zoom={defaultZoom}
+              scrollWheelZoom={true}
+              minZoom={minZoom}
+              maxZoom={maxZoom}
+            >
+              <TileLayer
+                url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+              />
+              <div>{markersOutputComponent}</div>
+            </MapContainer>
+          </div>
+          <div id="add-marker-at-address-panel-wrapper">
+            <h3>Add Location At Address</h3>
             <div
-              className="map-control-panel-element"
-              id="region-selector-wrapper"
+              className="add-marker-at-address-panel-element"
+              id="map-address-line-1"
             >
               <p
                 className="map-control-panel-element-text"
-                id="region-selector-label"
+                id="map-address-line-1-field-label"
               >
-                Select Region
+                Address Line 1
               </p>
-              <select id="region-selector" onChange={handleRegionChange}>
-                <option value="--">--</option>
-                <option value="West">West</option>
-                <option value="Midwest">Midwest</option>
-                <option value="South">South</option>
-                <option value="Northeast">Northeast</option>
-              </select>
+              <input type="text" onChange={handleAddressLine1Change} />
             </div>
             <div
-              className="map-control-panel-element"
-              id="state-selector-wrapper"
+              className="add-marker-at-address-panel-element"
+              id="map-address-line-2"
             >
               <p
                 className="map-control-panel-element-text"
-                id="state-selector-label"
+                id="map-address-line-2-field-label"
               >
-                Select State
+                Address Line 2
               </p>
-              <select id="state-selector" onChange={handleUsStateChange}>
-                <option value="--">--</option>
-                <option value="Alabama">Alabama</option>
-                <option value="Arizona">Arizona</option>
-                <option value="Arkansas">Arkansas</option>
-                <option value="California">California</option>
-                <option value="Colorado">Colorado</option>
-                <option value="Connecticut">Connecticut</option>
-                <option value="Delaware">Delaware</option>
-                <option value="Florida">Florida</option>
-                <option value="Georgia">Georgia</option>
-                <option value="Idaho">Idaho</option>
-                <option value="Illinois">Illinois</option>
-                <option value="Indiana">Indiana</option>
-                <option value="Iowa">Iowa</option>
-                <option value="Kansas">Kansas</option>
-                <option value="Kentucky">Kentucky</option>
-                <option value="Louisiana">Louisiana</option>
-                <option value="Maine">Maine</option>
-                <option value="Maryland">Maryland</option>
-                <option value="Massachusetts">Massachusetts</option>
-                <option value="Michigan">Michigan</option>
-                <option value="Minnesota">Minnesota</option>
-                <option value="Mississippi">Mississippi</option>
-                <option value="Missouri">Missouri</option>
-                <option value="Montana">Montana</option>
-                <option value="Nebraska">Nebraska</option>
-                <option value="Nevada">Nevada</option>
-                <option value="New Hampshire">New Hampshire</option>
-                <option value="New Jersey">New Jersey</option>
-                <option value="New Mexico">New Mexico</option>
-                <option value="New York">New York</option>
-                <option value="North Carolina">North Carolina</option>
-                <option value="North Dakota">North Dakota</option>
-                <option value="Ohio">Ohio</option>
-                <option value="Oklahoma">Oklahoma</option>
-                <option value="Oregon">Oregon</option>
-                <option value="Pennsylvania">Pennsylvania</option>
-                <option value="Rhode Island">Rhode Island</option>
-                <option value="South Carolina">South Carolina</option>
-                <option value="South Dakota">South Dakota</option>
-                <option value="Tennessee">Tennessee</option>
-                <option value="Texas">Texas</option>
-                <option value="Utah">Utah</option>
-                <option value="Vermont">Vermont</option>
-                <option value="Virginia">Virginia</option>
-                <option value="Washington">Washington</option>
-                <option value="West Virginia">West Virginia</option>
-                <option value="Wisconsin">Wisconsin</option>
-                <option value="Wyoming">Wyoming</option>
+              <input type="text" onChange={handleAddressLine2Change} />
+            </div>
+            <div
+              className="add-marker-at-address-panel-element"
+              id="map-address-line-3"
+            >
+              <p
+                className="map-control-panel-element-text"
+                id="map-address-line-3-field-label"
+              >
+                Address Line 3
+              </p>
+              <input type="text" onChange={handleAddressLine3Change} />
+            </div>
+            <div
+              className="add-marker-at-address-panel-element"
+              id="map-address-city"
+            >
+              <p
+                className="map-control-panel-element-text"
+                id="map-address-city-field-label"
+              >
+                City
+              </p>
+              <input type="text" onChange={handleAddressCityChange} />
+            </div>
+            <div className="map-control-panel-element" id="map-address-state">
+              <p
+                className="map-control-panel-element-text"
+                id="map-address-state-field-label"
+              >
+                State
+              </p>
+              <select
+                id="add-marker-at-address-state-selector"
+                onChange={handleAddressStateChange}
+              >
+                <UsStates />
               </select>
             </div>
             <div
-              className="map-control-panel-element"
-              id="map-refresh-button-wrapper"
+              className="add-marker-at-address-panel-element"
+              id="map-address-zip"
             >
               <p
-                className="map-ctonrol-panel-element-text"
-                id="map-refresh-button-label"
+                className="map-control-panel-element-text"
+                id="map-address-zip-field-label"
               >
-                Refresh Map
+                Zip
               </p>
+              <input type="text" onChange={handleAddressZipChange} />
+            </div>
+            <div
+              className="add-marker-at-address-panel-element"
+              id="map-address-add-marker"
+            >
               <button
-                id="refresh-button"
-                onClick={updateMarkersOutputComponent}
+                id="add-marker-at-address-button"
+                onClick={getGeocodeFromAddress}
               >
-                Refresh Map
+                <strong>Add Location</strong>
+              </button>
+            </div>
+          </div>
+          <div id="update-inventory-at-location-panel-wrapper">
+            <h3>Update Inventory at Location</h3>
+            <div
+              className="update-location-supply-panel-element"
+              id="update-location-add-supply"
+            >
+              <button id="update-location-supply-button" onClick={null}>
+                <strong>Update Location Supply</strong>
               </button>
             </div>
           </div>
         </div>
-        <br />
-        <MapContainer
-          id="leaflet-map-image"
-          center={defaultCenter}
-          zoom={defaultZoom}
-          scrollWheelZoom={true}
-          minZoom={minZoom}
-          maxZoom={maxZoom}
-        >
-          <TileLayer
-            url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          />
-          <div>{markersOutputComponent}</div>
-        </MapContainer>
       </div>
     </div>
   );

@@ -3,39 +3,49 @@
   background-size: cover;
   height: 100vh;
   width: 100vw;
-  position: fixed;
   overflow-y: scroll;
   overflow-x: hidden;
   top: 0;
   left: 0;
+  padding: 0 0;
 }
 
 #main-header {
-  padding: 0.5vw;
+  position: fixed;
+  top: 0;
+  padding-left: 0.5vw;
   color: black;
   background: rgba(204, 204, 204, 0.6);
   outline-style: solid;
   font-size: 0.85em;
+  width: 100vw;
 }
 
 #secondary-headers {
   font-size: medium;
+  padding-bottom: 0.25vh;
   padding-left: 1vw;
   font-size: 0.9em;
 }
 
 #map-section {
+  position: absolute;
+  top: 22vh;
   padding: 0 0.5vw;
   color: black;
   background: rgba(204, 204, 204, 0.6);
   outline-style: solid;
-  width: 69vw;
-  height: 75vh;
+  width: 62vw;
+  height: 77vh;
 }
 
 #map-control-panel-button-wrapper {
   display: flex;
   padding: 0 0.5vw;
+}
+
+.map-column-element {
+  display: flex;
 }
 
 .map-control-panel-element {
@@ -45,4 +55,30 @@
 #leaflet-map-image {
   height: 55vh;
   width: 45vw;
+}
+
+#add-marker-at-address-panel-wrapper {
+  position: absolute;
+  left: 47.5vw;
+}
+
+#map-address-state {
+  position: relative;
+  left: -1vw;
+}
+
+#add-marker-at-address-button {
+  position: relative;
+  top: 4vh;
+}
+
+#update-inventory-at-location-panel-wrapper {
+  position: relative;
+  padding: 0 0.5vw;
+  left: 19vw;
+  color: black;
+  background: rgba(204, 204, 204, 0.6);
+  outline-style: solid;
+  height: 77vh;
+  width: 100vw;
 }
