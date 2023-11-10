@@ -1,19 +1,13 @@
 import "./App.css";
 import Axios from "axios";
 import React, { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup, Icon } from "react-leaflet";
+import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import L from "leaflet";
+import L, { latLng } from "leaflet";
+import Markers from "./components/js/Markers.js";
 
 function App() {
   const mapQuestKey = "ghmpUiVTD8GQkci0Vv1pLFj1L4T9BSbA";
-  /*
-  const [mapImageSource, setMapImageSource] = useState(
-    "https://www.mapquestapi.com/staticmap/v5/map?key=" +
-      mapQuestKey +
-      "&center=Kansas&zoom=3&type=map&size=350,200@2x"
-  );
-  */
   const defaultCenter = [37.5, -95.0];
   const defaultZoom = 4;
   const minZoom = 0;
@@ -21,9 +15,11 @@ function App() {
   const [usRegionSelection, setUsRegionSelection] = useState("--");
   const [usStateSelection, setUsStateSelection] = useState("--");
   const [mapZoomLevel, setMapZoomLevel] = useState({ defaultZoom });
-  const markerListData = [37.5, -95.0];
-
-  delete L.Icon.Default.prototype._getIconUrl;
+  const [markersOutputComponent, setMarkersOutputComponent] = useState("");
+  const [latLngCoords, setLatLngCoords] = useState([
+    [37.5, -95.0],
+    [40, -90.0],
+  ]);
 
   L.Icon.Default.mergeOptions({
     iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
@@ -66,15 +62,59 @@ function App() {
     var city = "Vinemont";
     var state = "AL";
     var zip = "35179";
-    const data =
+    fetch(
       "https://www.mapquestapi.com/geocoding/v1/address?key=" +
-      mapQuestKey +
-      "&location=" +
-      "240 County Road 1328, Vinemont, AL 35179";
-    console.log(data);
+        mapQuestKey +
+        "&location=" +
+        "240 County Road 1328, Vinemont, AL 35179"
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        } else {
+          return response.json();
+        }
+      })
+      .then((data) => {
+        //console.log(data.results[0].locations[0]);
+        //console.log(data.results[0].locations[0].displayLatLng["lat"]);
+        const lat = data.results[0].locations[0].displayLatLng["lat"];
+        const lng = data.results[0].locations[0].displayLatLng["lng"];
+        const newCoords = [lat, lng];
+        var existingCoords = latLngCoords;
+        existingCoords.push(newCoords);
+        setLatLngCoords(existingCoords);
+        //const latitude = data.results;
+      });
   };
 
-  getGeocodeFromAddress(null);
+  //getGeocodeFromAddress(null);
+  //console.log(latLngCoords);
+
+  /**
+   * Adds a latitude-longitude coordinate to the latLngCoords
+   * state variable.
+   *
+   * @param {*} latLngArray
+   */
+  const addMarker = (latLngArray) => {
+    //TODO : Add the coordinate
+  };
+
+  /**
+   * Builds the Marker element to append to the dynamic map using
+   * the latLngCoords state variable for the coordinates to add.
+   */
+  const updateMarkersOutputComponent = () => {
+    const coordinates = [
+      [37.5, -95.0],
+      [40, -90.0],
+    ];
+    setMarkersOutputComponent(<Markers latLngCoordsData={coordinates} />);
+  };
+
+  console.log("About to update the markers element");
+  //updateMarkersOutputComponent();
 
   return (
     <div className="App">
@@ -205,7 +245,10 @@ function App() {
               >
                 Refresh Map
               </p>
-              <button id="refresh-button" onClick={handleMapRefresh}>
+              <button
+                id="refresh-button"
+                onClick={updateMarkersOutputComponent}
+              >
                 Refresh Map
               </button>
             </div>
@@ -224,17 +267,7 @@ function App() {
             url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           />
-          <Marker
-            className="leaflet-map-marker"
-            key={`marker-1}`}
-            position={[37.5, -95.0]}
-          >
-            <Popup>
-              <span>
-                A pretty CSS3 popup. <br /> Easily customizable.
-              </span>
-            </Popup>
-          </Marker>
+          <div>{markersOutputComponent}</div>
         </MapContainer>
       </div>
     </div>
