@@ -184,14 +184,14 @@ function App() {
           </h2>
         </div>
       </div>
-      <div id="map-section">
-        <div class="map-column-element">
-          <div id="interactive-map-wrapper">
+      <div id="map-inv-mgmt-row" class="body-row">
+        <div id="map-column" class="body-column">
+          <div id="map-section-wrapper">
             <div id="map-control-panel-wrapper">
               <h3>Map Control Panel</h3>
-              <div id="map-control-panel-button-wrapper">
+              <div id="map-control-panel-buttons-wrapper">
                 <div
-                  className="map-control-panel-element"
+                  className="map-control-panel-element-wrapper"
                   id="region-selector-wrapper"
                 >
                   <p
@@ -209,7 +209,7 @@ function App() {
                   </select>
                 </div>
                 <div
-                  className="map-control-panel-element"
+                  className="map-control-panel-element-wrapper"
                   id="state-selector-wrapper"
                 >
                   <p
@@ -223,7 +223,7 @@ function App() {
                   </select>
                 </div>
                 <div
-                  className="map-control-panel-element"
+                  className="map-control-panel-element-wrapper"
                   id="map-refresh-button-wrapper"
                 >
                   <p
@@ -345,7 +345,9 @@ function App() {
               </button>
             </div>
           </div>
-          <div id="update-inventory-at-location-panel-wrapper">
+        </div>
+        <div id="inv-mgmt-column" class="body-column">
+          <div id="update-inv-at-location-panel-wrapper">
             <h3>Update Inventory at Location</h3>
             <div
               className="update-location-supply-panel-element"

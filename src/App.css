@@ -28,27 +28,28 @@
   font-size: 0.9em;
 }
 
-#map-section {
-  position: absolute;
+#map-inv-mgmt-row {
+  display: flex;
+  position: relative;
   top: 22vh;
+  height: 77vh;
+}
+
+#map-column {
+  display: flex;
   padding: 0 0.5vw;
   color: black;
   background: rgba(204, 204, 204, 0.6);
   outline-style: solid;
-  width: 62vw;
-  height: 77vh;
+  width: 63vw;
 }
 
-#map-control-panel-button-wrapper {
+#map-control-panel-buttons-wrapper {
   display: flex;
   padding: 0 0.5vw;
 }
 
-.map-column-element {
-  display: flex;
-}
-
-.map-control-panel-element {
+.map-control-panel-element-wrapper {
   padding: 0 1vw;
 }
 
@@ -58,13 +59,8 @@
 }
 
 #add-marker-at-address-panel-wrapper {
-  position: absolute;
-  left: 47.5vw;
-}
-
-#map-address-state {
   position: relative;
-  left: -1vw;
+  left: 2vw;
 }
 
 #add-marker-at-address-button {
@@ -72,13 +68,11 @@
   top: 4vh;
 }
 
-#update-inventory-at-location-panel-wrapper {
+#inv-mgmt-column {
   position: relative;
+  left: 1.25vw;
   padding: 0 0.5vw;
-  left: 19vw;
   color: black;
   background: rgba(204, 204, 204, 0.6);
   outline-style: solid;
-  height: 77vh;
-  width: 100vw;
 }
