@@ -17,13 +17,17 @@ function App() {
   const [usStateSelection, setUsStateSelection] = useState("--");
   const [mapZoomLevel, setMapZoomLevel] = useState({ defaultZoom });
   const [markersOutputComponent, setMarkersOutputComponent] = useState("");
-  const [latLngCoords, setLatLngCoords] = useState([]);
+  const [locationObjects, setLocationObjects] = useState([]);
   const [addressLine1, setAddressLine1] = useState("");
   const [addressLine2, setAddressLine2] = useState("");
   const [addressLine3, setAddressLine3] = useState("");
   const [addressCity, setAddressCity] = useState("");
   const [addressState, setAddressState] = useState("");
   const [addressZip, setAddressZip] = useState("");
+  const [locationObjKey, setLocationObjKey] = useState(1);
+  const [invEditLocationKey, setInvEditLocationKey] = useState("--");
+  const [invEditMilkNew, setInvEditMilkNew] = useState("");
+  const [invEditBreadNew, setInvEditBreadNew] = useState("");
 
   L.Icon.Default.mergeOptions({
     iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
@@ -50,10 +54,20 @@ function App() {
   };
 
   /**
-   * Reference https://developer.mapquest.com/documentation/geocoding-api/address/get
-   * @param {*} address
+   * Adds a latitude-longitude coordinate to the locationObjects
+   * state variable.
    */
-  const getGeocodeFromAddress = () => {
+  const addLocation = () => {
+    let address = buildAddress();
+    getGeocodeAddMarker(address);
+  };
+
+  /**
+   * Builds address with the addLocationAtAddress fields
+   *
+   * @returns address
+   */
+  const buildAddress = () => {
     let address = addressLine1;
     address = address.length > 0 ? address + ", " : address + "";
     address = address + addressLine2;
@@ -61,7 +75,14 @@ function App() {
     address = address + addressLine3;
     address = addressLine3.length > 0 ? address + ", " : address + "";
     address = address + addressCity + ", " + addressState + " " + addressZip;
-    console.log(address);
+    return address;
+  };
+
+  /**
+   * Reference https://developer.mapquest.com/documentation/geocoding-api/address/get
+   * @param {*} address
+   */
+  const getGeocodeAddMarker = (address) => {
     fetch(
       "https://www.mapquestapi.com/geocoding/v1/address?key=" +
         mapQuestKey +
@@ -76,50 +97,67 @@ function App() {
         }
       })
       .then((data) => {
-        //console.log(data.results[0].locations[0]);
-        //console.log(data.results[0].locations[0].latLng["lat"]);
         const lat = data.results[0].locations[0].latLng["lat"];
         const lng = data.results[0].locations[0].latLng["lng"];
-        const newCoords = [lat, lng];
-        var existingCoords = latLngCoords;
+        const coords = [lat, lng];
+        let locationObj = new Object();
+        let key = "location-" + locationObjKey;
+        locationObj.key = key;
+        locationObj.coords = coords;
+        locationObj.milk = 0;
+        locationObj.bread = 0;
+        var existingLocationObjects = locationObjects;
         let addToMarkerLocationsArray = true;
-        for (let i = 0; i < existingCoords.length; i++) {
-          if (newCoords[0] == existingCoords[i][0]) {
-            if (newCoords[1] == existingCoords[i][1]) {
+        for (let i = 0; i < existingLocationObjects.length; i++) {
+          if (coords[0] == existingLocationObjects[i].coords[0]) {
+            if (coords[1] == existingLocationObjects[i].coords[1]) {
               addToMarkerLocationsArray = false;
             }
           }
         }
         if (addToMarkerLocationsArray) {
-          existingCoords.push(newCoords);
-          setLatLngCoords(existingCoords);
+          existingLocationObjects.push(locationObj);
+          setLocationObjects(existingLocationObjects);
+          setLocationObjKey(key + 1);
         }
-        console.log(latLngCoords);
         updateMarkersOutputComponent();
       });
   };
 
-  /**
-   * Adds a latitude-longitude coordinate to the latLngCoords
-   * state variable.
-   *
-   * @param {*} latLngArray
-   */
-  const addMarker = (latLngArray) => {
-    //TODO : Add the coordinate
+  const updateExistingMarkerInv = (locationKey) => {
+    console.log("updateExistingMarkerInv");
+    setInvEditLocationKey(locationKey);
+    var invEditLocationId = document.getElementById(
+      "update-inv-location-id-field"
+    );
+    invEditLocationId.value = locationKey;
+    var invEditMilkCurrent = document.getElementById(
+      "update-inv-at-location-milk-current-field"
+    );
+    var invEditBreadCurrent = document.getElementById(
+      "update-inv-at-location-bread-current-field"
+    );
+    for (let i = 0; i < locationObjects.length; i++) {
+      const locationObject = locationObjects[i];
+      if (locationKey == locationObject.key) {
+        invEditMilkCurrent.value = locationObject.milk;
+        invEditBreadCurrent.value = locationObject.bread;
+      }
+    }
   };
 
   /**
    * Builds the Marker element to append to the dynamic map using
-   * the latLngCoords state variable for the coordinates to add.
+   * the locationObjects state variable for the coordinates to add.
    */
   const updateMarkersOutputComponent = () => {
-    /*const coordinates = [
-      [37.5, -95.0],
-      [40, -90.0],
-    ];*/
-    const coordinates = latLngCoords;
-    setMarkersOutputComponent(<Markers latLngCoordsData={coordinates} />);
+    const locationObjArray = locationObjects;
+    setMarkersOutputComponent(
+      <Markers
+        locationObjectsData={locationObjArray}
+        updateInvHandler={updateExistingMarkerInv}
+      />
+    );
   };
 
   const handleAddressLine1Change = (event) => {
@@ -146,9 +184,40 @@ function App() {
     setAddressZip(event.target.value);
   };
 
-  //console.log("About to update the markers element");
-  //updateMarkersOutputComponent();
+  const handleInvEditMilkNewChange = (event) => {
+    setInvEditMilkNew(event.target.value);
+  };
 
+  const handleInvEditBreadNewChange = (event) => {
+    setInvEditBreadNew(event.target.value);
+  };
+
+  const handleUpdateInvAtLocation = () => {
+    let locationObjectsTemp = locationObjects;
+    for (let i = 0; i < locationObjectsTemp.length; i++) {
+      let locationObject = locationObjectsTemp[i];
+      console.log(invEditBreadNew);
+      console.log(invEditMilkNew);
+      if (locationObject.key == invEditLocationKey) {
+        locationObject.milk = invEditMilkNew;
+        locationObject.bread = invEditBreadNew;
+        locationObjectsTemp[i] = locationObject;
+        console.log(locationObject);
+        setLocationObjects(locationObjectsTemp);
+      }
+    }
+    var invEditMilkCurrent = document.getElementById(
+      "update-inv-at-location-milk-current-field"
+    );
+    invEditMilkCurrent.value = invEditMilkNew;
+    var invEditBreadCurrent = document.getElementById(
+      "update-inv-at-location-bread-current-field"
+    );
+    invEditBreadCurrent.value = invEditBreadNew;
+    updateMarkersOutputComponent();
+  };
+
+  //console.log({ updateExistingMarkerInv });
   return (
     <div className="App">
       <div className="header" id="main-header">
@@ -337,10 +406,7 @@ function App() {
               className="add-marker-at-address-panel-element"
               id="map-address-add-marker"
             >
-              <button
-                id="add-marker-at-address-button"
-                onClick={getGeocodeFromAddress}
-              >
+              <button id="add-marker-at-address-button" onClick={addLocation}>
                 <strong>Add Location</strong>
               </button>
             </div>
@@ -348,14 +414,130 @@ function App() {
         </div>
         <div id="inv-mgmt-column" class="body-column">
           <div id="update-inv-at-location-panel-wrapper">
-            <h3>Update Inventory at Location</h3>
-            <div
-              className="update-location-supply-panel-element"
-              id="update-location-add-supply"
-            >
-              <button id="update-location-supply-button" onClick={null}>
-                <strong>Update Location Supply</strong>
-              </button>
+            <h3>Location Inventory</h3>
+            <div id="update-inv-at-location-controls-wrapper">
+              <div
+                id="update-inv-at-location-control-panel-column-1"
+                className="update-inv-at-location-control-panel-column"
+              >
+                <div
+                  className="update-inv-at-location-element"
+                  id="update-inv-location-id"
+                >
+                  <p
+                    className="update-inv-at-location-element-text"
+                    id="update-inv-location-id-label"
+                  >
+                    <strong>Location ID</strong>
+                  </p>
+                  <select
+                    class="udpate-inv-at-location-field"
+                    id="update-inv-location-id-field"
+                    type="text"
+                    onChange={null}
+                  >
+                    <option value="--">--</option>
+                    <option value="location-1">location-1</option>
+                  </select>
+                </div>
+                <div
+                  className="update-location-supply-panel-element"
+                  id="update-location-add-supply"
+                >
+                  <button
+                    id="update-location-supply-button"
+                    onClick={handleUpdateInvAtLocation}
+                  >
+                    <strong>Update Inventory</strong>
+                  </button>
+                </div>
+              </div>
+              <div
+                id="update-inv-at-location-control-panel-column-2"
+                className="update-inv-at-location-control-panel-column"
+              >
+                <strong>Milk</strong>
+                <div id="milk-current-new-number-fields">
+                  <div
+                    className="update-inv-at-location-element"
+                    id="update-inv-milk-current"
+                  >
+                    <p
+                      className="update-inv-at-location-element-text"
+                      id="update-inv-milk-current-label"
+                    >
+                      Current
+                    </p>
+                    <input
+                      class="udpate-inv-at-location-number-field"
+                      type="number"
+                      readonly="true"
+                      disabled="true"
+                      id="update-inv-at-location-milk-current-field"
+                    />
+                  </div>
+                  <div
+                    className="update-inv-at-location-element"
+                    id="update-inv-milk-new"
+                  >
+                    <p
+                      className="update-inv-at-location-element-text"
+                      id="update-inv-milk-new-label"
+                    >
+                      New
+                    </p>
+                    <input
+                      class="udpate-inv-at-location-number-field"
+                      id="update-inv-milk-new-field"
+                      type="number"
+                      onChange={handleInvEditMilkNewChange}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                id="update-inv-at-location-control-panel-column-3"
+                className="update-inv-at-location-control-panel-column"
+              >
+                <strong>Bread</strong>
+                <div id="bread-current-new-number-fields">
+                  <div
+                    className="update-inv-at-location-element"
+                    id="update-inv-bread-current"
+                  >
+                    <p
+                      className="update-inv-at-location-element-text"
+                      id="update-inv-bread-current-label"
+                    >
+                      Current
+                    </p>
+                    <input
+                      class="udpate-inv-at-location-number-field"
+                      type="number"
+                      readonly="true"
+                      disabled="true"
+                      id="update-inv-at-location-bread-current-field"
+                    />
+                  </div>
+                  <div
+                    className="update-inv-at-location-element"
+                    id="update-inv-bread-new"
+                  >
+                    <p
+                      className="update-inv-at-location-element-text"
+                      id="update-inv-bread-new-label"
+                    >
+                      New
+                    </p>
+                    <input
+                      class="udpate-inv-at-location-number-field"
+                      id="update-inv-bread-new-field"
+                      type="number"
+                      onChange={handleInvEditBreadNewChange}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
