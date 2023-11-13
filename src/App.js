@@ -28,6 +28,7 @@ function App() {
   const [invEditLocationKey, setInvEditLocationKey] = useState("--");
   const [invEditMilkNew, setInvEditMilkNew] = useState("");
   const [invEditBreadNew, setInvEditBreadNew] = useState("");
+  const [forecastData, setForecastData] = useState("");
 
   L.Icon.Default.mergeOptions({
     iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
@@ -35,7 +36,65 @@ function App() {
     shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
   });
 
-  const handleMapRefresh = (event) => {};
+  useEffect(() => {
+    // This effect runs whenever forecastData is updated
+    updateMarkersOutputComponent();
+  }, [locationObjects, forecastData]);
+
+  const refreshWeatherData = () => {
+    fetchBaseNwsApiCall();
+    updateMarkersOutputComponent();
+  };
+
+  /**
+   * https://api.weather.gov/gridpoints/{office}/{gridX},{gridY}/forecast
+   * -> For example: https://api.weather.gov/gridpoints/TOP/31,80/forecast
+   * https://api.weather.gov/points/{latitude},{longitude}
+   * -> For example: https://api.weather.gov/points/39.7456,-97.0892
+   * https://api.weather.gov/alerts/active?area={state}
+   * -> For example: https://api.weather.gov/alerts/active?area=KS
+   */
+  const fetchBaseNwsApiCall = async () => {
+    try {
+      let tempLocationObjects = [];
+      if (locationObjects.length > 0) {
+        for (let i = 0; i < locationObjects.length; i++) {
+          let locationObj = locationObjects[i];
+          let latLng = locationObj.coords;
+          const response = await fetch(
+            "https://api.weather.gov/points/" + latLng[0] + "," + latLng[1]
+          );
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          const data = await response.json();
+          const returnData = await fetchGridPointWeatherForecast(data);
+          //console.log(returnData);
+          setForecastData(returnData);
+          locationObj.forecastData = returnData;
+          tempLocationObjects.push(locationObj);
+          //console.log(tempLocationObjects);
+          setLocationObjects(tempLocationObjects);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
+
+  const fetchGridPointWeatherForecast = async (nwsWeatherAPiBaseResults) => {
+    try {
+      const forecastApiUrl = nwsWeatherAPiBaseResults.properties.forecast;
+      const response = await fetch(forecastApiUrl);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      return data.properties.periods;
+    } catch (error) {
+      throw new Error("Error fetching data: " + error.message);
+    }
+  };
 
   const handleRegionChange = (event) => {
     //setUsRegionSelection(event.target.value);
@@ -106,6 +165,7 @@ function App() {
         locationObj.coords = coords;
         locationObj.milk = 0;
         locationObj.bread = 0;
+        locationObj.forecastData = [];
         var existingLocationObjects = locationObjects;
         let addToMarkerLocationsArray = true;
         for (let i = 0; i < existingLocationObjects.length; i++) {
@@ -196,8 +256,6 @@ function App() {
     let locationObjectsTemp = locationObjects;
     for (let i = 0; i < locationObjectsTemp.length; i++) {
       let locationObject = locationObjectsTemp[i];
-      console.log(invEditBreadNew);
-      console.log(invEditMilkNew);
       if (locationObject.key == invEditLocationKey) {
         locationObject.milk = invEditMilkNew;
         locationObject.bread = invEditBreadNew;
@@ -217,7 +275,6 @@ function App() {
     updateMarkersOutputComponent();
   };
 
-  //console.log({ updateExistingMarkerInv });
   return (
     <div className="App">
       <div className="header" id="main-header">
@@ -235,11 +292,11 @@ function App() {
           <h2 id="data-source-explanation">
             Data Sources :{" "}
             <a
-              class="data-link"
-              href="https://www.weatherapi.com/my/"
+              className="data-link"
+              href="https://www.weather.gov/documentation/services-web-api"
               target="_blank"
             >
-              WeatherAPI
+              National Weather Service
             </a>
             &nbsp;and&nbsp;
             <a
@@ -253,8 +310,8 @@ function App() {
           </h2>
         </div>
       </div>
-      <div id="map-inv-mgmt-row" class="body-row">
-        <div id="map-column" class="body-column">
+      <div id="map-inv-mgmt-row" className="body-row">
+        <div id="map-column" className="body-column">
           <div id="map-section-wrapper">
             <div id="map-control-panel-wrapper">
               <h3>Map Control Panel</h3>
@@ -301,10 +358,7 @@ function App() {
                   >
                     Refresh Weather Data
                   </p>
-                  <button
-                    id="refresh-button"
-                    onClick={updateMarkersOutputComponent}
-                  >
+                  <button id="refresh-button" onClick={refreshWeatherData}>
                     Refresh Weather Data
                   </button>
                 </div>
@@ -374,7 +428,11 @@ function App() {
               >
                 City
               </p>
-              <input type="text" onChange={handleAddressCityChange} />
+              <input
+                type="text"
+                placeholder="Birmingham"
+                onChange={handleAddressCityChange}
+              />
             </div>
             <div className="map-control-panel-element" id="map-address-state">
               <p
@@ -412,7 +470,7 @@ function App() {
             </div>
           </div>
         </div>
-        <div id="inv-mgmt-column" class="body-column">
+        <div id="inv-mgmt-column" className="body-column">
           <div id="update-inv-at-location-panel-wrapper">
             <h3>Location Inventory</h3>
             <div id="update-inv-at-location-controls-wrapper">
@@ -431,7 +489,7 @@ function App() {
                     <strong>Location ID</strong>
                   </p>
                   <select
-                    class="udpate-inv-at-location-field"
+                    className="udpate-inv-at-location-field"
                     id="update-inv-location-id-field"
                     type="text"
                     onChange={null}
@@ -469,10 +527,10 @@ function App() {
                       Current
                     </p>
                     <input
-                      class="udpate-inv-at-location-number-field"
+                      className="udpate-inv-at-location-number-field"
                       type="number"
-                      readonly="true"
-                      disabled="true"
+                      readOnly={true}
+                      disabled={true}
                       id="update-inv-at-location-milk-current-field"
                     />
                   </div>
@@ -487,7 +545,7 @@ function App() {
                       New
                     </p>
                     <input
-                      class="udpate-inv-at-location-number-field"
+                      className="udpate-inv-at-location-number-field"
                       id="update-inv-milk-new-field"
                       type="number"
                       onChange={handleInvEditMilkNewChange}
@@ -512,10 +570,10 @@ function App() {
                       Current
                     </p>
                     <input
-                      class="udpate-inv-at-location-number-field"
+                      className="udpate-inv-at-location-number-field"
                       type="number"
-                      readonly="true"
-                      disabled="true"
+                      readOnly={true}
+                      disabled={true}
                       id="update-inv-at-location-bread-current-field"
                     />
                   </div>
@@ -530,7 +588,7 @@ function App() {
                       New
                     </p>
                     <input
-                      class="udpate-inv-at-location-number-field"
+                      className="udpate-inv-at-location-number-field"
                       id="update-inv-bread-new-field"
                       type="number"
                       onChange={handleInvEditBreadNewChange}

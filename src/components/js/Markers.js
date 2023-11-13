@@ -6,7 +6,8 @@ let latLngCoordsObjArr = [];
 function Markers(params) {
   const MarkerElement = (props) => {
     const { elementData } = props;
-    const { id, lat, lng, milk, bread } = elementData;
+    const { id, lat, lng, milk, bread, currentWeather, snowSleetAnticipated } =
+      elementData;
     let locationId = id;
     return (
       <>
@@ -17,12 +18,14 @@ function Markers(params) {
         >
           <Popup>
             <span>
-              <h3>Location Inventory</h3>
+              <h3>Location Overview</h3>
               <p>Id : {locationId}</p>
               <p>Milk : {milk}</p>
               <p>Bread : {bread}</p>
+              <p>Current Weather : {currentWeather}</p>
+              <p>Snow or Sleet Forecasted : {snowSleetAnticipated}</p>
               <button
-                class="update-inventory-button"
+                className="update-inventory-button"
                 onClick={() => params.updateInvHandler(locationId)}
               >
                 Manage Inventory
@@ -46,11 +49,38 @@ function Markers(params) {
       let lng = params.locationObjectsData[i].coords[1];
       let milk = params.locationObjectsData[i].milk;
       let bread = params.locationObjectsData[i].bread;
+      const forecastData = params.locationObjectsData[i].forecastData;
+      let currentWeather = "";
+      let snowSleetAnticipated = "No";
+      if (forecastData.length > 0) {
+        currentWeather =
+          forecastData[0]["shortForecast"] +
+          " @ " +
+          forecastData[0]["temperature"] +
+          "°" +
+          forecastData[0]["temperatureUnit"];
+        for (let i = 0; i < forecastData.length; i++) {
+          let detailedForecast =
+            forecastData[i]["detailedForecast"].toLowerCase();
+          let shortForecast = forecastData[i]["shortForecast"].toLowerCase();
+          if (
+            detailedForecast.includes("snow") ||
+            detailedForecast.includes("sleet") ||
+            shortForecast.includes("snow") ||
+            shortForecast.includes("sleet")
+          ) {
+            snowSleetAnticipated = "Yes";
+          }
+        }
+      }
+      //console.log(currentWeather);
       markerObj.id = id;
       markerObj.lat = lat;
       markerObj.lng = lng;
       markerObj.milk = milk;
       markerObj.bread = bread;
+      markerObj.currentWeather = currentWeather;
+      markerObj.snowSleetAnticipated = snowSleetAnticipated;
       latLngCoordsObjArr.push(markerObj);
     }
   };
@@ -60,7 +90,7 @@ function Markers(params) {
 
   return (
     <>
-      <div class="marker-test-from-return">{retrieveMarkerData()}</div>
+      <div className="marker-test-from-return">{retrieveMarkerData()}</div>
     </>
   );
 }

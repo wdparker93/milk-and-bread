@@ -1,3 +1,7 @@
+body {
+  margin: 0;
+}
+
 .App {
   background-image: url("https://arc-anglerfish-arc2-prod-bostonglobe.s3.amazonaws.com/public/UHWFTKEL3AI6NLVIBY2RTFZ2AY.jpg");
   background-size: cover;
@@ -5,20 +9,24 @@
   width: 100vw;
   overflow-y: scroll;
   overflow-x: hidden;
-  top: 0;
-  left: 0;
-  padding: 0 0;
 }
 
 #main-header {
-  position: fixed;
-  top: 0;
+  position: relative;
   padding-left: 0.5vw;
   color: black;
   background: rgba(204, 204, 204, 0.6);
   outline-style: solid;
   font-size: 0.85em;
   width: 100vw;
+}
+
+#main-title {
+  margin: 0; /* Add this to remove margin for h1 */
+}
+
+#secondary-headers {
+  margin: 0; /* Add this to remove margin for the container of secondary headers */
 }
 
 #secondary-headers {
@@ -31,7 +39,7 @@
 #map-inv-mgmt-row {
   display: flex;
   position: relative;
-  top: 22vh;
+  top: 2vh;
   height: 77vh;
 }
 
