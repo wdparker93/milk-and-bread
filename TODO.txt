@@ -1,5 +1,24 @@
 1. Dictionary of US states, zoom levels, and latitude/longitude settings for map
 2. Logic for add/remove markers at address
-3. Integrate weather API
-4. Need supply volumes of material at locations
+3. Integrate weather API - DONE
+4. Need supply volumes of material at locations - DONE
 5. Build out database layer and queries.
+6. Display list of locations at bottom-right corner with ability to see below parameters
+    a. Weather event antipipated and when
+    b. Supply at location
+    c. Geocode/address from Geocode
+    d. Anticipated sales
+    e. Options to trigger reroutes
+7. Rerouting algorithm will need to be able to
+    a. Identify the "front" where the weather event is going to be.
+        i. Also identify where the "front" is headed. 
+        ii. Want to know a direction of sorts so appropriate stores that are out of the line of the storm can mobilize inventory appropriately.
+    b. Prioritize areas based on urgency. Urgency composed of when weather event is expected and how much money is expected as a result of Rerouting
+    c. Use a network of nodes to connect locations and route material from one location to another
+    d. Find the most efficient route for rerouting material.
+    e. Pull in material from sites further out to backfill material shipped in from other regions (rebalance to hit steady state)
+8. Show different icon or additional icon if weather event is anticipated
+9. Build network of nodes that will allow creation of a spanning tree/map where the nodes are the stores and the paths are the routes between
+10. Want update supply window to flash when Manage Inventory button is clicked for a location.
+11. Do an analysis on value proposition if time permits. Get data that correlate weather with sales and show that using predictive analytics makes sense.
+12. Be able to add weight(s) to the paths connecting the nodes in the map. Time to traverse path, cost to traverse path.

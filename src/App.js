@@ -298,7 +298,7 @@ function App() {
             >
               National Weather Service
             </a>
-            &nbsp;and&nbsp;
+            &nbsp;, &nbsp;
             <a
               className="data-link"
               href="https://leafletjs.com/"
@@ -306,7 +306,14 @@ function App() {
             >
               Leaflet
             </a>
-            .
+            &nbsp; and &nbsp;
+            <a
+              className="data-link"
+              href="https://developer.mapquest.com/documentation/"
+              target="_blank"
+            >
+              MapQuest
+            </a>
           </h2>
         </div>
       </div>
