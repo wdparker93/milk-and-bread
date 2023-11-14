@@ -3,7 +3,7 @@ import Axios from "axios";
 import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import L, { latLng } from "leaflet";
+import L from "leaflet";
 import Markers from "./components/js/Markers.js";
 import UsStates from "./components/js/UsStates.js";
 
@@ -161,6 +161,7 @@ function App() {
         const coords = [lat, lng];
         let locationObj = new Object();
         let key = "location-" + locationObjKey;
+        setLocationObjKey(locationObjKey + 1);
         locationObj.key = key;
         locationObj.coords = coords;
         locationObj.milk = 0;
@@ -178,7 +179,6 @@ function App() {
         if (addToMarkerLocationsArray) {
           existingLocationObjects.push(locationObj);
           setLocationObjects(existingLocationObjects);
-          setLocationObjKey(key + 1);
         }
         updateMarkersOutputComponent();
       });
@@ -435,11 +435,7 @@ function App() {
               >
                 City
               </p>
-              <input
-                type="text"
-                placeholder="Birmingham"
-                onChange={handleAddressCityChange}
-              />
+              <input type="text" onChange={handleAddressCityChange} />
             </div>
             <div className="map-control-panel-element" id="map-address-state">
               <p

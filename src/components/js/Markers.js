@@ -1,7 +1,25 @@
 import { Marker, Popup } from "react-leaflet";
 import React, { useState } from "react";
+import { Icon } from "leaflet";
 
 let latLngCoordsObjArr = [];
+
+var dangerIcon = new Icon({
+  iconUrl: "./media/red-danger-symbol.png",
+  iconSize: [28, 28], // size of the icon
+});
+
+var cautionIcon = new Icon({
+  iconUrl: "./media/yellow-caution-sign.png",
+  iconSize: [28, 28], // size of the icon
+});
+
+var defaultIcon = new Icon({
+  iconUrl: "./media/marker-icon.png",
+  iconSize: [20, 32], // size of the icon
+  iconAnchor: [10, 32],
+  popupAnchor: [0, -32],
+});
 
 function Markers(params) {
   const MarkerElement = (props) => {
@@ -9,12 +27,23 @@ function Markers(params) {
     const { id, lat, lng, milk, bread, currentWeather, snowSleetAnticipated } =
       elementData;
     let locationId = id;
+    let iconToUse = defaultIcon;
+    console.log(snowSleetAnticipated);
+    if (
+      currentWeather.toLowerCase().includes("snow") ||
+      currentWeather.toLowerCase().includes("sleet")
+    ) {
+      iconToUse = dangerIcon;
+    } else if (snowSleetAnticipated == "Yes") {
+      iconToUse = cautionIcon;
+    }
     return (
       <>
         <Marker
           className="leaflet-map-marker"
           key={locationId}
           position={[lat, lng]}
+          icon={iconToUse}
         >
           <Popup>
             <span>
