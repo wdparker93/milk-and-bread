@@ -23,3 +23,5 @@ DONE - 4. Need supply volumes of material at locations
 11. Do an analysis on value proposition if time permits. Get data that correlate weather with sales and show that using predictive analytics makes sense.
 12. Be able to add weight(s) to the paths connecting the nodes in the map. Time to traverse path, cost to traverse path.
 13. Refactor components into more modular pieces.
+14. Dynamically build list of location-ids for inventory update panel using the list of location objects that exist.
+15. Make better use of space/redisgn ux. Try to give more room to analytics window.

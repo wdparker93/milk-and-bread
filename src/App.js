@@ -45,7 +45,7 @@ function App() {
   useEffect(() => {
     // This effect runs whenever forecastData is updated
     updateMarkersOutputComponent();
-  }, [locationObjects, forecastData, invEditMilkNew, invEditBreadNew]);
+  }, [locationObjects, forecastData]);
 
   const refreshWeatherData = () => {
     fetchBaseNwsApiCall();
@@ -190,28 +190,6 @@ function App() {
       });
   };
 
-  const updateExistingLocationInv = (locationKey) => {
-    console.log("updateExistingLocationInv");
-    setInvEditLocationKey(locationKey);
-    var invEditLocationId = document.getElementById(
-      "update-inv-location-id-field"
-    );
-    invEditLocationId.value = locationKey;
-    var invEditMilkCurrent = document.getElementById(
-      "update-inv-at-location-milk-current-field"
-    );
-    var invEditBreadCurrent = document.getElementById(
-      "update-inv-at-location-bread-current-field"
-    );
-    for (let i = 0; i < locationObjects.length; i++) {
-      const locationObject = locationObjects[i];
-      if (locationKey == locationObject.key) {
-        invEditMilkCurrent.value = locationObject.milk;
-        invEditBreadCurrent.value = locationObject.bread;
-      }
-    }
-  };
-
   /**
    * Baseline driver for map marker/location updates.
    *
@@ -232,7 +210,7 @@ function App() {
     setMarkersOutputComponent(
       <Markers
         locationObjectsData={locationObjArray}
-        updateInvHandler={updateExistingLocationInv}
+        updateInvHandler={initializeInvUpdatePanel}
       />
     );
   };
@@ -269,7 +247,39 @@ function App() {
     setInvEditBreadNew(event.target.value);
   };
 
-  const handleUpdateInvAtLocation = () => {
+  /**
+   * Populates the inventory update panel with the inventory
+   * values of the location currently selected.
+   *
+   * @param {*} locationKey
+   */
+  const initializeInvUpdatePanel = (locationKey) => {
+    console.log("initializeInvUpdatePanel");
+    setInvEditLocationKey(locationKey);
+    var invEditLocationId = document.getElementById(
+      "update-inv-location-id-field"
+    );
+    invEditLocationId.value = locationKey;
+    var invEditMilkCurrent = document.getElementById(
+      "update-inv-at-location-milk-current-field"
+    );
+    var invEditBreadCurrent = document.getElementById(
+      "update-inv-at-location-bread-current-field"
+    );
+    for (let i = 0; i < locationObjects.length; i++) {
+      const locationObject = locationObjects[i];
+      if (locationKey == locationObject.key) {
+        invEditMilkCurrent.value = locationObject.milk;
+        invEditBreadCurrent.value = locationObject.bread;
+      }
+    }
+  };
+
+  /**
+   * Updates the inventory of the currently selected location
+   * to the values set in the "New" fields.
+   */
+  const executeInventoryUpdate = () => {
     let locationObjectsTemp = locationObjects;
     for (let i = 0; i < locationObjectsTemp.length; i++) {
       let locationObject = locationObjectsTemp[i];
@@ -289,7 +299,8 @@ function App() {
       "update-inv-at-location-bread-current-field"
     );
     invEditBreadCurrent.value = invEditBreadNew;
-    //updateMarkersOutputComponent();
+    updateMarkersOutputComponent();
+    //resetInvUpdatePanel();
   };
 
   const chooseAnalyticsTabOutputComponent = (event) => {
@@ -539,7 +550,7 @@ function App() {
                 >
                   <button
                     id="update-location-supply-button"
-                    onClick={handleUpdateInvAtLocation}
+                    onClick={executeInventoryUpdate}
                   >
                     <strong>Update Inventory</strong>
                   </button>
