@@ -6,6 +6,10 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import Markers from "./components/js/Markers.js";
 import UsStates from "./components/js/UsStates.js";
+import AnalyticsTabSummaryTable from "./components/js/AnalyticsTabSummaryTable.js";
+import AnalyticsTabRiskAnalysis from "./components/js/AnalyticsTabRiskAnalysis.js";
+import AnalyticsTabProfitabilityAnalysis from "./components/js/AnalyticsTabProfitabilityAnalysis.js";
+import AnalyticsTabPerformanceTracking from "./components/js/AnalyticsTabPerformanceTracking.js";
 
 function App() {
   const mapQuestKey = "ghmpUiVTD8GQkci0Vv1pLFj1L4T9BSbA";
@@ -17,6 +21,8 @@ function App() {
   const [usStateSelection, setUsStateSelection] = useState("--");
   const [mapZoomLevel, setMapZoomLevel] = useState({ defaultZoom });
   const [markersOutputComponent, setMarkersOutputComponent] = useState("");
+  const [analyticsTabOutputComponent, setAnalyticsTabOutputComponent] =
+    useState(<AnalyticsTabSummaryTable />);
   const [locationObjects, setLocationObjects] = useState([]);
   const [addressLine1, setAddressLine1] = useState("");
   const [addressLine2, setAddressLine2] = useState("");
@@ -39,11 +45,11 @@ function App() {
   useEffect(() => {
     // This effect runs whenever forecastData is updated
     updateMarkersOutputComponent();
-  }, [locationObjects, forecastData]);
+  }, [locationObjects, forecastData, invEditMilkNew, invEditBreadNew]);
 
   const refreshWeatherData = () => {
     fetchBaseNwsApiCall();
-    updateMarkersOutputComponent();
+    //updateMarkersOutputComponent();
   };
 
   /**
@@ -69,7 +75,7 @@ function App() {
           }
           const data = await response.json();
           const returnData = await fetchGridPointWeatherForecast(data);
-          //console.log(returnData);
+          console.log(returnData);
           setForecastData(returnData);
           locationObj.forecastData = returnData;
           tempLocationObjects.push(locationObj);
@@ -184,8 +190,8 @@ function App() {
       });
   };
 
-  const updateExistingMarkerInv = (locationKey) => {
-    console.log("updateExistingMarkerInv");
+  const updateExistingLocationInv = (locationKey) => {
+    console.log("updateExistingLocationInv");
     setInvEditLocationKey(locationKey);
     var invEditLocationId = document.getElementById(
       "update-inv-location-id-field"
@@ -207,15 +213,26 @@ function App() {
   };
 
   /**
+   * Baseline driver for map marker/location updates.
+   *
    * Builds the Marker element to append to the dynamic map using
    * the locationObjects state variable for the coordinates to add.
+   *
+   * Data passed to markers via the locationObjArray
+   * Members of locationObjArray
+   *   1. location key
+   *   2. lat/lng array
+   *   3. milk inventory
+   *   4. bread inventory
+   *   5. weather forecast data
    */
   const updateMarkersOutputComponent = () => {
     const locationObjArray = locationObjects;
+    //console.log(locationObjArray);
     setMarkersOutputComponent(
       <Markers
         locationObjectsData={locationObjArray}
-        updateInvHandler={updateExistingMarkerInv}
+        updateInvHandler={updateExistingLocationInv}
       />
     );
   };
@@ -272,7 +289,20 @@ function App() {
       "update-inv-at-location-bread-current-field"
     );
     invEditBreadCurrent.value = invEditBreadNew;
-    updateMarkersOutputComponent();
+    //updateMarkersOutputComponent();
+  };
+
+  const chooseAnalyticsTabOutputComponent = (event) => {
+    const param = event.target.value;
+    if (param == "summaryTable") {
+      setAnalyticsTabOutputComponent(<AnalyticsTabSummaryTable />);
+    } else if (param == "invRiskAnalysis") {
+      setAnalyticsTabOutputComponent(<AnalyticsTabRiskAnalysis />);
+    } else if (param == "profitabilityAnalysis") {
+      setAnalyticsTabOutputComponent(<AnalyticsTabProfitabilityAnalysis />);
+    } else if (param == "performanceTracking") {
+      setAnalyticsTabOutputComponent(<AnalyticsTabPerformanceTracking />);
+    }
   };
 
   return (
@@ -473,9 +503,11 @@ function App() {
             </div>
           </div>
         </div>
-        <div id="inv-mgmt-column" className="body-column">
-          <div id="update-inv-at-location-panel-wrapper">
-            <h3>Location Inventory</h3>
+        <div id="inv-update-analytics-column" className="body-column">
+          <div id="inv-update-panel">
+            <h3 class="inv-update-analytics-panel-title">
+              Update Location Inventory
+            </h3>
             <div id="update-inv-at-location-controls-wrapper">
               <div
                 id="update-inv-at-location-control-panel-column-1"
@@ -599,6 +631,42 @@ function App() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+          <div id="location-analytics-panel">
+            <h3 class="inv-update-analytics-panel-title">Location Analytics</h3>
+            <div class="analytics-tab">
+              <button
+                class="tab-btn"
+                onClick={chooseAnalyticsTabOutputComponent}
+                value="summaryTable"
+              >
+                Location Summary
+              </button>
+              <button
+                class="tab-btn"
+                onClick={chooseAnalyticsTabOutputComponent}
+                value="invRiskAnalysis"
+              >
+                Inv. Risk Analysis
+              </button>
+              <button
+                class="tab-btn"
+                onClick={chooseAnalyticsTabOutputComponent}
+                value="profitabilityAnalysis"
+              >
+                Profitability Analysis
+              </button>
+              <button
+                class="tab-btn"
+                onClick={chooseAnalyticsTabOutputComponent}
+                value="performanceTracking"
+              >
+                Perf. Tracking
+              </button>
+            </div>
+            <div class="analytics-tab-content">
+              {analyticsTabOutputComponent}
             </div>
           </div>
         </div>

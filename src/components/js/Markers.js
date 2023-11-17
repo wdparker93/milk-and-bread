@@ -24,15 +24,19 @@ var defaultIcon = new Icon({
 function Markers(params) {
   const MarkerElement = (props) => {
     const { elementData } = props;
-    const { id, lat, lng, milk, bread, currentWeather, snowSleetAnticipated } =
-      elementData;
+    const {
+      id,
+      lat,
+      lng,
+      milk,
+      bread,
+      currentWeather,
+      snowSleetAnticipated,
+      currentlySnowingOrSleeting,
+    } = elementData;
     let locationId = id;
     let iconToUse = defaultIcon;
-    console.log(snowSleetAnticipated);
-    if (
-      currentWeather.toLowerCase().includes("snow") ||
-      currentWeather.toLowerCase().includes("sleet")
-    ) {
+    if (currentlySnowingOrSleeting == "Yes") {
       iconToUse = dangerIcon;
     } else if (snowSleetAnticipated == "Yes") {
       iconToUse = cautionIcon;
@@ -52,7 +56,7 @@ function Markers(params) {
               <p>Milk : {milk}</p>
               <p>Bread : {bread}</p>
               <p>Current Weather : {currentWeather}</p>
-              <p>Snow or Sleet Forecasted : {snowSleetAnticipated}</p>
+              <p>Snow or Sleet in 7-Day Forecast : {snowSleetAnticipated}</p>
               <button
                 className="update-inventory-button"
                 onClick={() => params.updateInvHandler(locationId)}
@@ -81,6 +85,7 @@ function Markers(params) {
       const forecastData = params.locationObjectsData[i].forecastData;
       let currentWeather = "";
       let snowSleetAnticipated = "No";
+      let currentlySnowingOrSleeting = "No";
       if (forecastData.length > 0) {
         currentWeather =
           forecastData[0]["shortForecast"] +
@@ -88,17 +93,25 @@ function Markers(params) {
           forecastData[0]["temperature"] +
           "°" +
           forecastData[0]["temperatureUnit"];
-        for (let i = 0; i < forecastData.length; i++) {
-          let detailedForecast =
-            forecastData[i]["detailedForecast"].toLowerCase();
-          let shortForecast = forecastData[i]["shortForecast"].toLowerCase();
-          if (
-            detailedForecast.includes("snow") ||
-            detailedForecast.includes("sleet") ||
-            shortForecast.includes("snow") ||
-            shortForecast.includes("sleet")
-          ) {
-            snowSleetAnticipated = "Yes";
+        if (
+          currentWeather.toLowerCase().includes("snow") ||
+          currentWeather.toLowerCase().includes("sleet")
+        ) {
+          currentlySnowingOrSleeting = "Yes";
+        }
+        if (currentlySnowingOrSleeting == "No") {
+          for (let i = 0; i < forecastData.length; i++) {
+            let detailedForecast =
+              forecastData[i]["detailedForecast"].toLowerCase();
+            let shortForecast = forecastData[i]["shortForecast"].toLowerCase();
+            if (
+              detailedForecast.includes("snow") ||
+              detailedForecast.includes("sleet") ||
+              shortForecast.includes("snow") ||
+              shortForecast.includes("sleet")
+            ) {
+              snowSleetAnticipated = "Yes";
+            }
           }
         }
       }
@@ -110,6 +123,7 @@ function Markers(params) {
       markerObj.bread = bread;
       markerObj.currentWeather = currentWeather;
       markerObj.snowSleetAnticipated = snowSleetAnticipated;
+      markerObj.currentlySnowingOrSleeting = currentlySnowingOrSleeting;
       latLngCoordsObjArr.push(markerObj);
     }
   };

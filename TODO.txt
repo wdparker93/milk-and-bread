@@ -1,7 +1,7 @@
 1. Dictionary of US states, zoom levels, and latitude/longitude settings for map
 2. Logic for add/remove markers at address
-3. Integrate weather API - DONE
-4. Need supply volumes of material at locations - DONE
+DONE - 3. Integrate weather API
+DONE - 4. Need supply volumes of material at locations
 5. Build out database layer and queries.
 6. Display list of locations at bottom-right corner with ability to see below parameters
     a. Weather event antipipated and when
@@ -22,3 +22,4 @@
 10. Want update supply window to flash when Manage Inventory button is clicked for a location.
 11. Do an analysis on value proposition if time permits. Get data that correlate weather with sales and show that using predictive analytics makes sense.
 12. Be able to add weight(s) to the paths connecting the nodes in the map. Time to traverse path, cost to traverse path.
+13. Refactor components into more modular pieces.
