@@ -4,8 +4,10 @@ import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import AppHeader from "./components/js/AppHeader.js";
 import Markers from "./components/js/Markers.js";
 import UsStates from "./components/js/UsStates.js";
+import Locations from "./components/js/Locations.js";
 import AnalyticsTabSummaryTable from "./components/js/AnalyticsTabSummaryTable.js";
 import AnalyticsTabRiskAnalysis from "./components/js/AnalyticsTabRiskAnalysis.js";
 import AnalyticsTabProfitabilityAnalysis from "./components/js/AnalyticsTabProfitabilityAnalysis.js";
@@ -31,9 +33,9 @@ function App() {
   const [addressState, setAddressState] = useState("");
   const [addressZip, setAddressZip] = useState("");
   const [locationObjKey, setLocationObjKey] = useState(1);
-  const [invEditLocationKey, setInvEditLocationKey] = useState("--");
-  const [invEditMilkNew, setInvEditMilkNew] = useState("");
-  const [invEditBreadNew, setInvEditBreadNew] = useState("");
+  //const [invEditLocationKey, setInvEditLocationKey] = useState("--");
+  //const [invEditMilkNew, setInvEditMilkNew] = useState("");
+  //const [invEditBreadNew, setInvEditBreadNew] = useState("");
   const [forecastData, setForecastData] = useState("");
 
   L.Icon.Default.mergeOptions({
@@ -240,11 +242,11 @@ function App() {
   };
 
   const handleInvEditMilkNewChange = (event) => {
-    setInvEditMilkNew(event.target.value);
+    //setInvEditMilkNew(event.target.value);
   };
 
   const handleInvEditBreadNewChange = (event) => {
-    setInvEditBreadNew(event.target.value);
+    //setInvEditBreadNew(event.target.value);
   };
 
   /**
@@ -255,17 +257,14 @@ function App() {
    */
   const initializeInvUpdatePanel = (locationKey) => {
     console.log("initializeInvUpdatePanel");
-    setInvEditLocationKey(locationKey);
-    var invEditLocationId = document.getElementById(
-      "update-inv-location-id-field"
-    );
+    //setInvEditLocationKey(locationKey);
+    let invEditCurrentFields = getInvEditCurrentFields();
+    let invEditLocationId = invEditCurrentFields[0];
+    let invEditMilkCurrent = invEditCurrentFields[1];
+    let invEditBreadCurrent = invEditCurrentFields[2];
+
     invEditLocationId.value = locationKey;
-    var invEditMilkCurrent = document.getElementById(
-      "update-inv-at-location-milk-current-field"
-    );
-    var invEditBreadCurrent = document.getElementById(
-      "update-inv-at-location-bread-current-field"
-    );
+
     for (let i = 0; i < locationObjects.length; i++) {
       const locationObject = locationObjects[i];
       if (locationKey == locationObject.key) {
@@ -275,32 +274,92 @@ function App() {
     }
   };
 
+  const getInvEditCurrentFields = () => {
+    let returnArray = [];
+    var invEditLocationId = document.getElementById(
+      "update-inv-location-id-field"
+    );
+    var invEditMilkCurrent = document.getElementById(
+      "update-inv-at-location-milk-current-field"
+    );
+    var invEditBreadCurrent = document.getElementById(
+      "update-inv-at-location-bread-current-field"
+    );
+    returnArray.push(invEditLocationId);
+    returnArray.push(invEditMilkCurrent);
+    returnArray.push(invEditBreadCurrent);
+    return returnArray;
+  };
+
+  const getInvEditNewFields = () => {
+    let returnArray = [];
+    var invEditLocationId = document.getElementById(
+      "update-inv-location-id-field"
+    );
+    var invEditMilkNew = document.getElementById("update-inv-milk-new-field");
+    var invEditBreadNew = document.getElementById("update-inv-bread-new-field");
+    returnArray.push(invEditLocationId);
+    returnArray.push(invEditMilkNew);
+    returnArray.push(invEditBreadNew);
+    return returnArray;
+  };
+
   /**
    * Updates the inventory of the currently selected location
    * to the values set in the "New" fields.
    */
   const executeInventoryUpdate = () => {
     let locationObjectsTemp = locationObjects;
+    let invEditNewFields = getInvEditNewFields();
+    let invEditLocationId = invEditNewFields[0];
+    let invEditMilkNew = invEditNewFields[1];
+    let invEditBreadNew = invEditNewFields[2];
     for (let i = 0; i < locationObjectsTemp.length; i++) {
       let locationObject = locationObjectsTemp[i];
-      if (locationObject.key == invEditLocationKey) {
-        locationObject.milk = invEditMilkNew;
-        locationObject.bread = invEditBreadNew;
+      if (locationObject.key === invEditLocationId.value) {
+        if (invEditMilkNew.value !== "" && invEditMilkNew.value >= 0) {
+          locationObject.milk = invEditMilkNew.value;
+        }
+        if (invEditBreadNew.value !== "" && invEditBreadNew.value >= 0) {
+          locationObject.bread = invEditBreadNew.value;
+        }
         locationObjectsTemp[i] = locationObject;
         console.log(locationObject);
         setLocationObjects(locationObjectsTemp);
       }
     }
-    var invEditMilkCurrent = document.getElementById(
-      "update-inv-at-location-milk-current-field"
-    );
-    invEditMilkCurrent.value = invEditMilkNew;
-    var invEditBreadCurrent = document.getElementById(
-      "update-inv-at-location-bread-current-field"
-    );
-    invEditBreadCurrent.value = invEditBreadNew;
+    //Clear value fields to reset for another change
+    invEditMilkNew.value = "";
+    invEditBreadNew.value = "";
+    let invEditCurrentFields = getInvEditCurrentFields();
+    let invEditMilkCurrent = invEditCurrentFields[1];
+    let invEditBreadCurrent = invEditCurrentFields[2];
+    invEditMilkCurrent.value = "";
+    invEditBreadCurrent.value = "";
     updateMarkersOutputComponent();
     //resetInvUpdatePanel();
+  };
+
+  const fillInvManagementFields = (event) => {
+    const locationKeyToSet = event.target.value;
+    //setInvEditLocationKey(locationKeyToSet);
+    let invEditCurrentFields = getInvEditCurrentFields();
+    let invEditMilkCurrent = invEditCurrentFields[1];
+    let invEditBreadCurrent = invEditCurrentFields[2];
+    let currentInvMilkValueToSet = "";
+    let currentInvBreadValueToSet = "";
+    //invEditBreadCurrent.value = invEditBreadNew;
+    if (locationKeyToSet !== "--") {
+      for (let i = 0; i < locationObjects.length; i++) {
+        const locationObject = locationObjects[i];
+        if (locationKeyToSet == locationObject.key) {
+          currentInvMilkValueToSet = locationObject.milk;
+          currentInvBreadValueToSet = locationObject.bread;
+        }
+      }
+    }
+    invEditMilkCurrent.value = currentInvMilkValueToSet;
+    invEditBreadCurrent.value = currentInvBreadValueToSet;
   };
 
   const chooseAnalyticsTabOutputComponent = (event) => {
@@ -318,46 +377,7 @@ function App() {
 
   return (
     <div className="App">
-      <div className="header" id="main-header">
-        <div id="main-header-text">
-          <h1 id="main-title">
-            Milk and Bread : Exploring Proactive, Climate-Driven Supply Chain
-            Optimization
-          </h1>
-        </div>
-        <div id="secondary-headers">
-          <h2 id="secondary-title">
-            Leverage real-time weather forecasts to optimize supply networks of
-            milk and bread.
-          </h2>
-          <h2 id="data-source-explanation">
-            Data Sources :{" "}
-            <a
-              className="data-link"
-              href="https://www.weather.gov/documentation/services-web-api"
-              target="_blank"
-            >
-              National Weather Service
-            </a>
-            &nbsp;, &nbsp;
-            <a
-              className="data-link"
-              href="https://leafletjs.com/"
-              target="_blank"
-            >
-              Leaflet
-            </a>
-            &nbsp; and &nbsp;
-            <a
-              className="data-link"
-              href="https://developer.mapquest.com/documentation/"
-              target="_blank"
-            >
-              MapQuest
-            </a>
-          </h2>
-        </div>
-      </div>
+      <AppHeader />
       <div id="map-inv-mgmt-row" className="body-row">
         <div id="map-column" className="body-column">
           <div id="map-section-wrapper">
@@ -516,7 +536,7 @@ function App() {
         </div>
         <div id="inv-update-analytics-column" className="body-column">
           <div id="inv-update-panel">
-            <h3 class="inv-update-analytics-panel-title">
+            <h3 className="inv-update-analytics-panel-title">
               Update Location Inventory
             </h3>
             <div id="update-inv-at-location-controls-wrapper">
@@ -538,10 +558,9 @@ function App() {
                     className="udpate-inv-at-location-field"
                     id="update-inv-location-id-field"
                     type="text"
-                    onChange={null}
+                    onChange={fillInvManagementFields}
                   >
-                    <option value="--">--</option>
-                    <option value="location-1">location-1</option>
+                    <Locations locationObjectsData={locationObjects} />
                   </select>
                 </div>
                 <div
@@ -645,38 +664,40 @@ function App() {
             </div>
           </div>
           <div id="location-analytics-panel">
-            <h3 class="inv-update-analytics-panel-title">Location Analytics</h3>
-            <div class="analytics-tab">
+            <h3 className="inv-update-analytics-panel-title">
+              Location Analytics
+            </h3>
+            <div className="analytics-tab">
               <button
-                class="tab-btn"
+                className="tab-btn"
                 onClick={chooseAnalyticsTabOutputComponent}
                 value="summaryTable"
               >
                 Location Summary
               </button>
               <button
-                class="tab-btn"
+                className="tab-btn"
                 onClick={chooseAnalyticsTabOutputComponent}
                 value="invRiskAnalysis"
               >
                 Inv. Risk Analysis
               </button>
               <button
-                class="tab-btn"
+                className="tab-btn"
                 onClick={chooseAnalyticsTabOutputComponent}
                 value="profitabilityAnalysis"
               >
                 Profitability Analysis
               </button>
               <button
-                class="tab-btn"
+                className="tab-btn"
                 onClick={chooseAnalyticsTabOutputComponent}
                 value="performanceTracking"
               >
                 Perf. Tracking
               </button>
             </div>
-            <div class="analytics-tab-content">
+            <div className="analytics-tab-content">
               {analyticsTabOutputComponent}
             </div>
           </div>

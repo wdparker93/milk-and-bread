@@ -1,5 +1,5 @@
 import { Marker, Popup } from "react-leaflet";
-import React, { useState } from "react";
+import React from "react";
 import { Icon } from "leaflet";
 
 let latLngCoordsObjArr = [];
@@ -36,9 +36,9 @@ function Markers(params) {
     } = elementData;
     let locationId = id;
     let iconToUse = defaultIcon;
-    if (currentlySnowingOrSleeting == "Yes") {
+    if (currentlySnowingOrSleeting === "Yes") {
       iconToUse = dangerIcon;
-    } else if (snowSleetAnticipated == "Yes") {
+    } else if (snowSleetAnticipated === "Yes") {
       iconToUse = cautionIcon;
     }
     return (
@@ -99,7 +99,7 @@ function Markers(params) {
         ) {
           currentlySnowingOrSleeting = "Yes";
         }
-        if (currentlySnowingOrSleeting == "No") {
+        if (currentlySnowingOrSleeting === "No") {
           for (let i = 0; i < forecastData.length; i++) {
             let detailedForecast =
               forecastData[i]["detailedForecast"].toLowerCase();
@@ -133,7 +133,7 @@ function Markers(params) {
 
   return (
     <>
-      <div className="marker-test-from-return">{retrieveMarkerData()}</div>
+      <div className="marker-element">{retrieveMarkerData()}</div>
     </>
   );
 }
