@@ -6,8 +6,9 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import AppHeader from "./components/js/AppHeader.js";
 import Markers from "./components/js/Markers.js";
-import UsStates from "./components/js/UsStates.js";
-import Locations from "./components/js/Locations.js";
+import MapControlPanel from "./components/js/MapControlPanel.js";
+import AddLocationAtAddressPanel from "./components/js/AddLocationAtAddressPanel.js";
+import InvMgmtPanel from "./components/js/InvMgmtPanel.js";
 import AnalyticsPanel from "./components/js/AnalyticsPanel.js";
 import AnalyticsTabSummaryTable from "./components/js/AnalyticsTabSummaryTable.js";
 import AnalyticsTabRiskAnalysis from "./components/js/AnalyticsTabRiskAnalysis.js";
@@ -34,9 +35,6 @@ function App() {
   const [addressState, setAddressState] = useState("");
   const [addressZip, setAddressZip] = useState("");
   const [locationObjKey, setLocationObjKey] = useState(1);
-  //const [invEditLocationKey, setInvEditLocationKey] = useState("--");
-  //const [invEditMilkNew, setInvEditMilkNew] = useState("");
-  //const [invEditBreadNew, setInvEditBreadNew] = useState("");
   const [forecastData, setForecastData] = useState("");
 
   L.Icon.Default.mergeOptions({
@@ -242,14 +240,6 @@ function App() {
     setAddressZip(event.target.value);
   };
 
-  const handleInvEditMilkNewChange = (event) => {
-    //setInvEditMilkNew(event.target.value);
-  };
-
-  const handleInvEditBreadNewChange = (event) => {
-    //setInvEditBreadNew(event.target.value);
-  };
-
   /**
    * Populates the inventory update panel with the inventory
    * values of the location currently selected.
@@ -382,57 +372,11 @@ function App() {
       <div id="map-inv-mgmt-row" className="body-row">
         <div id="map-column" className="body-column">
           <div id="map-section-wrapper">
-            <div id="map-control-panel-wrapper">
-              <h3>Map Control Panel</h3>
-              <div id="map-control-panel-buttons-wrapper">
-                <div
-                  className="map-control-panel-element-wrapper"
-                  id="region-selector-wrapper"
-                >
-                  <p
-                    className="map-control-panel-element-text"
-                    id="region-selector-label"
-                  >
-                    Region Focus
-                  </p>
-                  <select id="region-selector" onChange={handleRegionChange}>
-                    <option value="--">--</option>
-                    <option value="West">West</option>
-                    <option value="Midwest">Midwest</option>
-                    <option value="South">South</option>
-                    <option value="Northeast">Northeast</option>
-                  </select>
-                </div>
-                <div
-                  className="map-control-panel-element-wrapper"
-                  id="state-selector-wrapper"
-                >
-                  <p
-                    className="map-control-panel-element-text"
-                    id="state-selector-label"
-                  >
-                    State Focus
-                  </p>
-                  <select id="state-selector" onChange={handleUsStateChange}>
-                    <UsStates />
-                  </select>
-                </div>
-                <div
-                  className="map-control-panel-element-wrapper"
-                  id="map-refresh-button-wrapper"
-                >
-                  <p
-                    className="map-control-panel-element-text"
-                    id="map-refresh-button-label"
-                  >
-                    Refresh Weather Data
-                  </p>
-                  <button id="refresh-button" onClick={refreshWeatherData}>
-                    Refresh Weather Data
-                  </button>
-                </div>
-              </div>
-            </div>
+            <MapControlPanel
+              handleRegionChange={handleRegionChange}
+              handleUsStateChange={handleUsStateChange}
+              refreshWeatherData={refreshWeatherData}
+            />
             <br />
             <MapContainer
               id="leaflet-map-image"
@@ -449,221 +393,22 @@ function App() {
               <div>{markersOutputComponent}</div>
             </MapContainer>
           </div>
-          <div id="add-marker-at-address-panel-wrapper">
-            <h3>Add Location At Address</h3>
-            <div
-              className="add-marker-at-address-panel-element"
-              id="map-address-line-1"
-            >
-              <p
-                className="map-control-panel-element-text"
-                id="map-address-line-1-field-label"
-              >
-                Address Line 1
-              </p>
-              <input type="text" onChange={handleAddressLine1Change} />
-            </div>
-            <div
-              className="add-marker-at-address-panel-element"
-              id="map-address-line-2"
-            >
-              <p
-                className="map-control-panel-element-text"
-                id="map-address-line-2-field-label"
-              >
-                Address Line 2
-              </p>
-              <input type="text" onChange={handleAddressLine2Change} />
-            </div>
-            <div
-              className="add-marker-at-address-panel-element"
-              id="map-address-line-3"
-            >
-              <p
-                className="map-control-panel-element-text"
-                id="map-address-line-3-field-label"
-              >
-                Address Line 3
-              </p>
-              <input type="text" onChange={handleAddressLine3Change} />
-            </div>
-            <div
-              className="add-marker-at-address-panel-element"
-              id="map-address-city"
-            >
-              <p
-                className="map-control-panel-element-text"
-                id="map-address-city-field-label"
-              >
-                City
-              </p>
-              <input type="text" onChange={handleAddressCityChange} />
-            </div>
-            <div className="map-control-panel-element" id="map-address-state">
-              <p
-                className="map-control-panel-element-text"
-                id="map-address-state-field-label"
-              >
-                State
-              </p>
-              <select
-                id="add-marker-at-address-state-selector"
-                onChange={handleAddressStateChange}
-              >
-                <UsStates />
-              </select>
-            </div>
-            <div
-              className="add-marker-at-address-panel-element"
-              id="map-address-zip"
-            >
-              <p
-                className="map-control-panel-element-text"
-                id="map-address-zip-field-label"
-              >
-                Zip
-              </p>
-              <input type="text" onChange={handleAddressZipChange} />
-            </div>
-            <div
-              className="add-marker-at-address-panel-element"
-              id="map-address-add-marker"
-            >
-              <button id="add-marker-at-address-button" onClick={addLocation}>
-                <strong>Add Location</strong>
-              </button>
-            </div>
-          </div>
+          <AddLocationAtAddressPanel
+            handleAddressLine1Change={handleAddressLine1Change}
+            handleAddressLine2Change={handleAddressLine2Change}
+            handleAddressLine3Change={handleAddressLine3Change}
+            handleAddressCityChange={handleAddressCityChange}
+            handleAddressStateChange={handleAddressStateChange}
+            handleAddressZipChange={handleAddressZipChange}
+            addLocation={addLocation}
+          />
         </div>
         <div id="inv-update-analytics-column" className="body-column">
-          <div id="inv-update-panel">
-            <h3 className="inv-update-analytics-panel-title">
-              Update Location Inventory
-            </h3>
-            <div id="update-inv-at-location-controls-wrapper">
-              <div
-                id="update-inv-at-location-control-panel-column-1"
-                className="update-inv-at-location-control-panel-column"
-              >
-                <div
-                  className="update-inv-at-location-element"
-                  id="update-inv-location-id"
-                >
-                  <p
-                    className="update-inv-at-location-element-text"
-                    id="update-inv-location-id-label"
-                  >
-                    <strong>Location ID</strong>
-                  </p>
-                  <select
-                    className="udpate-inv-at-location-field"
-                    id="update-inv-location-id-field"
-                    type="text"
-                    onChange={fillInvManagementFields}
-                  >
-                    <Locations locationObjectsData={locationObjects} />
-                  </select>
-                </div>
-                <div
-                  className="update-location-supply-panel-element"
-                  id="update-location-add-supply"
-                >
-                  <button
-                    id="update-location-supply-button"
-                    onClick={executeInventoryUpdate}
-                  >
-                    <strong>Update Inventory</strong>
-                  </button>
-                </div>
-              </div>
-              <div
-                id="update-inv-at-location-control-panel-column-2"
-                className="update-inv-at-location-control-panel-column"
-              >
-                <strong>Milk</strong>
-                <div id="milk-current-new-number-fields">
-                  <div
-                    className="update-inv-at-location-element"
-                    id="update-inv-milk-current"
-                  >
-                    <p
-                      className="update-inv-at-location-element-text"
-                      id="update-inv-milk-current-label"
-                    >
-                      Current
-                    </p>
-                    <input
-                      className="udpate-inv-at-location-number-field"
-                      type="number"
-                      readOnly={true}
-                      disabled={true}
-                      id="update-inv-at-location-milk-current-field"
-                    />
-                  </div>
-                  <div
-                    className="update-inv-at-location-element"
-                    id="update-inv-milk-new"
-                  >
-                    <p
-                      className="update-inv-at-location-element-text"
-                      id="update-inv-milk-new-label"
-                    >
-                      New
-                    </p>
-                    <input
-                      className="udpate-inv-at-location-number-field"
-                      id="update-inv-milk-new-field"
-                      type="number"
-                      onChange={handleInvEditMilkNewChange}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div
-                id="update-inv-at-location-control-panel-column-3"
-                className="update-inv-at-location-control-panel-column"
-              >
-                <strong>Bread</strong>
-                <div id="bread-current-new-number-fields">
-                  <div
-                    className="update-inv-at-location-element"
-                    id="update-inv-bread-current"
-                  >
-                    <p
-                      className="update-inv-at-location-element-text"
-                      id="update-inv-bread-current-label"
-                    >
-                      Current
-                    </p>
-                    <input
-                      className="udpate-inv-at-location-number-field"
-                      type="number"
-                      readOnly={true}
-                      disabled={true}
-                      id="update-inv-at-location-bread-current-field"
-                    />
-                  </div>
-                  <div
-                    className="update-inv-at-location-element"
-                    id="update-inv-bread-new"
-                  >
-                    <p
-                      className="update-inv-at-location-element-text"
-                      id="update-inv-bread-new-label"
-                    >
-                      New
-                    </p>
-                    <input
-                      className="udpate-inv-at-location-number-field"
-                      id="update-inv-bread-new-field"
-                      type="number"
-                      onChange={handleInvEditBreadNewChange}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <InvMgmtPanel
+            fillInvManagementFields={fillInvManagementFields}
+            locationObjects={locationObjects}
+            executeInventoryUpdate={executeInventoryUpdate}
+          />
           <AnalyticsPanel
             chooseAnalyticsTabOutputComponent={
               chooseAnalyticsTabOutputComponent
