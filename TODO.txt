@@ -17,11 +17,11 @@ DONE - 4. Need supply volumes of material at locations
     c. Use a network of nodes to connect locations and route material from one location to another
     d. Find the most efficient route for rerouting material.
     e. Pull in material from sites further out to backfill material shipped in from other regions (rebalance to hit steady state)
-8. Show different icon or additional icon if weather event is anticipated
+DONE - 8. Show different icon or additional icon if weather event is anticipated
 9. Build network of nodes that will allow creation of a spanning tree/map where the nodes are the stores and the paths are the routes between
 10. Want update supply window to flash when Manage Inventory button is clicked for a location.
 11. Do an analysis on value proposition if time permits. Get data that correlate weather with sales and show that using predictive analytics makes sense.
 12. Be able to add weight(s) to the paths connecting the nodes in the map. Time to traverse path, cost to traverse path.
-13. Refactor components into more modular pieces.
-14. Dynamically build list of location-ids for inventory update panel using the list of location objects that exist.
-15. Make better use of space/redisgn ux. Try to give more room to analytics window.
+13. Refactor components into more modular pieces (ongoing).
+DONE - 14. Dynamically build list of location-ids for inventory update panel using the list of location objects that exist.
+15. Make better use of space/redisgn ux (ongoing). Try to give more room to analytics window.

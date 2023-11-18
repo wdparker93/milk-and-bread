@@ -8,6 +8,7 @@ import AppHeader from "./components/js/AppHeader.js";
 import Markers from "./components/js/Markers.js";
 import UsStates from "./components/js/UsStates.js";
 import Locations from "./components/js/Locations.js";
+import AnalyticsPanel from "./components/js/AnalyticsPanel.js";
 import AnalyticsTabSummaryTable from "./components/js/AnalyticsTabSummaryTable.js";
 import AnalyticsTabRiskAnalysis from "./components/js/AnalyticsTabRiskAnalysis.js";
 import AnalyticsTabProfitabilityAnalysis from "./components/js/AnalyticsTabProfitabilityAnalysis.js";
@@ -45,7 +46,7 @@ function App() {
   });
 
   useEffect(() => {
-    // This effect runs whenever forecastData is updated
+    // This effect runs whenever locationObjects or forecastData get updated
     updateMarkersOutputComponent();
   }, [locationObjects, forecastData]);
 
@@ -363,7 +364,7 @@ function App() {
   };
 
   const chooseAnalyticsTabOutputComponent = (event) => {
-    const param = event.target.value;
+    const param = event;
     if (param == "summaryTable") {
       setAnalyticsTabOutputComponent(<AnalyticsTabSummaryTable />);
     } else if (param == "invRiskAnalysis") {
@@ -663,44 +664,12 @@ function App() {
               </div>
             </div>
           </div>
-          <div id="location-analytics-panel">
-            <h3 className="inv-update-analytics-panel-title">
-              Location Analytics
-            </h3>
-            <div className="analytics-tab">
-              <button
-                className="tab-btn"
-                onClick={chooseAnalyticsTabOutputComponent}
-                value="summaryTable"
-              >
-                Location Summary
-              </button>
-              <button
-                className="tab-btn"
-                onClick={chooseAnalyticsTabOutputComponent}
-                value="invRiskAnalysis"
-              >
-                Inv. Risk Analysis
-              </button>
-              <button
-                className="tab-btn"
-                onClick={chooseAnalyticsTabOutputComponent}
-                value="profitabilityAnalysis"
-              >
-                Profitability Analysis
-              </button>
-              <button
-                className="tab-btn"
-                onClick={chooseAnalyticsTabOutputComponent}
-                value="performanceTracking"
-              >
-                Perf. Tracking
-              </button>
-            </div>
-            <div className="analytics-tab-content">
-              {analyticsTabOutputComponent}
-            </div>
-          </div>
+          <AnalyticsPanel
+            chooseAnalyticsTabOutputComponent={
+              chooseAnalyticsTabOutputComponent
+            }
+            analyticsTabOutputComponent={analyticsTabOutputComponent}
+          />
         </div>
       </div>
     </div>
