@@ -16,6 +16,7 @@ import AnalyticsTabProfitabilityAnalysis from "./components/js/AnalyticsTabProfi
 import AnalyticsTabPerformanceTracking from "./components/js/AnalyticsTabPerformanceTracking.js";
 
 function App() {
+  const backendPort = 5000;
   const mapQuestKey = "ghmpUiVTD8GQkci0Vv1pLFj1L4T9BSbA";
   const defaultCenter = [37.5, -95.0];
   const defaultZoom = 4;
@@ -111,7 +112,7 @@ function App() {
     //TODO : Case/Switch statement for zoom level for each state
     //TODO : Zoom in on Georgia, USA. Not Georgia in the eastern hemisphere.
     setUsStateSelection(event.target.value);
-    if (event.target.value != "--") {
+    if (event.target.value !== "--") {
       setMapZoomLevel(5);
     } else {
       setMapZoomLevel(3);
@@ -177,14 +178,15 @@ function App() {
         var existingLocationObjects = locationObjects;
         let addToMarkerLocationsArray = true;
         for (let i = 0; i < existingLocationObjects.length; i++) {
-          if (coords[0] == existingLocationObjects[i].coords[0]) {
-            if (coords[1] == existingLocationObjects[i].coords[1]) {
+          if (coords[0] === existingLocationObjects[i].coords[0]) {
+            if (coords[1] === existingLocationObjects[i].coords[1]) {
               addToMarkerLocationsArray = false;
             }
           }
         }
         if (addToMarkerLocationsArray) {
           existingLocationObjects.push(locationObj);
+          dbInsertLocation(locationObj);
           setLocationObjects(existingLocationObjects);
         }
         updateMarkersOutputComponent();
@@ -258,7 +260,7 @@ function App() {
 
     for (let i = 0; i < locationObjects.length; i++) {
       const locationObject = locationObjects[i];
-      if (locationKey == locationObject.key) {
+      if (locationKey === locationObject.key) {
         invEditMilkCurrent.value = locationObject.milk;
         invEditBreadCurrent.value = locationObject.bread;
       }
@@ -343,7 +345,7 @@ function App() {
     if (locationKeyToSet !== "--") {
       for (let i = 0; i < locationObjects.length; i++) {
         const locationObject = locationObjects[i];
-        if (locationKeyToSet == locationObject.key) {
+        if (locationKeyToSet === locationObject.key) {
           currentInvMilkValueToSet = locationObject.milk;
           currentInvBreadValueToSet = locationObject.bread;
         }
@@ -355,15 +357,70 @@ function App() {
 
   const chooseAnalyticsTabOutputComponent = (event) => {
     const param = event;
-    if (param == "summaryTable") {
+    if (param === "summaryTable") {
       setAnalyticsTabOutputComponent(<AnalyticsTabSummaryTable />);
-    } else if (param == "invRiskAnalysis") {
+    } else if (param === "invRiskAnalysis") {
       setAnalyticsTabOutputComponent(<AnalyticsTabRiskAnalysis />);
-    } else if (param == "profitabilityAnalysis") {
+    } else if (param === "profitabilityAnalysis") {
       setAnalyticsTabOutputComponent(<AnalyticsTabProfitabilityAnalysis />);
-    } else if (param == "performanceTracking") {
+    } else if (param === "performanceTracking") {
       setAnalyticsTabOutputComponent(<AnalyticsTabPerformanceTracking />);
     }
+  };
+
+  const getLocationSummary = (event) => {
+    //loading = true;
+    //chooseOutputComponent(null);
+    Axios.get("http://localhost:" + backendPort + "/api/get/location/").then(
+      (response) => {
+        //loading = false;
+        //setSenatorData(response.data);
+        //chooseOutputComponent(response.data);
+        console.log(response);
+      }
+    );
+  };
+
+  const dbInsertLocation = (locationObj) => {
+    const locationExistsInDB = checkLocationExistsInDB(locationObj);
+    if (!locationExistsInDB) {
+      insertLocationIntoDB(locationObj);
+    }
+  };
+
+  const checkLocationExistsInDB = (locationObj) => {
+    Axios.get(
+      "http://localhost:" + backendPort + "/api/get/location/" + locationObj.key
+    ).then((response) => {
+      //console.log(response);
+      if (response.data.length === 0) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+  };
+
+  const insertLocationIntoDB = (locationObj) => {
+    console.log("Inserting location : " + { locationObj });
+    Axios.post(
+      "http://localhost:" +
+        backendPort +
+        "/api/insert/location/" +
+        locationObj.key +
+        "/" +
+        locationObj.coords[0] +
+        "/" +
+        locationObj.coords[1] +
+        "/" +
+        locationObj.bread +
+        "/" +
+        locationObj.milk +
+        "/" +
+        "TEST_1"
+    ).then((response) => {
+      console.log(response);
+    });
   };
 
   return (
@@ -373,7 +430,7 @@ function App() {
         <div id="map-column" className="body-column">
           <div id="map-section-wrapper">
             <MapControlPanel
-              handleRegionChange={handleRegionChange}
+              handleRegionChange={getLocationSummary}
               handleUsStateChange={handleUsStateChange}
               refreshWeatherData={refreshWeatherData}
             />
