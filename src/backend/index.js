@@ -18,10 +18,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/api/get/location", (req, res) => {
   //const usState = req.params.usState;
-  const sqlSelect = `SELECT * FROM LOCATIONS`;
+  const sqlSelect = `SELECT * FROM location`;
   console.log(sqlSelect);
   db.query(sqlSelect, (err, result) => {
-    res.send(result);
+    if (err) {
+      console.error("Error inserting into the database:", err);
+      res.status(500).send("Internal Server Error");
+    } else {
+      console.log("Record inserted successfully");
+      res.send(result);
+    }
   });
 });
 

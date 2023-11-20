@@ -100,7 +100,7 @@ function Markers(params) {
         ) {
           currentlySnowingOrSleeting = "Yes";
         }
-        if (currentlySnowingOrSleeting === "No") {
+        if (currentlySnowingOrSleeting === "No" && forecastData.length > 50) {
           for (let i = 0; i < forecastData.length; i++) {
             let detailedForecast =
               forecastData[i]["detailedForecast"].toLowerCase();

@@ -4,7 +4,14 @@ import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { testFunction } from "./util/Util.js";
+import {
+  backendPort,
+  mapQuestKey,
+  defaultCenter,
+  defaultZoom,
+} from "./util/Constants.js";
+import { initLocationsFromDB } from "./util/InitFunctions.js";
+import { testFunction } from "./util/UtilFunctions.js";
 import AppHeader from "./components/js/AppHeader.js";
 import Markers from "./components/js/Markers.js";
 import MapControlPanel from "./components/js/MapControlPanel.js";
@@ -17,10 +24,6 @@ import AnalyticsTabProfitabilityAnalysis from "./components/js/AnalyticsTabProfi
 import AnalyticsTabPerformanceTracking from "./components/js/AnalyticsTabPerformanceTracking.js";
 
 function App() {
-  const backendPort = 5000;
-  const mapQuestKey = "ghmpUiVTD8GQkci0Vv1pLFj1L4T9BSbA";
-  const defaultCenter = [37.5, -95.0];
-  const defaultZoom = 4;
   const minZoom = 0;
   const maxZoom = 12;
   const [usRegionSelection, setUsRegionSelection] = useState("--");
@@ -49,6 +52,22 @@ function App() {
     // This effect runs whenever locationObjects or forecastData get updated
     updateMarkersOutputComponent();
   }, [locationObjects, forecastData]);
+
+  /**
+   * Runs on page load
+   */
+  useEffect(() => {
+    const fetchLocationsFromDB = async () => {
+      try {
+        const dbLocations = await initLocationsFromDB();
+        console.log(dbLocations);
+        setLocationObjects(dbLocations);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchLocationsFromDB();
+  }, []);
 
   const refreshWeatherData = () => {
     fetchBaseNwsApiCall();
