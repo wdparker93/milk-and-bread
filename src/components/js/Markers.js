@@ -75,14 +75,15 @@ function Markers(params) {
   };
 
   const populateMarkerData = () => {
-    for (let i = 0; i < params.locationObjectsData.length; i++) {
+    for (const key in params.locationObjectsData) {
+      const location = params.locationObjectsData[key];
       let markerObj = new Object();
-      let id = params.locationObjectsData[i].key;
-      let lat = params.locationObjectsData[i].coords[0];
-      let lng = params.locationObjectsData[i].coords[1];
-      let milk = params.locationObjectsData[i].milk;
-      let bread = params.locationObjectsData[i].bread;
-      const forecastData = params.locationObjectsData[i].forecastData;
+      const id = location["id"];
+      const lat = location["coords"][0];
+      const lng = location["coords"][1];
+      const bread = location["bread"];
+      const milk = location["milk"];
+      const forecastData = location["forecastData"];
       let currentWeather = "";
       let snowSleetAnticipated = "No";
       let currentlySnowingOrSleeting = "No";

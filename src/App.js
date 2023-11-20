@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { testFunction } from "./util/Util.js";
 import AppHeader from "./components/js/AppHeader.js";
 import Markers from "./components/js/Markers.js";
 import MapControlPanel from "./components/js/MapControlPanel.js";
@@ -28,7 +29,7 @@ function App() {
   const [markersOutputComponent, setMarkersOutputComponent] = useState("");
   const [analyticsTabOutputComponent, setAnalyticsTabOutputComponent] =
     useState(<AnalyticsTabSummaryTable />);
-  const [locationObjects, setLocationObjects] = useState([]);
+  const [locationObjects, setLocationObjects] = useState({});
   const [addressLine1, setAddressLine1] = useState("");
   const [addressLine2, setAddressLine2] = useState("");
   const [addressLine3, setAddressLine3] = useState("");
@@ -64,13 +65,13 @@ function App() {
    */
   const fetchBaseNwsApiCall = async () => {
     try {
-      let tempLocationObjects = [];
-      if (locationObjects.length > 0) {
-        for (let i = 0; i < locationObjects.length; i++) {
-          let locationObj = locationObjects[i];
-          let latLng = locationObj.coords;
+      let tempLocationObjects = {};
+      if (Object.keys(locationObjects).length > 0) {
+        for (const key in locationObjects) {
+          let locationObj = locationObjects[key];
+          let coords = locationObj["coords"];
           const response = await fetch(
-            "https://api.weather.gov/points/" + latLng[0] + "," + latLng[1]
+            "https://api.weather.gov/points/" + coords[0] + "," + coords[1]
           );
           if (!response.ok) {
             throw new Error("Network response was not ok");
@@ -79,8 +80,8 @@ function App() {
           const returnData = await fetchGridPointWeatherForecast(data);
           console.log(returnData);
           setForecastData(returnData);
-          locationObj.forecastData = returnData;
-          tempLocationObjects.push(locationObj);
+          locationObj["forecastData"] = returnData;
+          tempLocationObjects[locationObj["id"]] = locationObj;
           //console.log(tempLocationObjects);
           setLocationObjects(tempLocationObjects);
         }
@@ -126,6 +127,7 @@ function App() {
    */
   const addLocation = () => {
     let address = buildAddress();
+    testFunction();
     getGeocodeAddMarker(address);
   };
 
@@ -167,25 +169,27 @@ function App() {
         const lat = data.results[0].locations[0].latLng["lat"];
         const lng = data.results[0].locations[0].latLng["lng"];
         const coords = [lat, lng];
-        let locationObj = new Object();
-        let key = "location-" + locationObjKey;
+        let locationObj = {};
+        let id = "location-" + locationObjKey;
         setLocationObjKey(locationObjKey + 1);
-        locationObj.key = key;
-        locationObj.coords = coords;
-        locationObj.milk = 0;
-        locationObj.bread = 0;
-        locationObj.forecastData = [];
+        locationObj["id"] = id;
+        locationObj["coords"] = coords;
+        locationObj["bread"] = 0;
+        locationObj["milk"] = 0;
+        locationObj["userEnteredAddress"] = address;
+        locationObj["forecastData"] = [];
         var existingLocationObjects = locationObjects;
-        let addToMarkerLocationsArray = true;
-        for (let i = 0; i < existingLocationObjects.length; i++) {
-          if (coords[0] === existingLocationObjects[i].coords[0]) {
-            if (coords[1] === existingLocationObjects[i].coords[1]) {
-              addToMarkerLocationsArray = false;
+        let addToLocationObjects = true;
+        for (const key in existingLocationObjects) {
+          const existingLocationObject = existingLocationObjects[key];
+          if (coords[0] === existingLocationObject["coords"][0]) {
+            if (coords[1] === existingLocationObject["coords"][1]) {
+              addToLocationObjects = false;
             }
           }
         }
-        if (addToMarkerLocationsArray) {
-          existingLocationObjects.push(locationObj);
+        if (addToLocationObjects) {
+          existingLocationObjects[id] = locationObj;
           dbInsertLocation(locationObj);
           setLocationObjects(existingLocationObjects);
         }
@@ -208,11 +212,11 @@ function App() {
    *   5. weather forecast data
    */
   const updateMarkersOutputComponent = () => {
-    const locationObjArray = locationObjects;
+    const locationObjMap = locationObjects;
     //console.log(locationObjArray);
     setMarkersOutputComponent(
       <Markers
-        locationObjectsData={locationObjArray}
+        locationObjectsData={locationObjMap}
         updateInvHandler={initializeInvUpdatePanel}
       />
     );
@@ -249,8 +253,6 @@ function App() {
    * @param {*} locationKey
    */
   const initializeInvUpdatePanel = (locationKey) => {
-    console.log("initializeInvUpdatePanel");
-    //setInvEditLocationKey(locationKey);
     let invEditCurrentFields = getInvEditCurrentFields();
     let invEditLocationId = invEditCurrentFields[0];
     let invEditMilkCurrent = invEditCurrentFields[1];
@@ -258,13 +260,9 @@ function App() {
 
     invEditLocationId.value = locationKey;
 
-    for (let i = 0; i < locationObjects.length; i++) {
-      const locationObject = locationObjects[i];
-      if (locationKey === locationObject.key) {
-        invEditMilkCurrent.value = locationObject.milk;
-        invEditBreadCurrent.value = locationObject.bread;
-      }
-    }
+    const locationObject = locationObjects[locationKey];
+    invEditBreadCurrent.value = locationObject["bread"];
+    invEditMilkCurrent.value = locationObject["milk"];
   };
 
   const getInvEditCurrentFields = () => {
@@ -307,6 +305,16 @@ function App() {
     let invEditLocationId = invEditNewFields[0];
     let invEditMilkNew = invEditNewFields[1];
     let invEditBreadNew = invEditNewFields[2];
+    const locationObject = locationObjectsTemp[invEditLocationId.value];
+    if (invEditBreadNew.value !== "" && invEditBreadNew.value >= 0) {
+      locationObject["bread"] = invEditBreadNew.value;
+    }
+    if (invEditMilkNew.value !== "" && invEditMilkNew.value >= 0) {
+      locationObject["milk"] = invEditMilkNew.value;
+    }
+    locationObjectsTemp[invEditLocationId.value] = locationObject;
+    setLocationObjects(locationObjectsTemp);
+    /*
     for (let i = 0; i < locationObjectsTemp.length; i++) {
       let locationObject = locationObjectsTemp[i];
       if (locationObject.key === invEditLocationId.value) {
@@ -321,6 +329,7 @@ function App() {
         setLocationObjects(locationObjectsTemp);
       }
     }
+    */
     //Clear value fields to reset for another change
     invEditMilkNew.value = "";
     invEditBreadNew.value = "";
@@ -369,13 +378,8 @@ function App() {
   };
 
   const getLocationSummary = (event) => {
-    //loading = true;
-    //chooseOutputComponent(null);
     Axios.get("http://localhost:" + backendPort + "/api/get/location/").then(
       (response) => {
-        //loading = false;
-        //setSenatorData(response.data);
-        //chooseOutputComponent(response.data);
         console.log(response);
       }
     );
@@ -390,7 +394,10 @@ function App() {
 
   const checkLocationExistsInDB = (locationObj) => {
     Axios.get(
-      "http://localhost:" + backendPort + "/api/get/location/" + locationObj.key
+      "http://localhost:" +
+        backendPort +
+        "/api/get/location/" +
+        locationObj["id"]
     ).then((response) => {
       //console.log(response);
       if (response.data.length === 0) {
@@ -402,22 +409,29 @@ function App() {
   };
 
   const insertLocationIntoDB = (locationObj) => {
-    console.log("Inserting location : " + { locationObj });
+    console.log(
+      "Inserting location : " +
+        locationObj["id"] +
+        " : " +
+        locationObj["userEnteredAddress"]
+    );
     Axios.post(
       "http://localhost:" +
         backendPort +
         "/api/insert/location/" +
-        locationObj.key +
+        locationObj["id"] +
         "/" +
-        locationObj.coords[0] +
+        locationObj["coords"][0] +
         "/" +
-        locationObj.coords[1] +
+        locationObj["coords"][1] +
         "/" +
-        locationObj.bread +
+        locationObj["bread"] +
         "/" +
-        locationObj.milk +
+        locationObj["milk"] +
         "/" +
-        "TEST_1"
+        locationObj["userEnteredAddress"] +
+        "/" +
+        "WEATHER_TEST"
     ).then((response) => {
       console.log(response);
     });

@@ -11,7 +11,6 @@ const db = mysql.createPool({
   password: "password",
   database: "milk_and_bread_schema",
 });
-console.log("TEST");
 
 app.use(cors());
 app.use(express.json());
@@ -36,7 +35,7 @@ app.get("/api/get/location/:location_id", (req, res) => {
 });
 
 app.post(
-  "/api/insert/location/:location_id/:lat/:lng/:bread_inv/:milk_inv/:user_entered_address",
+  "/api/insert/location/:location_id/:lat/:lng/:bread_inv/:milk_inv/:user_entered_address/:forecast_data",
   (req, res) => {
     console.log("Insert API Endpoint");
     const locationId = req.params.location_id;
@@ -45,11 +44,20 @@ app.post(
     const breadInv = req.params.bread_inv;
     const milkInv = req.params.milk_inv;
     const userEnteredAddress = req.params.user_entered_address;
-    const sqlInsert = `INSERT INTO location (location_id, lat, lng, bread_inv, milk_inv, user_entered_address) VALUES (?, ?, ?, ?, ?, ?)`;
+    const forecastData = req.params.forecast_data;
+    const sqlInsert = `INSERT INTO location (location_id, lat, lng, bread_inv, milk_inv, user_entered_address, forecast_data) VALUES (?, ?, ?, ?, ?, ?, ?)`;
     console.log(sqlInsert);
     db.query(
       sqlInsert,
-      [locationId, lat, lng, breadInv, milkInv, userEnteredAddress],
+      [
+        locationId,
+        lat,
+        lng,
+        breadInv,
+        milkInv,
+        userEnteredAddress,
+        forecastData,
+      ],
       (err, result) => {
         if (err) {
           console.error("Error inserting into the database:", err);

@@ -14,22 +14,17 @@ function Locations(params) {
 
   const populateLocationData = () => {
     locationArray.push("--");
-    for (let i = 0; i < params.locationObjectsData.length; i++) {
-      const locationObject = params.locationObjectsData[i];
+    for (const key in params.locationObjectsData) {
+      const locationObject = params.locationObjectsData[key];
       //console.log(locationObject);
-      const locationId = locationObject.key;
-      if (locationArray.length > 0) {
-        locationArray.push(locationId);
-      } else {
-        let insertToArray = true;
-        for (let j = 0; j < locationArray.length; j++) {
-          if (locationId === locationArray[i]) {
-            insertToArray = false;
-          }
+      let insertToArray = true;
+      for (let i = 0; i < locationArray.length; i++) {
+        if (key === locationArray[i]) {
+          insertToArray = false;
         }
-        if (insertToArray === true) {
-          locationArray.push(locationId);
-        }
+      }
+      if (insertToArray === true) {
+        locationArray.push(key);
       }
     }
   };
