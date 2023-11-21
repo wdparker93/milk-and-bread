@@ -87,7 +87,7 @@ function Markers(params) {
       let currentWeather = "";
       let snowSleetAnticipated = "No";
       let currentlySnowingOrSleeting = "No";
-      if (forecastData.length > 0) {
+      if (forecastData != undefined && forecastData.length > 0) {
         currentWeather =
           forecastData[0]["shortForecast"] +
           " @ " +
@@ -100,7 +100,7 @@ function Markers(params) {
         ) {
           currentlySnowingOrSleeting = "Yes";
         }
-        if (currentlySnowingOrSleeting === "No" && forecastData.length > 50) {
+        if (currentlySnowingOrSleeting === "No") {
           for (let i = 0; i < forecastData.length; i++) {
             let detailedForecast =
               forecastData[i]["detailedForecast"].toLowerCase();

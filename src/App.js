@@ -11,7 +11,10 @@ import {
   defaultZoom,
 } from "./util/Constants.js";
 import { initLocationsFromDB } from "./util/InitFunctions.js";
-import { testFunction } from "./util/UtilFunctions.js";
+import {
+  getNextLocationIdNumber,
+  isUpdatedForecast,
+} from "./util/UtilFunctions.js";
 import AppHeader from "./components/js/AppHeader.js";
 import Markers from "./components/js/Markers.js";
 import MapControlPanel from "./components/js/MapControlPanel.js";
@@ -22,6 +25,7 @@ import AnalyticsTabSummaryTable from "./components/js/AnalyticsTabSummaryTable.j
 import AnalyticsTabRiskAnalysis from "./components/js/AnalyticsTabRiskAnalysis.js";
 import AnalyticsTabProfitabilityAnalysis from "./components/js/AnalyticsTabProfitabilityAnalysis.js";
 import AnalyticsTabPerformanceTracking from "./components/js/AnalyticsTabPerformanceTracking.js";
+import qs from "qs";
 
 function App() {
   const minZoom = 0;
@@ -40,7 +44,6 @@ function App() {
   const [addressState, setAddressState] = useState("");
   const [addressZip, setAddressZip] = useState("");
   const [locationObjKey, setLocationObjKey] = useState(1);
-  const [forecastData, setForecastData] = useState("");
 
   L.Icon.Default.mergeOptions({
     iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
@@ -51,7 +54,7 @@ function App() {
   useEffect(() => {
     // This effect runs whenever locationObjects or forecastData get updated
     updateMarkersOutputComponent();
-  }, [locationObjects, forecastData]);
+  }, [locationObjects]);
 
   /**
    * Runs on page load
@@ -60,8 +63,9 @@ function App() {
     const fetchLocationsFromDB = async () => {
       try {
         const dbLocations = await initLocationsFromDB();
-        console.log(dbLocations);
         setLocationObjects(dbLocations);
+        const nextLocationNumber = getNextLocationIdNumber(dbLocations);
+        setLocationObjKey(nextLocationNumber);
       } catch (error) {
         console.error(error);
       }
@@ -88,22 +92,22 @@ function App() {
       if (Object.keys(locationObjects).length > 0) {
         for (const key in locationObjects) {
           let locationObj = locationObjects[key];
-          let coords = locationObj["coords"];
-          const response = await fetch(
-            "https://api.weather.gov/points/" + coords[0] + "," + coords[1]
-          );
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
+          if (!isUpdatedForecast(locationObj)) {
+            let coords = locationObj["coords"];
+            const response = await fetch(
+              "https://api.weather.gov/points/" + coords[0] + "," + coords[1]
+            );
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const data = await response.json();
+            const returnData = await fetchGridPointWeatherForecast(data);
+            console.log(returnData);
+            locationObj["forecastData"] = returnData;
           }
-          const data = await response.json();
-          const returnData = await fetchGridPointWeatherForecast(data);
-          console.log(returnData);
-          setForecastData(returnData);
-          locationObj["forecastData"] = returnData;
           tempLocationObjects[locationObj["id"]] = locationObj;
-          //console.log(tempLocationObjects);
-          setLocationObjects(tempLocationObjects);
         }
+        setLocationObjects(tempLocationObjects);
       }
     } catch (error) {
       console.error("Error fetching data:", error.message);
@@ -146,7 +150,6 @@ function App() {
    */
   const addLocation = () => {
     let address = buildAddress();
-    testFunction();
     getGeocodeAddMarker(address);
   };
 
@@ -209,7 +212,7 @@ function App() {
         }
         if (addToLocationObjects) {
           existingLocationObjects[id] = locationObj;
-          dbInsertLocation(locationObj);
+          insertNewLocationIntoDB(locationObj);
           setLocationObjects(existingLocationObjects);
         }
         updateMarkersOutputComponent();
@@ -404,7 +407,7 @@ function App() {
     );
   };
 
-  const dbInsertLocation = (locationObj) => {
+  const insertNewLocationIntoDB = (locationObj) => {
     const locationExistsInDB = checkLocationExistsInDB(locationObj);
     if (!locationExistsInDB) {
       insertLocationIntoDB(locationObj);
@@ -448,12 +451,29 @@ function App() {
         "/" +
         locationObj["milk"] +
         "/" +
-        locationObj["userEnteredAddress"] +
-        "/" +
-        "WEATHER_TEST"
+        locationObj["userEnteredAddress"]
     ).then((response) => {
       console.log(response);
     });
+  };
+
+  const updateDbLocationInv = (locationObjects) => {
+    /*
+    //Need to udpate for inventory functionality
+    console.log("Updating locations: ");
+    console.log(locationObjects);
+    let paramMap = {};
+    for (const key in locationObjects) {
+      paramMap[key] = JSON.stringify(locationObjects[key]["forecastData"]);
+    }
+    console.log(paramMap);
+    const queryString = qs.stringify(paramMap);
+    Axios.post(
+      "http://localhost:" + backendPort + "/api/update/location/" + queryString
+    ).then((response) => {
+      console.log(response);
+    });
+    */
   };
 
   return (

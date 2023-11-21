@@ -1,7 +1,3 @@
-export const testFunction = () => {
-  console.log("Testing Util functionality");
-};
-
 export const buildLocationsFromResultSet = (locationResultSet) => {
   return new Promise((resolve) => {
     let locationMap = {};
@@ -26,4 +22,37 @@ export const buildLocationsFromResultSet = (locationResultSet) => {
     //console.log(locationMap);
     resolve(locationMap);
   });
+};
+
+export const getNextLocationIdNumber = (dbLocations) => {
+  var nextNumber = 1;
+  for (const key in dbLocations) {
+    const currentNumber = parseInt(key.substring(key.indexOf("-") + 1));
+    if (currentNumber > nextNumber) {
+      nextNumber = currentNumber;
+    }
+  }
+  nextNumber += 1;
+  return nextNumber;
+};
+
+export const isUpdatedForecast = (location) => {
+  let isUpdatedForecast = false;
+  if ("forecastData" in location) {
+    const forecastData = location["forecastData"];
+    if (forecastData != undefined) {
+      const forecastFirstPeriodEndTime = forecastData[0]["endTime"];
+      const forecastFirstPeriodEndDateTime = new Date(
+        forecastFirstPeriodEndTime
+      );
+      const currentDateTime = new Date(Date.now());
+      //console.log(forecastFirstPeriodEndDateTime);
+      //console.log(currentDateTime);
+      if (currentDateTime < forecastFirstPeriodEndDateTime) {
+        isUpdatedForecast = true;
+      }
+    }
+  }
+  console.log(isUpdatedForecast);
+  return isUpdatedForecast;
 };
