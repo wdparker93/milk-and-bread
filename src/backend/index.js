@@ -30,14 +30,41 @@ app.get("/api/get/location", (req, res) => {
   });
 });
 
+/**
+ * Get location by location_id
+ */
 app.get("/api/get/location/:location_id", (req, res) => {
   const locationId = req.params.location_id;
-  const sqlSelect = `SELECT location_id FROM location L
-  WHERE L.location_id = ?`;
+  const sqlSelect = `SELECT location_id FROM location
+  WHERE location_id = ?`;
   db.query(sqlSelect, [locationId], (err, result) => {
     res.send(result);
   });
 });
+
+/**
+ * Get location by multiple parameters
+ */
+app.get(
+  "/api/get/location/:location_id/:user_entered_address/:lat/:lng",
+  (req, res) => {
+    const locationId = req.params.location_id;
+    const user_entered_address = req.params.user_entered_address;
+    const lat = req.params.lat;
+    const lng = req.params.lng;
+    const sqlSelect = `SELECT location_id FROM location
+  WHERE location_id = ?
+  OR user_entered_address = ?
+  OR (lat = ? AND lng = ?)`;
+    db.query(
+      sqlSelect,
+      [locationId, user_entered_address, lat, lng],
+      (err, result) => {
+        res.send(result);
+      }
+    );
+  }
+);
 
 app.post(
   "/api/insert/location/:location_id/:lat/:lng/:bread_inv/:milk_inv/:user_entered_address",

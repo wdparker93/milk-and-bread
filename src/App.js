@@ -14,6 +14,7 @@ import { initLocationsFromDB } from "./util/InitFunctions.js";
 import {
   getNextLocationIdNumber,
   isUpdatedForecast,
+  buildNewLocationObject,
 } from "./util/UtilFunctions.js";
 import AppHeader from "./components/js/AppHeader.js";
 import Markers from "./components/js/Markers.js";
@@ -188,31 +189,20 @@ function App() {
         }
       })
       .then((data) => {
-        const lat = data.results[0].locations[0].latLng["lat"];
-        const lng = data.results[0].locations[0].latLng["lng"];
-        const coords = [lat, lng];
-        let locationObj = {};
-        let id = "location-" + locationObjKey;
-        setLocationObjKey(locationObjKey + 1);
-        locationObj["id"] = id;
-        locationObj["coords"] = coords;
-        locationObj["bread"] = 0;
-        locationObj["milk"] = 0;
-        locationObj["userEnteredAddress"] = address;
-        locationObj["forecastData"] = [];
+        let locationObjBuildResult = buildNewLocationObject(
+          address,
+          data,
+          locationObjKey
+        );
+        const locationObj = locationObjBuildResult[0];
+        const locationObjId = locationObjBuildResult[1];
+        const nextLocationObjKey = locationObjBuildResult[2];
+        setLocationObjKey(nextLocationObjKey);
         var existingLocationObjects = locationObjects;
-        let addToLocationObjects = true;
-        for (const key in existingLocationObjects) {
-          const existingLocationObject = existingLocationObjects[key];
-          if (coords[0] === existingLocationObject["coords"][0]) {
-            if (coords[1] === existingLocationObject["coords"][1]) {
-              addToLocationObjects = false;
-            }
-          }
-        }
-        if (addToLocationObjects) {
-          existingLocationObjects[id] = locationObj;
-          insertNewLocationIntoDB(locationObj);
+        let locationAlreadyExists = locationExistsInDB(locationObj);
+        if (!locationAlreadyExists) {
+          existingLocationObjects[locationObjId] = locationObj;
+          insertLocationIntoDB(locationObj);
           setLocationObjects(existingLocationObjects);
         }
         updateMarkersOutputComponent();
@@ -407,24 +397,25 @@ function App() {
     );
   };
 
-  const insertNewLocationIntoDB = (locationObj) => {
-    const locationExistsInDB = checkLocationExistsInDB(locationObj);
-    if (!locationExistsInDB) {
-      insertLocationIntoDB(locationObj);
-    }
-  };
-
-  const checkLocationExistsInDB = (locationObj) => {
+  const locationExistsInDB = (locationObj) => {
     Axios.get(
       "http://localhost:" +
         backendPort +
         "/api/get/location/" +
-        locationObj["id"]
+        locationObj["id"] +
+        "/" +
+        locationObj["userEnteredAddress"] +
+        "/" +
+        locationObj["coords"][0] +
+        "/" +
+        locationObj["coords"][1]
     ).then((response) => {
       //console.log(response);
       if (response.data.length === 0) {
+        console.log("Location Does Not Already Exist. Inserting into DB.");
         return false;
       } else {
+        console.log("Duplicate Location Found. Not Inserting into DB.");
         return true;
       }
     });

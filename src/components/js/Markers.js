@@ -1,6 +1,7 @@
 import { Marker, Popup } from "react-leaflet";
 import React from "react";
 import { Icon } from "leaflet";
+import { red, green } from "../../util/Constants.js";
 
 let latLngCoordsObjArr = [];
 
@@ -26,6 +27,7 @@ function Markers(params) {
     const { elementData } = props;
     const {
       id,
+      address,
       lat,
       lng,
       milk,
@@ -36,10 +38,13 @@ function Markers(params) {
     } = elementData;
     let locationId = id;
     let iconToUse = defaultIcon;
+    let yesNoColor = green;
     if (currentlySnowingOrSleeting === "Yes") {
       iconToUse = dangerIcon;
+      yesNoColor = red;
     } else if (snowSleetAnticipated === "Yes") {
       iconToUse = cautionIcon;
+      yesNoColor = red;
     }
     return (
       <>
@@ -53,10 +58,16 @@ function Markers(params) {
             <span>
               <h3>Location Overview</h3>
               <p>Id : {locationId}</p>
+              <p>Address : {address}</p>
               <p>Milk : {milk}</p>
               <p>Bread : {bread}</p>
               <p>Current Weather : {currentWeather}</p>
-              <p>Snow or Sleet in 7-Day Forecast : {snowSleetAnticipated}</p>
+              <p>
+                Snow or Sleet in 7-Day Forecast :{" "}
+                <strong style={{ color: yesNoColor }}>
+                  {snowSleetAnticipated}
+                </strong>
+              </p>
               <button
                 className="update-inventory-button"
                 onClick={() => params.updateInvHandler(locationId)}
@@ -79,6 +90,7 @@ function Markers(params) {
       const location = params.locationObjectsData[key];
       let markerObj = new Object();
       const id = location["id"];
+      const address = location["userEnteredAddress"];
       const lat = location["coords"][0];
       const lng = location["coords"][1];
       const bread = location["bread"];
@@ -118,6 +130,7 @@ function Markers(params) {
       }
       //console.log(currentWeather);
       markerObj.id = id;
+      markerObj.address = address;
       markerObj.lat = lat;
       markerObj.lng = lng;
       markerObj.milk = milk;

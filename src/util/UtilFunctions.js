@@ -37,22 +37,42 @@ export const getNextLocationIdNumber = (dbLocations) => {
 };
 
 export const isUpdatedForecast = (location) => {
+  //console.log(location);
   let isUpdatedForecast = false;
   if ("forecastData" in location) {
     const forecastData = location["forecastData"];
-    if (forecastData != undefined) {
+    if (forecastData != undefined && forecastData.length > 0) {
       const forecastFirstPeriodEndTime = forecastData[0]["endTime"];
       const forecastFirstPeriodEndDateTime = new Date(
         forecastFirstPeriodEndTime
       );
       const currentDateTime = new Date(Date.now());
-      //console.log(forecastFirstPeriodEndDateTime);
-      //console.log(currentDateTime);
       if (currentDateTime < forecastFirstPeriodEndDateTime) {
         isUpdatedForecast = true;
       }
     }
   }
-  console.log(isUpdatedForecast);
+  //console.log(isUpdatedForecast);
   return isUpdatedForecast;
+};
+
+export const buildNewLocationObject = (address, data, locationObjKey) => {
+  const lat = data.results[0].locations[0].latLng["lat"];
+  const lng = data.results[0].locations[0].latLng["lng"];
+  const coords = [lat, lng];
+  let locationObj = {};
+  let id = "location-" + locationObjKey;
+  const nextLocationKey = locationObjKey + 1;
+  //setLocationObjKey(locationObjKey + 1);
+  locationObj["id"] = id;
+  locationObj["userEnteredAddress"] = address;
+  locationObj["coords"] = coords;
+  locationObj["bread"] = 0;
+  locationObj["milk"] = 0;
+  locationObj["forecastData"] = [];
+  let returnArray = [];
+  returnArray.push(locationObj);
+  returnArray.push(id);
+  returnArray.push(nextLocationKey);
+  return returnArray;
 };
