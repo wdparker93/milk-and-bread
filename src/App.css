@@ -143,6 +143,10 @@ body {
   margin-left: 0.5vw;
 }
 
+.update-inventory-button {
+  margin-right: 5px;
+}
+
 .analytics-tab {
   margin-left: 0.5vw;
 }

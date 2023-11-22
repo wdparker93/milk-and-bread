@@ -9,6 +9,9 @@ import {
   mapQuestKey,
   defaultCenter,
   defaultZoom,
+  bounds,
+  minZoom,
+  maxZoom,
 } from "./util/Constants.js";
 import { initLocationsFromDB } from "./util/InitFunctions.js";
 import {
@@ -34,11 +37,8 @@ import AnalyticsTabProfitabilityAnalysis from "./components/js/AnalyticsTabProfi
 import AnalyticsTabPerformanceTracking from "./components/js/AnalyticsTabPerformanceTracking.js";
 
 function App() {
-  const minZoom = 0;
-  const maxZoom = 12;
   const [usRegionSelection, setUsRegionSelection] = useState("--");
   const [usStateSelection, setUsStateSelection] = useState("--");
-  const [mapZoomLevel, setMapZoomLevel] = useState({ defaultZoom });
   const [markersOutputComponent, setMarkersOutputComponent] = useState("");
   const [analyticsTabOutputComponent, setAnalyticsTabOutputComponent] =
     useState(<AnalyticsTabSummaryTable />);
@@ -142,12 +142,6 @@ function App() {
     //TODO : Case/Switch statement for zoom level for each state
     //TODO : Zoom in on Georgia, USA. Not Georgia in the eastern hemisphere.
     setUsStateSelection(event.target.value);
-    if (event.target.value !== "--") {
-      setMapZoomLevel(5);
-    } else {
-      setMapZoomLevel(3);
-      setUsStateSelection("Kansas");
-    }
   };
 
   /**
@@ -461,6 +455,7 @@ function App() {
               center={defaultCenter}
               zoom={defaultZoom}
               scrollWheelZoom={true}
+              maxBounds={bounds}
               minZoom={minZoom}
               maxZoom={maxZoom}
             >

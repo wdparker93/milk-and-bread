@@ -74,8 +74,6 @@ function Markers(params) {
               >
                 Manage Inventory
               </button>
-              <br />
-              <br />
               <button
                 className="delete-location-button"
                 onClick={() => params.deleteLocationHandler(locationId)}
