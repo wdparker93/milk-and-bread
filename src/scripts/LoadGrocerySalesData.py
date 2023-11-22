@@ -4,17 +4,23 @@ import mysql.connector
 
 curDir = os.getcwd()
 print(str (curDir))
-#path = 'C:\\Users\\wdpar\\vs_code_repos\\congressional-vote-tracker\\src\\support_files\\output_data_files\\Politician_Raw_Name_Recoder.xlsx'
+print(curDir)
+dataDir = curDir + '\\raw_data\\StateAndCategory.xlsx'
+print(dataDir)
 
-#recoderWB = openpyxl.load_workbook(path)
-#recoderSheet = recoderWB.active
+groceryDataWB = openpyxl.load_workbook(dataDir)
+groceryDataSheet = groceryDataWB.active
 
-#entryCol = 1
-#entryRow = 2
+#Column defintions
+dateCol = 1
+stateCol = 2
+
+entryRow = 3
 
 #delimitedList = ""
 
-#entryCell = recoderSheet.cell(row = entryRow, column = entryCol)
+entryCell = groceryDataSheet.cell(row = entryRow, column = stateCol)
+print(entryCell.value)
 #while entryCell.value != X:
 #    if entryCell.value != "" and entryCell.value != None:
 #        delimitedList += "'" + entryCell.value + "', "
