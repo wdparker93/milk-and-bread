@@ -15,7 +15,13 @@ import {
   getNextLocationIdNumber,
   isUpdatedForecast,
   buildNewLocationObject,
+  deleteLocationFromMap_ById,
 } from "./util/UtilFunctions.js";
+import {
+  locationExistsInDB,
+  deleteLocationInDB_ById,
+  insertLocationIntoDB,
+} from "./util/DBUtilFunctions.js";
 import AppHeader from "./components/js/AppHeader.js";
 import Markers from "./components/js/Markers.js";
 import MapControlPanel from "./components/js/MapControlPanel.js";
@@ -26,7 +32,6 @@ import AnalyticsTabSummaryTable from "./components/js/AnalyticsTabSummaryTable.j
 import AnalyticsTabRiskAnalysis from "./components/js/AnalyticsTabRiskAnalysis.js";
 import AnalyticsTabProfitabilityAnalysis from "./components/js/AnalyticsTabProfitabilityAnalysis.js";
 import AnalyticsTabPerformanceTracking from "./components/js/AnalyticsTabPerformanceTracking.js";
-import qs from "qs";
 
 function App() {
   const minZoom = 0;
@@ -199,8 +204,7 @@ function App() {
         const nextLocationObjKey = locationObjBuildResult[2];
         setLocationObjKey(nextLocationObjKey);
         var existingLocationObjects = locationObjects;
-        let locationAlreadyExists = locationExistsInDB(locationObj);
-        if (!locationAlreadyExists) {
+        if (!locationExistsInDB(locationObj)) {
           existingLocationObjects[locationObjId] = locationObj;
           insertLocationIntoDB(locationObj);
           setLocationObjects(existingLocationObjects);
@@ -230,8 +234,32 @@ function App() {
       <Markers
         locationObjectsData={locationObjMap}
         updateInvHandler={initializeInvUpdatePanel}
+        deleteLocationHandler={handleLocationDelete_ById}
       />
     );
+  };
+
+  /**
+   * Handler passed to marker objects that deletes
+   * locations from the database and map of location objects
+   *
+   * @param {} locationId
+   */
+  const handleLocationDelete_ById = async (locationId) => {
+    const responseStatus = await deleteLocationInDB_ById(locationId);
+    console.log(responseStatus);
+    if (responseStatus === 200) {
+      let tempLocationObjects = locationObjects;
+      tempLocationObjects = deleteLocationFromMap_ById(
+        locationId,
+        tempLocationObjects
+      );
+      console.log(tempLocationObjects);
+      setLocationObjects(tempLocationObjects);
+      //IDK why the useEffect hook isn't picking up on the
+      //change to locationObjects.
+      updateMarkersOutputComponent();
+    }
   };
 
   const handleAddressLine1Change = (event) => {
@@ -395,57 +423,6 @@ function App() {
         console.log(response);
       }
     );
-  };
-
-  const locationExistsInDB = (locationObj) => {
-    Axios.get(
-      "http://localhost:" +
-        backendPort +
-        "/api/get/location/" +
-        locationObj["id"] +
-        "/" +
-        locationObj["userEnteredAddress"] +
-        "/" +
-        locationObj["coords"][0] +
-        "/" +
-        locationObj["coords"][1]
-    ).then((response) => {
-      //console.log(response);
-      if (response.data.length === 0) {
-        console.log("Location Does Not Already Exist. Inserting into DB.");
-        return false;
-      } else {
-        console.log("Duplicate Location Found. Not Inserting into DB.");
-        return true;
-      }
-    });
-  };
-
-  const insertLocationIntoDB = (locationObj) => {
-    console.log(
-      "Inserting location : " +
-        locationObj["id"] +
-        " : " +
-        locationObj["userEnteredAddress"]
-    );
-    Axios.post(
-      "http://localhost:" +
-        backendPort +
-        "/api/insert/location/" +
-        locationObj["id"] +
-        "/" +
-        locationObj["coords"][0] +
-        "/" +
-        locationObj["coords"][1] +
-        "/" +
-        locationObj["bread"] +
-        "/" +
-        locationObj["milk"] +
-        "/" +
-        locationObj["userEnteredAddress"]
-    ).then((response) => {
-      console.log(response);
-    });
   };
 
   const updateDbLocationInv = (locationObjects) => {

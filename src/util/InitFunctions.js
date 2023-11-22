@@ -7,9 +7,7 @@ export const initLocationsFromDB = async () => {
     const response = await Axios.get(
       "http://localhost:" + backendPort + "/api/get/location/"
     );
-    //console.log(response);
     const returnLocationMap = await buildLocationsFromResultSet(response.data);
-    //console.log(returnLocationMap);
     return returnLocationMap;
   } catch (error) {
     console.error(error);

@@ -1,0 +1,87 @@
+import { backendPort } from "../util/Constants.js";
+import Axios from "axios";
+
+export const locationExistsInDB = (locationObj) => {
+  Axios.get(
+    "http://localhost:" +
+      backendPort +
+      "/api/get/location/" +
+      locationObj["id"] +
+      "/" +
+      locationObj["userEnteredAddress"] +
+      "/" +
+      locationObj["coords"][0] +
+      "/" +
+      locationObj["coords"][1]
+  ).then((response) => {
+    //console.log(response);
+    if (response.data.length === 0) {
+      console.log("Location not found in database.");
+      return false;
+    } else {
+      console.log("Location found in database.");
+      return true;
+    }
+  });
+};
+
+export const locationExistsInDB_ById = async (locationId) => {
+  try {
+    const response = await Axios.get(
+      "http://localhost:" + backendPort + "/api/get/location/" + locationId
+    );
+    if (response.data.length === 0) {
+      console.log("Location not found in database.");
+      return false;
+    } else {
+      console.log("Location found in database.");
+      return true;
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const deleteLocationInDB_ById = async (locationId) => {
+  try {
+    const locationExists = await locationExistsInDB_ById(locationId);
+    if (locationExists) {
+      console.log("Deleting location with locationId : " + locationId);
+      const response = await Axios.post(
+        "http://localhost:" + backendPort + "/api/delete/location/" + locationId
+      );
+      return response.status;
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const insertLocationIntoDB = (locationObj) => {
+  console.log(
+    "Inserting location : " +
+      locationObj["id"] +
+      " : " +
+      locationObj["userEnteredAddress"]
+  );
+  Axios.post(
+    "http://localhost:" +
+      backendPort +
+      "/api/insert/location/" +
+      locationObj["id"] +
+      "/" +
+      locationObj["coords"][0] +
+      "/" +
+      locationObj["coords"][1] +
+      "/" +
+      locationObj["bread"] +
+      "/" +
+      locationObj["milk"] +
+      "/" +
+      locationObj["userEnteredAddress"]
+  ).then((response) => {
+    console.log(response);
+  });
+};

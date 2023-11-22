@@ -93,6 +93,21 @@ app.post(
   }
 );
 
+app.post("/api/delete/location/:location_id", (req, res) => {
+  const locationId = req.params.location_id;
+  const sqlDelete = `DELETE FROM location WHERE location_id = ?`;
+  console.log(sqlDelete);
+  db.query(sqlDelete, [locationId], (err, result) => {
+    if (err) {
+      console.error("Error deleting " + locationId + " from database.", err);
+      res.status(500).send("Internal Server Error");
+    } else {
+      console.log("Location with id " + locationId + " deleted successfully");
+      res.send(result);
+    }
+  });
+});
+
 app.post("/api/update/location/:locationObjects", (req, res) => {
   /*
   //Need to update for inventory functionality

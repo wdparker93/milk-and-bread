@@ -76,3 +76,13 @@ export const buildNewLocationObject = (address, data, locationObjKey) => {
   returnArray.push(nextLocationKey);
   return returnArray;
 };
+
+export const deleteLocationFromMap_ById = (locationId, locationObjects) => {
+  console.log("Delete location from map by id");
+  for (const key in locationObjects) {
+    if (locationId === key) {
+      delete locationObjects[key];
+    }
+  }
+  return locationObjects;
+};
