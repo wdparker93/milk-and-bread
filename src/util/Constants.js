@@ -8,6 +8,6 @@ export const red = "#ff0000";
 export const green = "#006400";
 export const southWestBound = L.latLng(24.396308, -125.0);
 export const northEastBound = L.latLng(49.345786, -66.93457);
-export const bounds = L.latLngBounds(southWestBound, northEastBound);
+export const bounds = L.latLngBounds(southWestBound, northEastBound).pad(1);
 export const minZoom = 3;
 export const maxZoom = 12;
