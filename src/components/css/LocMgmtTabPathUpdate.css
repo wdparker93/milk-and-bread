@@ -1,6 +1,6 @@
 .update-path-controls-wrapper {
   display: grid;
-  grid-template-columns: 9vw 9vw 1fr;
+  grid-template-columns: 9.5vw 14vw 1fr;
   align-content: start;
   margin: 0 0.5vw 0 0.5vw;
 }
@@ -15,24 +15,28 @@
 
 #update-path-control-panel-column-3 {
   background: rgba(9, 122, 3, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: center;
 }
 
-.create-connecting-path-row {
+.create-path-row {
   display: flex;
   margin-bottom: 0.5vh;
 }
 
-.create-connecting-path-image {
+.create-path-image {
   height: 45px;
   width: auto;
   margin-right: 0.5vw;
 }
 
-.delete-existing-path-row {
+.delete-path-row {
   display: flex;
 }
 
-.delete-existing-path-image {
+.delete-path-image {
   height: 45px;
   width: auto;
   margin-right: 0.5vw;
@@ -44,4 +48,30 @@
 
 .location-select-field {
   margin-top: 2vh;
+}
+
+.update-path-weight-field-label {
+  margin: 0;
+  font-size: 13px;
+}
+
+.location-select-field {
+  margin: 0;
+}
+
+.update-path-weight-field {
+  width: 5vw;
+}
+
+.update-path-field-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 20px;
+}
+
+.update-path-right-arrow {
+  font-size: 40px;
+  position: relative;
+  top: -0.5vh;
 }

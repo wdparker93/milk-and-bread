@@ -5,6 +5,7 @@ function LocMgmtTabPathUpdate(params) {
   const handleLocationIdChange = (event) => {
     //params.fillInvManagementFields(event);
   };
+  let createUpdate = "Create";
   return (
     <>
       <div className="update-path-controls-wrapper">
@@ -12,7 +13,13 @@ function LocMgmtTabPathUpdate(params) {
           id="update-path-control-panel-column-1"
           className="update-path-control-panel-column"
         >
-          <strong>Starting Location</strong>
+          <strong>Path Endpoints</strong>
+          <p
+            className="update-path-weight-field-label"
+            id="update-path-starting-location-field-label"
+          >
+            Starting Location
+          </p>
           <select
             className="location-select-field"
             id="update-path-start-location-field"
@@ -21,12 +28,12 @@ function LocMgmtTabPathUpdate(params) {
           >
             <Locations locationObjectsData={params.locationObjects} />
           </select>
-        </div>
-        <div
-          id="update-path-control-panel-column-2"
-          className="update-path-control-panel-column"
-        >
-          <strong>Ending Location</strong>
+          <p
+            className="update-path-weight-field-label"
+            id="update-path-ending-location-field-label"
+          >
+            Ending Location
+          </p>
           <select
             className="location-select-field"
             id="update-path-end-location-field"
@@ -37,33 +44,97 @@ function LocMgmtTabPathUpdate(params) {
           </select>
         </div>
         <div
+          id="update-path-control-panel-column-2"
+          className="update-path-control-panel-column"
+        >
+          <strong>Path Weight</strong>
+          <div
+            className="update-path-weight-field-wrapper"
+            id="update-path-cost-field-wrapper"
+          >
+            <p
+              className="update-path-weight-field-label"
+              id="update-path-cost-field-label"
+            >
+              Cost ($)
+            </p>
+            <div
+              className="update-path-field-row"
+              id="update-path-cost-field-row"
+            >
+              <input
+                className="update-path-weight-field"
+                type="number"
+                id="update-path-current-cost-field"
+                readOnly={true}
+                disabled={true}
+              />
+              <p className="update-path-right-arrow">
+                <strong>&rarr;</strong>
+              </p>
+              <input
+                className="update-path-weight-field"
+                type="number"
+                id="update-path-new-cost-field"
+              />
+            </div>
+
+            <p
+              className="update-path-weight-field-label"
+              id="update-path-cost-field-label"
+            >
+              Time (hrs)
+            </p>
+            <div
+              className="update-path-field-row"
+              id="update-path-time-field-row"
+            >
+              <input
+                className="update-path-weight-field"
+                type="number"
+                id="update-path-current-time-field"
+                readOnly={true}
+                disabled={true}
+              />
+              <p className="update-path-right-arrow">
+                <strong>&rarr;</strong>
+              </p>
+              <input
+                className="update-path-weight-field"
+                type="number"
+                id="update-path-new-time-field"
+              />
+            </div>
+          </div>
+        </div>
+        <div
           id="update-path-control-panel-column-3"
           className="update-path-control-panel-column"
         >
-          <div className="create-connecting-path-row">
+          <div className="create-path-row">
             <img
               src="./media/create-connecting-path-image-cropped.png"
-              className="create-connecting-path-image"
+              className="create-path-image"
             ></img>
             <button
               className="path-mgmt-button"
-              id="create-connecting-path-button"
+              id="create-path-button"
               onClick={() => params.executeInventoryUpdate()}
             >
-              <strong>Create Connecting Path</strong>
+              <strong>{createUpdate} Path</strong>
             </button>
           </div>
-          <div className="delete-existing-path-row">
+          <div className="delete-path-row">
             <img
               src="./media/delete-existing-path-image.png"
-              className="delete-existing-path-image"
+              className="delete-path-image"
             ></img>
             <button
               className="path-mgmt-button"
-              id="delete-existing-path-button"
+              id="delete-path-button"
               onClick={() => params.executeInventoryUpdate()}
             >
-              <strong>Delete Existing Path</strong>
+              <strong>Delete Path</strong>
             </button>
           </div>
         </div>
