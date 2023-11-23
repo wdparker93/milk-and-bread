@@ -118,19 +118,17 @@ function Markers(params) {
         ) {
           currentlySnowingOrSleeting = "Yes";
         }
-        if (currentlySnowingOrSleeting === "No") {
-          for (let i = 0; i < forecastData.length; i++) {
-            let detailedForecast =
-              forecastData[i]["detailedForecast"].toLowerCase();
-            let shortForecast = forecastData[i]["shortForecast"].toLowerCase();
-            if (
-              detailedForecast.includes("snow") ||
-              detailedForecast.includes("sleet") ||
-              shortForecast.includes("snow") ||
-              shortForecast.includes("sleet")
-            ) {
-              snowSleetAnticipated = "Yes";
-            }
+        for (let i = 0; i < forecastData.length; i++) {
+          let detailedForecast =
+            forecastData[i]["detailedForecast"].toLowerCase();
+          let shortForecast = forecastData[i]["shortForecast"].toLowerCase();
+          if (
+            detailedForecast.includes("snow") ||
+            detailedForecast.includes("sleet") ||
+            shortForecast.includes("snow") ||
+            shortForecast.includes("sleet")
+          ) {
+            snowSleetAnticipated = "Yes";
           }
         }
       }

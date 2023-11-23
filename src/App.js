@@ -1,7 +1,7 @@
 import "./App.css";
 import Axios from "axios";
 import React, { useState, useEffect } from "react";
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer, Polyline } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import {
@@ -27,9 +27,10 @@ import {
 } from "./util/DBUtilFunctions.js";
 import AppHeader from "./components/js/AppHeader.js";
 import Markers from "./components/js/Markers.js";
+import Paths from "./components/js/Paths.js";
 import MapControlPanel from "./components/js/MapControlPanel.js";
 import AddLocationAtAddressPanel from "./components/js/AddLocationAtAddressPanel.js";
-import InvMgmtPanel from "./components/js/InvMgmtPanel.js";
+import LocationMgmtPanel from "./components/js/LocationMgmtPanel.js";
 import AnalyticsPanel from "./components/js/AnalyticsPanel.js";
 import AnalyticsTabSummaryTable from "./components/js/AnalyticsTabSummaryTable.js";
 import AnalyticsTabRiskAnalysis from "./components/js/AnalyticsTabRiskAnalysis.js";
@@ -40,6 +41,7 @@ function App() {
   const [usRegionSelection, setUsRegionSelection] = useState("--");
   const [usStateSelection, setUsStateSelection] = useState("--");
   const [markersOutputComponent, setMarkersOutputComponent] = useState("");
+  const [pathsOutputComponent, setPathsOutputComponent] = useState("");
   const [analyticsTabOutputComponent, setAnalyticsTabOutputComponent] =
     useState(<AnalyticsTabSummaryTable />);
   const [locationObjects, setLocationObjects] = useState({});
@@ -58,8 +60,9 @@ function App() {
   });
 
   useEffect(() => {
-    // This effect runs whenever locationObjects or forecastData get updated
+    // This effect runs whenever locationObjects gets updated
     updateMarkersOutputComponent();
+    updatePathsOutputComponent();
   }, [locationObjects]);
 
   /**
@@ -231,6 +234,11 @@ function App() {
         deleteLocationHandler={handleLocationDelete_ById}
       />
     );
+  };
+
+  const updatePathsOutputComponent = () => {
+    const pathObjMap = locationObjects;
+    setPathsOutputComponent(<Paths locationObjectsData={pathObjMap} />);
   };
 
   /**
@@ -464,6 +472,7 @@ function App() {
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
               />
               <div>{markersOutputComponent}</div>
+              <div>{pathsOutputComponent}</div>
             </MapContainer>
           </div>
           <AddLocationAtAddressPanel
@@ -477,7 +486,7 @@ function App() {
           />
         </div>
         <div id="inv-update-analytics-column" className="body-column">
-          <InvMgmtPanel
+          <LocationMgmtPanel
             fillInvManagementFields={fillInvManagementFields}
             locationObjects={locationObjects}
             executeInventoryUpdate={executeInventoryUpdate}

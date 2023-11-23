@@ -1,6 +1,6 @@
 import Locations from "./Locations.js";
 
-function InvMgmtPanel(params) {
+function LocationMgmtPanel(params) {
   const handleLocationIdChange = (event) => {
     params.fillInvManagementFields(event);
   };
@@ -8,7 +8,7 @@ function InvMgmtPanel(params) {
     <>
       <div id="inv-update-panel">
         <h3 className="inv-update-analytics-panel-title">
-          Update Location Inventory
+          Location Management
         </h3>
         <div id="update-inv-at-location-controls-wrapper">
           <div
@@ -136,4 +136,4 @@ function InvMgmtPanel(params) {
   );
 }
 
-export default InvMgmtPanel;
+export default LocationMgmtPanel;
