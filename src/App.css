@@ -84,83 +84,11 @@ body {
   margin-left: 1vw;
 }
 
-#inv-update-panel {
-  color: black;
-  height: 24vh;
-  outline-style: solid;
-}
-
 .inv-update-analytics-panel-title {
-  margin-left: 0.5vw;
-}
-
-#update-inv-at-location-controls-wrapper {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  align-content: start;
-  margin-left: 0.5vw;
-}
-
-.update-inv-at-location-control-panel-column {
-  border: 2px solid #000000; /* Border for each grid item */
-  background: rgba(204, 204, 204, 0.7);
-  align-items: start;
-  width: 10.5vw;
-  padding: 0.25vw;
-}
-
-#update-inv-location-id-label {
-  position: relative;
-  top: -0.9vw;
-}
-
-#update-inv-location-id-field {
-  position: relative;
-  top: -0.9vw;
-}
-
-.udpate-inv-at-location-field {
-  width: 100px;
-}
-
-.udpate-inv-at-location-number-field {
-  width: 50px;
-}
-
-#milk-current-new-number-fields {
-  display: flex;
-}
-
-#bread-current-new-number-fields {
-  display: flex;
-}
-
-#update-inv-milk-new {
-  margin-left: 0.5vw;
-}
-
-#update-inv-bread-new {
-  margin-left: 0.5vw;
-}
-
-.update-inventory-button {
-  margin-right: 5px;
-}
-
-.analytics-tab {
   margin-left: 0.5vw;
 }
 
 .tab-btn {
   border: 1px solid black;
   font-weight: bold;
-}
-
-.analytics-tab-content {
-  outline-style: solid;
-  outline-width: 1px;
-  padding: 6px 12px;
-  margin: 0 0.5vw 0 0.5vw;
-  background: rgba(204, 204, 204, 0.6);
-  height: 18vw;
 }

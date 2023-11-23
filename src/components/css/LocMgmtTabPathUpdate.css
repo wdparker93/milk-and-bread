@@ -1,0 +1,47 @@
+.update-path-controls-wrapper {
+  display: grid;
+  grid-template-columns: 9vw 9vw 1fr;
+  align-content: start;
+  margin: 0 0.5vw 0 0.5vw;
+}
+
+.update-path-control-panel-column {
+  border: 2px solid #000000; /* Border for each grid item */
+  background: rgba(204, 204, 204, 0.7);
+  align-items: start;
+  width: auto;
+  padding: 0.25vw;
+}
+
+#update-path-control-panel-column-3 {
+  background: rgba(9, 122, 3, 0.7);
+}
+
+.create-connecting-path-row {
+  display: flex;
+  margin-bottom: 0.5vh;
+}
+
+.create-connecting-path-image {
+  height: 45px;
+  width: auto;
+  margin-right: 0.5vw;
+}
+
+.delete-existing-path-row {
+  display: flex;
+}
+
+.delete-existing-path-image {
+  height: 45px;
+  width: auto;
+  margin-right: 0.5vw;
+}
+
+.path-mgmt-button {
+  flex: 1;
+}
+
+.location-select-field {
+  margin-top: 2vh;
+}

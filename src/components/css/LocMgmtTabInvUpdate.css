@@ -1,0 +1,52 @@
+.update-inv-at-location-controls-wrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-content: start;
+  margin: 0 0.5vw 0 0.5vw;
+}
+
+.update-inv-at-location-control-panel-column {
+  border: 2px solid #000000; /* Border for each grid item */
+  background: rgba(204, 204, 204, 0.7);
+  align-items: start;
+  width: auto;
+  padding: 0.25vw;
+}
+
+#update-inv-location-id-label {
+  position: relative;
+  top: -0.9vw;
+}
+
+#update-inv-location-id-field {
+  position: relative;
+  top: -0.9vw;
+}
+
+.udpate-inv-at-location-field {
+  width: 100px;
+}
+
+.udpate-inv-at-location-number-field {
+  width: 50px;
+}
+
+#milk-current-new-number-fields {
+  display: flex;
+}
+
+#bread-current-new-number-fields {
+  display: flex;
+}
+
+#update-inv-milk-new {
+  margin-left: 0.5vw;
+}
+
+#update-inv-bread-new {
+  margin-left: 0.5vw;
+}
+
+.update-inventory-button {
+  margin-right: 5px;
+}

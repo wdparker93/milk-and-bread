@@ -1,0 +1,10 @@
+.loc-mgmt-panel {
+  color: black;
+  height: 26vh;
+  outline-style: solid;
+}
+
+.loc-mgmt-tab-buttons {
+  display: flex;
+  margin: 0 0.5vw 0 0.5vw;
+}

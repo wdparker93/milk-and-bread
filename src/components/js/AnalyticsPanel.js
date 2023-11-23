@@ -1,9 +1,11 @@
+import "../css/AnalyticsPanel.css";
+
 function AnalyticsPanel(params) {
   return (
     <>
       <div id="location-analytics-panel">
         <h3 className="inv-update-analytics-panel-title">Location Analytics</h3>
-        <div className="analytics-tab">
+        <div className="analytics-tab-buttons">
           <button
             className="tab-btn"
             onClick={() =>

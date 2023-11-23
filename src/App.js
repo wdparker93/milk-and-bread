@@ -31,6 +31,8 @@ import Paths from "./components/js/Paths.js";
 import MapControlPanel from "./components/js/MapControlPanel.js";
 import AddLocationAtAddressPanel from "./components/js/AddLocationAtAddressPanel.js";
 import LocationMgmtPanel from "./components/js/LocationMgmtPanel.js";
+import LocMgmtTabInvUpdate from "./components/js/LocMgmtTabInvUpdate.js";
+import LocMgmtTabPathUpdate from "./components/js/LocMgmtTabPathUpdate.js";
 import AnalyticsPanel from "./components/js/AnalyticsPanel.js";
 import AnalyticsTabSummaryTable from "./components/js/AnalyticsTabSummaryTable.js";
 import AnalyticsTabRiskAnalysis from "./components/js/AnalyticsTabRiskAnalysis.js";
@@ -42,6 +44,9 @@ function App() {
   const [usStateSelection, setUsStateSelection] = useState("--");
   const [markersOutputComponent, setMarkersOutputComponent] = useState("");
   const [pathsOutputComponent, setPathsOutputComponent] = useState("");
+  const [locMgmtTabOutputComponent, setLocMgmtTabOutputComponent] =
+    useState("");
+  const [locMgmtTabView, setLocMgmtTabView] = useState("invUpdate");
   const [analyticsTabOutputComponent, setAnalyticsTabOutputComponent] =
     useState(<AnalyticsTabSummaryTable />);
   const [locationObjects, setLocationObjects] = useState({});
@@ -62,7 +67,8 @@ function App() {
   useEffect(() => {
     // This effect runs whenever locationObjects gets updated
     updateMarkersOutputComponent();
-    updatePathsOutputComponent();
+    //updatePathsOutputComponent();
+    chooseLocMgmtTabOutputComponent(locMgmtTabView);
   }, [locationObjects]);
 
   /**
@@ -356,23 +362,7 @@ function App() {
     }
     locationObjectsTemp[invEditLocationId.value] = locationObject;
     setLocationObjects(locationObjectsTemp);
-    /*
-    for (let i = 0; i < locationObjectsTemp.length; i++) {
-      let locationObject = locationObjectsTemp[i];
-      if (locationObject.key === invEditLocationId.value) {
-        if (invEditMilkNew.value !== "" && invEditMilkNew.value >= 0) {
-          locationObject.milk = invEditMilkNew.value;
-        }
-        if (invEditBreadNew.value !== "" && invEditBreadNew.value >= 0) {
-          locationObject.bread = invEditBreadNew.value;
-        }
-        locationObjectsTemp[i] = locationObject;
-        console.log(locationObject);
-        setLocationObjects(locationObjectsTemp);
-      }
-    }
-    */
-    //Clear value fields to reset for another change
+    invEditLocationId.value = "--";
     invEditMilkNew.value = "";
     invEditBreadNew.value = "";
     let invEditCurrentFields = getInvEditCurrentFields();
@@ -382,21 +372,21 @@ function App() {
     invEditBreadCurrent.value = "";
     updateMarkersOutputComponent();
     //resetInvUpdatePanel();
+    //updateDbLocationInv_ById();
   };
 
   const fillInvManagementFields = (event) => {
     const locationKeyToSet = event.target.value;
-    //setInvEditLocationKey(locationKeyToSet);
     let invEditCurrentFields = getInvEditCurrentFields();
     let invEditMilkCurrent = invEditCurrentFields[1];
     let invEditBreadCurrent = invEditCurrentFields[2];
     let currentInvMilkValueToSet = "";
     let currentInvBreadValueToSet = "";
-    //invEditBreadCurrent.value = invEditBreadNew;
     if (locationKeyToSet !== "--") {
-      for (let i = 0; i < locationObjects.length; i++) {
-        const locationObject = locationObjects[i];
-        if (locationKeyToSet === locationObject.key) {
+      console.log(locationKeyToSet);
+      for (const key in locationObjects) {
+        if (locationKeyToSet === key) {
+          const locationObject = locationObjects[key];
           currentInvMilkValueToSet = locationObject.milk;
           currentInvBreadValueToSet = locationObject.bread;
         }
@@ -416,6 +406,28 @@ function App() {
       setAnalyticsTabOutputComponent(<AnalyticsTabProfitabilityAnalysis />);
     } else if (param === "performanceTracking") {
       setAnalyticsTabOutputComponent(<AnalyticsTabPerformanceTracking />);
+    }
+  };
+
+  const chooseLocMgmtTabOutputComponent = (event) => {
+    const param = event;
+    setLocMgmtTabView(param);
+    if (param === "invUpdate") {
+      setLocMgmtTabOutputComponent(
+        <LocMgmtTabInvUpdate
+          fillInvManagementFields={fillInvManagementFields}
+          locationObjects={locationObjects}
+          executeInventoryUpdate={executeInventoryUpdate}
+        />
+      );
+    } else if (param === "pathUpdate") {
+      setLocMgmtTabOutputComponent(
+        <LocMgmtTabPathUpdate
+          fillInvManagementFields={fillInvManagementFields}
+          locationObjects={locationObjects}
+          executeInventoryUpdate={executeInventoryUpdate}
+        />
+      );
     }
   };
 
@@ -487,9 +499,8 @@ function App() {
         </div>
         <div id="inv-update-analytics-column" className="body-column">
           <LocationMgmtPanel
-            fillInvManagementFields={fillInvManagementFields}
-            locationObjects={locationObjects}
-            executeInventoryUpdate={executeInventoryUpdate}
+            chooseLocMgmtTabOutputComponent={chooseLocMgmtTabOutputComponent}
+            locMgmtTabOutputComponent={locMgmtTabOutputComponent}
           />
           <AnalyticsPanel
             chooseAnalyticsTabOutputComponent={

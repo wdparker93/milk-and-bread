@@ -1,5 +1,6 @@
 import { Polyline } from "react-leaflet";
 import React from "react";
+import { clearPathColor } from "../../util/Constants.js";
 
 let latLngCoordsArr = [];
 
@@ -11,7 +12,7 @@ function Paths(params) {
         <Polyline
           className="leaflet-path"
           positions={elementData}
-          color="light blue"
+          color={clearPathColor}
         />
       </>
     );
