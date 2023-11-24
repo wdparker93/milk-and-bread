@@ -17,6 +17,7 @@ export const buildLocationsFromResultSet = (locationResultSet) => {
       locationObj["milk"] = milk;
       locationObj["userEnteredAddress"] = userEnteredAddress;
       locationObj["forecastData"] = forecastData;
+      locationObj["paths"] = {};
       locationMap[locationId] = locationObj;
     }
     //console.log(locationMap);
@@ -24,15 +25,40 @@ export const buildLocationsFromResultSet = (locationResultSet) => {
   });
 };
 
+export const buildPathsFromResultSet = (locationObjects, pathResultSet) => {
+  //console.log(locationObjects);
+  //console.log(pathResultSet);
+  return new Promise((resolve) => {
+    let locationMap = locationObjects;
+    for (let i = 0; i < pathResultSet.length; i++) {
+      const rsRow = pathResultSet[i];
+      const startLocation = rsRow["start_location"];
+      const endLocation = rsRow["end_location"];
+      const cost = rsRow["cost"];
+      const time = rsRow["time"];
+      let locationToUpdate = locationObjects[startLocation];
+      locationToUpdate["paths"][endLocation] = { cost: cost, time: time };
+      //console.log(locationToUpdate);
+    }
+    resolve(locationMap);
+  });
+};
+
 export const getNextLocationIdNumber = (dbLocations) => {
   var nextNumber = 1;
+  var numberAlreadyExists = false;
   for (const key in dbLocations) {
     const currentNumber = parseInt(key.substring(key.indexOf("-") + 1));
-    if (currentNumber > nextNumber) {
+    if (currentNumber === nextNumber) {
+      numberAlreadyExists = true;
+    }
+    if (numberAlreadyExists && currentNumber > nextNumber) {
       nextNumber = currentNumber;
     }
   }
-  nextNumber += 1;
+  if (numberAlreadyExists) {
+    nextNumber += 1;
+  }
   return nextNumber;
 };
 
@@ -70,6 +96,7 @@ export const buildNewLocationObject = (address, data, locationObjKey) => {
   locationObj["bread"] = 0;
   locationObj["milk"] = 0;
   locationObj["forecastData"] = [];
+  locationObj["paths"] = {};
   let returnArray = [];
   returnArray.push(locationObj);
   returnArray.push(id);
@@ -85,4 +112,78 @@ export const deleteLocationFromMap_ById = (locationId, locationObjects) => {
     }
   }
   return locationObjects;
+};
+
+export const getInvEditCurrentFields = () => {
+  let returnArray = [];
+  var invEditLocationId = document.getElementById(
+    "update-inv-location-id-field"
+  );
+  var invEditMilkCurrent = document.getElementById(
+    "update-inv-at-location-milk-current-field"
+  );
+  var invEditBreadCurrent = document.getElementById(
+    "update-inv-at-location-bread-current-field"
+  );
+  returnArray.push(invEditLocationId);
+  returnArray.push(invEditMilkCurrent);
+  returnArray.push(invEditBreadCurrent);
+  return returnArray;
+};
+
+export const getInvEditNewFields = () => {
+  let returnArray = [];
+  var invEditLocationId = document.getElementById(
+    "update-inv-location-id-field"
+  );
+  var invEditMilkNew = document.getElementById("update-inv-milk-new-field");
+  var invEditBreadNew = document.getElementById("update-inv-bread-new-field");
+  returnArray.push(invEditLocationId);
+  returnArray.push(invEditMilkNew);
+  returnArray.push(invEditBreadNew);
+  return returnArray;
+};
+
+export const getPathUpdateFields = () => {
+  let returnMap = {};
+  var pathStartLocation = document.getElementById(
+    "update-path-start-location-field"
+  );
+  var pathEndLocation = document.getElementById(
+    "update-path-end-location-field"
+  );
+  var pathCostCurrent = document.getElementById(
+    "update-path-current-cost-field"
+  );
+  var pathCostNew = document.getElementById("update-path-new-cost-field");
+  var pathTimeCurrent = document.getElementById(
+    "update-path-current-time-field"
+  );
+  var pathTimeNew = document.getElementById("update-path-new-time-field");
+  returnMap["startLocation"] = pathStartLocation;
+  returnMap["endLocation"] = pathEndLocation;
+  returnMap["costCurrent"] = pathCostCurrent;
+  returnMap["costNew"] = pathCostNew;
+  returnMap["timeCurrent"] = pathTimeCurrent;
+  returnMap["timeNew"] = pathTimeNew;
+  return returnMap;
+};
+
+export const buildPathsArrayFromLocationObjects = (locationObjects) => {
+  //console.log({ locationObjects });
+  let grandParentArray = [];
+  let parentArray = [];
+  for (const key in locationObjects) {
+    let insertToParentArray = true;
+    let childArray = [];
+    for (const key2 in locationObjects[key]["paths"]) {
+      childArray.push(locationObjects[key]["coords"]);
+      childArray.push(locationObjects[key2]["coords"]);
+    }
+    if (childArray.length > 0 && insertToParentArray) {
+      parentArray.push(childArray);
+    }
+  }
+  grandParentArray.push(parentArray);
+  return grandParentArray;
 };

@@ -19,18 +19,12 @@ function Paths(params) {
   };
 
   const retrievePathData = () => {
-    return PathElement(latLngCoordsArr);
-  };
-
-  const populatePathData = () => {
-    for (const key in params.locationObjectsData) {
-      const location = params.locationObjectsData[key];
-      latLngCoordsArr.push(location["coords"]);
+    for (let i = 0; i < latLngCoordsArr.length; i++) {
+      return PathElement(latLngCoordsArr[i]);
     }
   };
 
-  latLngCoordsArr = [];
-  populatePathData();
+  latLngCoordsArr = params.coordsArrayData;
 
   return (
     <>

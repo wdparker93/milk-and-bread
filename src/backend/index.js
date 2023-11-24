@@ -21,10 +21,24 @@ app.get("/api/get/location", (req, res) => {
   console.log(sqlSelect);
   db.query(sqlSelect, (err, result) => {
     if (err) {
-      console.error("Error inserting into the database:", err);
+      console.error("Error selecting locations from the database:", err);
       res.status(500).send("Internal Server Error");
     } else {
-      console.log("Record inserted successfully");
+      console.log("Record(s) selected successfully");
+      res.send(result);
+    }
+  });
+});
+
+app.get("/api/get/path", (req, res) => {
+  const sqlSelect = `SELECT * FROM path`;
+  console.log(sqlSelect);
+  db.query(sqlSelect, (err, result) => {
+    if (err) {
+      console.error("Error selecting paths from the database:", err);
+      res.status(500).send("Internal Server Error");
+    } else {
+      console.log("Record(s) selected successfully");
       res.send(result);
     }
   });

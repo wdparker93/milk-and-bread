@@ -20,3 +20,8 @@ DONE - 8. Show different icon or additional icon if weather event is anticipated
 ONGOING - 13. Refactor components into more modular pieces.
 DONE - 14. Dynamically build list of location-ids for inventory update panel using the list of location objects that exist.
 ONGONIG - 15. Make better use of space/redisgn ux (ongoing). Try to give more room to analytics window.
+16. Update/insert inventory values into the database
+17. Make fillInvManagementFields use the database instead of the state variable.
+
+Known Bugs:
+1. Backfill location id's if the smallest number is > 1. When arriving at lowest pre-existing id, need to find the next one. So, need to find next number after every insert.  

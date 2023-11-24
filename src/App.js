@@ -13,12 +13,16 @@ import {
   minZoom,
   maxZoom,
 } from "./util/Constants.js";
-import { initLocationsFromDB } from "./util/InitFunctions.js";
+import { initLocationsFromDB, initPathsFromDB } from "./util/InitFunctions.js";
 import {
   getNextLocationIdNumber,
   isUpdatedForecast,
   buildNewLocationObject,
   deleteLocationFromMap_ById,
+  getInvEditCurrentFields,
+  getInvEditNewFields,
+  getPathUpdateFields,
+  buildPathsArrayFromLocationObjects,
 } from "./util/UtilFunctions.js";
 import {
   locationExistsInDB,
@@ -67,7 +71,7 @@ function App() {
   useEffect(() => {
     // This effect runs whenever locationObjects gets updated
     updateMarkersOutputComponent();
-    //updatePathsOutputComponent();
+    updatePathsOutputComponent();
     chooseLocMgmtTabOutputComponent(locMgmtTabView);
   }, [locationObjects]);
 
@@ -243,8 +247,8 @@ function App() {
   };
 
   const updatePathsOutputComponent = () => {
-    const pathObjMap = locationObjects;
-    setPathsOutputComponent(<Paths locationObjectsData={pathObjMap} />);
+    const pathObjArr = buildPathsArrayFromLocationObjects(locationObjects);
+    setPathsOutputComponent(<Paths coordsArrayData={pathObjArr} />);
   };
 
   /**
@@ -311,36 +315,6 @@ function App() {
     const locationObject = locationObjects[locationKey];
     invEditBreadCurrent.value = locationObject["bread"];
     invEditMilkCurrent.value = locationObject["milk"];
-  };
-
-  const getInvEditCurrentFields = () => {
-    let returnArray = [];
-    var invEditLocationId = document.getElementById(
-      "update-inv-location-id-field"
-    );
-    var invEditMilkCurrent = document.getElementById(
-      "update-inv-at-location-milk-current-field"
-    );
-    var invEditBreadCurrent = document.getElementById(
-      "update-inv-at-location-bread-current-field"
-    );
-    returnArray.push(invEditLocationId);
-    returnArray.push(invEditMilkCurrent);
-    returnArray.push(invEditBreadCurrent);
-    return returnArray;
-  };
-
-  const getInvEditNewFields = () => {
-    let returnArray = [];
-    var invEditLocationId = document.getElementById(
-      "update-inv-location-id-field"
-    );
-    var invEditMilkNew = document.getElementById("update-inv-milk-new-field");
-    var invEditBreadNew = document.getElementById("update-inv-bread-new-field");
-    returnArray.push(invEditLocationId);
-    returnArray.push(invEditMilkNew);
-    returnArray.push(invEditBreadNew);
-    return returnArray;
   };
 
   /**
@@ -423,12 +397,29 @@ function App() {
     } else if (param === "pathUpdate") {
       setLocMgmtTabOutputComponent(
         <LocMgmtTabPathUpdate
-          fillInvManagementFields={fillInvManagementFields}
           locationObjects={locationObjects}
-          executeInventoryUpdate={executeInventoryUpdate}
+          createUpdatePath={createUpdatePath}
+          deletePath={deletePath}
         />
       );
     }
+  };
+
+  const createUpdatePath = () => {
+    console.log("Test createUpdatePath");
+    let pathUpdateFields = getPathUpdateFields();
+    const startLocation = pathUpdateFields["startLocation"].value;
+    const endLocation = pathUpdateFields["endLocation"].value;
+    const costCurrent = pathUpdateFields["costCurrent"].value;
+    const costNew = pathUpdateFields["costNew"].value;
+    const timeCurrent = pathUpdateFields["timeCurrent"].value;
+    const timeNew = pathUpdateFields["timeNew"].value;
+    let startLocationObj = locationObjects[startLocation];
+    let endLocationObj = locationObjects[endLocation];
+  };
+
+  const deletePath = () => {
+    console.log("Test deletePath");
   };
 
   const getLocationSummary = (event) => {
@@ -437,25 +428,6 @@ function App() {
         console.log(response);
       }
     );
-  };
-
-  const updateDbLocationInv = (locationObjects) => {
-    /*
-    //Need to udpate for inventory functionality
-    console.log("Updating locations: ");
-    console.log(locationObjects);
-    let paramMap = {};
-    for (const key in locationObjects) {
-      paramMap[key] = JSON.stringify(locationObjects[key]["forecastData"]);
-    }
-    console.log(paramMap);
-    const queryString = qs.stringify(paramMap);
-    Axios.post(
-      "http://localhost:" + backendPort + "/api/update/location/" + queryString
-    ).then((response) => {
-      console.log(response);
-    });
-    */
   };
 
   return (

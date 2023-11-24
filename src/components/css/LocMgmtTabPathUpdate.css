@@ -43,7 +43,8 @@
 }
 
 .path-mgmt-button {
-  flex: 1;
+  flex-grow: 1;
+  font-size: 12px;
 }
 
 .location-select-field {

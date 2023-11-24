@@ -85,3 +85,22 @@ export const insertLocationIntoDB = (locationObj) => {
     console.log(response);
   });
 };
+
+export const updateDbLocationInv = (locationObjects) => {
+  /*
+    //Need to udpate for inventory functionality
+    console.log("Updating locations: ");
+    console.log(locationObjects);
+    let paramMap = {};
+    for (const key in locationObjects) {
+      paramMap[key] = JSON.stringify(locationObjects[key]["forecastData"]);
+    }
+    console.log(paramMap);
+    const queryString = qs.stringify(paramMap);
+    Axios.post(
+      "http://localhost:" + backendPort + "/api/update/location/" + queryString
+    ).then((response) => {
+      console.log(response);
+    });
+    */
+};

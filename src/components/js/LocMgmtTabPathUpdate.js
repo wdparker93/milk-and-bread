@@ -2,10 +2,16 @@ import "../css/LocMgmtTabPathUpdate.css";
 import Locations from "./Locations.js";
 
 function LocMgmtTabPathUpdate(params) {
-  const handleLocationIdChange = (event) => {
+  let startLocation = "--";
+  let endLocation = "--";
+  const handleStartLocationChange = (event) => {
+    startLocation = event.target.value;
     //params.fillInvManagementFields(event);
   };
-  let createUpdate = "Create";
+  const handleEndLocationChange = (event) => {
+    endLocation = event.target.value;
+    //params.fillInvManagementFields(event);
+  };
   return (
     <>
       <div className="update-path-controls-wrapper">
@@ -24,7 +30,7 @@ function LocMgmtTabPathUpdate(params) {
             className="location-select-field"
             id="update-path-start-location-field"
             type="text"
-            onChange={handleLocationIdChange}
+            onChange={handleStartLocationChange}
           >
             <Locations locationObjectsData={params.locationObjects} />
           </select>
@@ -38,7 +44,7 @@ function LocMgmtTabPathUpdate(params) {
             className="location-select-field"
             id="update-path-end-location-field"
             type="text"
-            onChange={handleLocationIdChange}
+            onChange={handleEndLocationChange}
           >
             <Locations locationObjectsData={params.locationObjects} />
           </select>
@@ -119,9 +125,9 @@ function LocMgmtTabPathUpdate(params) {
             <button
               className="path-mgmt-button"
               id="create-path-button"
-              onClick={() => params.executeInventoryUpdate()}
+              onClick={() => params.createUpdatePath()}
             >
-              <strong>{createUpdate} Path</strong>
+              <strong>Create/Update</strong>
             </button>
           </div>
           <div className="delete-path-row">
@@ -132,7 +138,7 @@ function LocMgmtTabPathUpdate(params) {
             <button
               className="path-mgmt-button"
               id="delete-path-button"
-              onClick={() => params.executeInventoryUpdate()}
+              onClick={() => params.deletePath()}
             >
               <strong>Delete Path</strong>
             </button>
