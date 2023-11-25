@@ -1,6 +1,6 @@
 .update-path-controls-wrapper {
   display: grid;
-  grid-template-columns: 9.5vw 14vw 1fr;
+  grid-template-columns: 9vw 14vw 1fr;
   align-content: start;
   margin: 0 0.5vw 0 0.5vw;
 }
@@ -43,8 +43,7 @@
 }
 
 .path-mgmt-button {
-  flex-grow: 1;
-  font-size: 12px;
+  width: 6vw;
 }
 
 .location-select-field {

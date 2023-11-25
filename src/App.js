@@ -23,11 +23,13 @@ import {
   getInvEditNewFields,
   getPathUpdateFields,
   buildPathsArrayFromLocationObjects,
+  setPathUpdateFields,
 } from "./util/UtilFunctions.js";
 import {
   locationExistsInDB,
   deleteLocationInDB_ById,
   insertLocationIntoDB,
+  lookupPath_ByLocations,
 } from "./util/DBUtilFunctions.js";
 import AppHeader from "./components/js/AppHeader.js";
 import Markers from "./components/js/Markers.js";
@@ -398,11 +400,28 @@ function App() {
       setLocMgmtTabOutputComponent(
         <LocMgmtTabPathUpdate
           locationObjects={locationObjects}
+          lookupPathFromLocations={lookupPathFromLocations}
           createUpdatePath={createUpdatePath}
           deletePath={deletePath}
         />
       );
     }
+  };
+
+  const lookupPathFromLocations = async (startLocation, endLocation) => {
+    let response = "";
+    if (startLocation !== "--" && endLocation !== "--") {
+      response = await lookupPath_ByLocations(startLocation, endLocation);
+    }
+    console.log(response);
+    let pathData = {};
+    pathData["cost"] = "--";
+    pathData["time"] = "--";
+    if (response.length > 0) {
+      pathData["cost"] = response[0]["cost"];
+      pathData["time"] = response[0]["time"];
+    }
+    setPathUpdateFields(pathData);
   };
 
   const createUpdatePath = () => {
@@ -422,14 +441,6 @@ function App() {
     console.log("Test deletePath");
   };
 
-  const getLocationSummary = (event) => {
-    Axios.get("http://localhost:" + backendPort + "/api/get/location/").then(
-      (response) => {
-        console.log(response);
-      }
-    );
-  };
-
   return (
     <div className="App">
       <AppHeader />
@@ -437,7 +448,7 @@ function App() {
         <div id="map-column" className="body-column">
           <div id="map-section-wrapper">
             <MapControlPanel
-              handleRegionChange={getLocationSummary}
+              handleRegionChange={handleRegionChange}
               handleUsStateChange={handleUsStateChange}
               refreshWeatherData={refreshWeatherData}
             />

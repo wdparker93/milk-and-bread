@@ -169,6 +169,17 @@ export const getPathUpdateFields = () => {
   return returnMap;
 };
 
+export const setPathUpdateFields = (pathData) => {
+  var pathCostCurrent = document.getElementById(
+    "update-path-current-cost-field"
+  );
+  var pathTimeCurrent = document.getElementById(
+    "update-path-current-time-field"
+  );
+  pathCostCurrent.value = pathData["cost"];
+  pathTimeCurrent.value = pathData["time"];
+};
+
 export const buildPathsArrayFromLocationObjects = (locationObjects) => {
   //console.log({ locationObjects });
   let grandParentArray = [];

@@ -80,6 +80,20 @@ app.get(
   }
 );
 
+/**
+ * Get path by start and end locations
+ */
+app.get("/api/get/path/:start_location/:end_location", (req, res) => {
+  const startLocation = req.params.start_location;
+  const endLocation = req.params.end_location;
+  const sqlSelect = `SELECT * FROM path
+  WHERE start_location = ?
+  AND end_location = ?`;
+  db.query(sqlSelect, [startLocation, endLocation], (err, result) => {
+    res.send(result);
+  });
+});
+
 app.post(
   "/api/insert/location/:location_id/:lat/:lng/:bread_inv/:milk_inv/:user_entered_address",
   (req, res) => {

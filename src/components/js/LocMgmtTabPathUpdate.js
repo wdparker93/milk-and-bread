@@ -6,11 +6,11 @@ function LocMgmtTabPathUpdate(params) {
   let endLocation = "--";
   const handleStartLocationChange = (event) => {
     startLocation = event.target.value;
-    //params.fillInvManagementFields(event);
+    params.lookupPathFromLocations(startLocation, endLocation);
   };
   const handleEndLocationChange = (event) => {
     endLocation = event.target.value;
-    //params.fillInvManagementFields(event);
+    params.lookupPathFromLocations(startLocation, endLocation);
   };
   return (
     <>

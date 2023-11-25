@@ -86,6 +86,42 @@ export const insertLocationIntoDB = (locationObj) => {
   });
 };
 
+export const lookupPath_ByLocations = async (startLocation, endLocation) => {
+  try {
+    console.log(
+      "Looking up path with start_location = " +
+        startLocation +
+        " and end_location = " +
+        endLocation
+    );
+    const response = await Axios.get(
+      "http://localhost:" +
+        backendPort +
+        "/api/get/path/" +
+        startLocation +
+        "/" +
+        endLocation
+    );
+    if (response.data.length === 0) {
+      console.log("Path not found in database");
+    } else {
+      console.log("Path found in database");
+    }
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const getLocationSummary = (event) => {
+  Axios.get("http://localhost:" + backendPort + "/api/get/location/").then(
+    (response) => {
+      console.log(response);
+    }
+  );
+};
+
 export const updateDbLocationInv = (locationObjects) => {
   /*
     //Need to udpate for inventory functionality
