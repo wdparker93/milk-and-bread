@@ -22,7 +22,7 @@ function MapControlPanel(params) {
               className="map-control-panel-element-text"
               id="region-selector-label"
             >
-              Region Focus
+              Regional Focus
             </p>
             <select id="region-selector" onChange={handleRegionChange}>
               <option value="--">--</option>
@@ -60,7 +60,7 @@ function MapControlPanel(params) {
               id="refresh-button"
               onClick={() => params.refreshWeatherData()}
             >
-              Refresh Weather Data
+              <strong>Refresh Weather Data</strong>
             </button>
           </div>
         </div>

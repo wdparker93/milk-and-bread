@@ -3,7 +3,7 @@ DONE - 2. Logic for add/remove markers at address
 DONE - 3. Integrate weather API
 DONE - 4. Need supply volumes of material at locations
 DONE - 5. Build out database layer and queries.
-6. Build analytics panel
+DONE - 6. Build analytics panel
 7. Rerouting algorithm will need to be able to
     a. Identify the "front" where the weather event is going to be.
         i. Also identify where the "front" is headed. 
@@ -22,6 +22,9 @@ DONE - 14. Dynamically build list of location-ids for inventory update panel usi
 ONGONIG - 15. Make better use of space/redisgn ux (ongoing). Try to give more room to analytics window.
 16. Update/insert inventory values into the database
 17. Make fillInvManagementFields use the database instead of the state variable.
+18. Make styling better for different resolutions.
+19. Add fields to millk and bread inv update fields to be able to change prices by location.
+20. When deleting locations, the associated paths must also be deleted.
 
 Known Bugs:
 1. Backfill location id's if the smallest number is > 1. When arriving at lowest pre-existing id, need to find the next one. So, need to find next number after every insert.  

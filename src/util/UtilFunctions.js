@@ -7,14 +7,18 @@ export const buildLocationsFromResultSet = (locationResultSet) => {
       const lat = rsRow["lat"];
       const lng = rsRow["lng"];
       const bread = rsRow["bread_inv"];
+      const breadCost = rsRow["bread_cost"];
       const milk = rsRow["milk_inv"];
+      const milkCost = rsRow["milk_cost"];
       const userEnteredAddress = rsRow["user_entered_address"];
       const forecastData = rsRow["forecast_data"];
       let locationObj = {};
       locationObj["id"] = locationId;
       locationObj["coords"] = [lat, lng];
       locationObj["bread"] = bread;
+      locationObj["breadCost"] = breadCost;
       locationObj["milk"] = milk;
+      locationObj["milkCost"] = milkCost;
       locationObj["userEnteredAddress"] = userEnteredAddress;
       locationObj["forecastData"] = forecastData;
       locationObj["paths"] = {};
@@ -115,33 +119,53 @@ export const deleteLocationFromMap_ById = (locationId, locationObjects) => {
 };
 
 export const getInvEditCurrentFields = () => {
-  let returnArray = [];
+  let returnMap = {};
   var invEditLocationId = document.getElementById(
     "update-inv-location-id-field"
   );
-  var invEditMilkCurrent = document.getElementById(
-    "update-inv-at-location-milk-current-field"
+  var invEditMilkCurrentCount = document.getElementById(
+    "update-location-inv-milk-current-count-field"
   );
-  var invEditBreadCurrent = document.getElementById(
-    "update-inv-at-location-bread-current-field"
+  var invEditMilkCurrentCost = document.getElementById(
+    "update-location-inv-milk-cost-current-field"
   );
-  returnArray.push(invEditLocationId);
-  returnArray.push(invEditMilkCurrent);
-  returnArray.push(invEditBreadCurrent);
-  return returnArray;
+  var invEditBreadCurrentCount = document.getElementById(
+    "update-location-inv-bread-current-count-field"
+  );
+  var invEditBreadCurrentCost = document.getElementById(
+    "update-location-inv-bread-cost-current-field"
+  );
+  returnMap["invEditLocationId"] = invEditLocationId;
+  returnMap["invEditMilkCurrentCount"] = invEditMilkCurrentCount;
+  returnMap["invEditMilkCurrentCost"] = invEditMilkCurrentCost;
+  returnMap["invEditBreadCurrentCount"] = invEditBreadCurrentCount;
+  returnMap["invEditBreadCurrentCost"] = invEditBreadCurrentCost;
+  return returnMap;
 };
 
 export const getInvEditNewFields = () => {
-  let returnArray = [];
+  let returnMap = {};
   var invEditLocationId = document.getElementById(
     "update-inv-location-id-field"
   );
-  var invEditMilkNew = document.getElementById("update-inv-milk-new-field");
-  var invEditBreadNew = document.getElementById("update-inv-bread-new-field");
-  returnArray.push(invEditLocationId);
-  returnArray.push(invEditMilkNew);
-  returnArray.push(invEditBreadNew);
-  return returnArray;
+  var invEditMilkNewCount = document.getElementById(
+    "update-location-inv-milk-new-count-field"
+  );
+  var invEditMilkNewCost = document.getElementById(
+    "update-location-inv-milk-cost-new-field"
+  );
+  var invEditBreadNewCount = document.getElementById(
+    "update-location-inv-bread-count-new-field"
+  );
+  var invEditBreadNewCost = document.getElementById(
+    "update-location-inv-bread-cost-new-field"
+  );
+  returnMap["invEditLocationId"] = invEditLocationId;
+  returnMap["invEditMilkNewCount"] = invEditMilkNewCount;
+  returnMap["invEditMilkNewCost"] = invEditMilkNewCost;
+  returnMap["invEditBreadNewCount"] = invEditBreadNewCount;
+  returnMap["invEditBreadNewCost"] = invEditBreadNewCost;
+  return returnMap;
 };
 
 export const getPathUpdateFields = () => {

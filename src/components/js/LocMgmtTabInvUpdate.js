@@ -48,39 +48,61 @@ function LocMgmtTabInvUpdate(params) {
           className="update-inv-at-location-control-panel-column"
         >
           <strong>Milk</strong>
-          <div id="milk-current-new-number-fields">
-            <div
-              className="update-inv-at-location-element"
-              id="update-inv-milk-current"
+          <div
+            className="update-location-inv-field-wrapper"
+            id="update-location-inv-milk-count-field-wrapper"
+          >
+            <p
+              className="update-location-inv-field-label"
+              id="update-location-inv-milk-count-field-label"
             >
-              <p
-                className="update-inv-at-location-element-text"
-                id="update-inv-milk-current-label"
-              >
-                Current
-              </p>
+              Inventory
+            </p>
+            <div
+              className="update-location-inv-field-row"
+              id="update-location-inv-milk-count-field-row"
+            >
               <input
-                className="udpate-inv-at-location-number-field"
+                className="update-location-inv-field"
                 type="number"
+                id="update-location-inv-milk-current-count-field"
                 readOnly={true}
                 disabled={true}
-                id="update-inv-at-location-milk-current-field"
               />
-            </div>
-            <div
-              className="update-inv-at-location-element"
-              id="update-inv-milk-new"
-            >
-              <p
-                className="update-inv-at-location-element-text"
-                id="update-inv-milk-new-label"
-              >
-                New
+              <p className="update-location-inv-right-arrow">
+                <strong>&rarr;</strong>
               </p>
               <input
-                className="udpate-inv-at-location-number-field"
-                id="update-inv-milk-new-field"
+                className="update-location-inv-field"
                 type="number"
+                id="update-location-inv-milk-new-count-field"
+              />
+            </div>
+
+            <p
+              className="update-location-inv-field-label"
+              id="update-location-inv-milk-cost-field-label"
+            >
+              Cost ($)
+            </p>
+            <div
+              className="update-location-inv-field-row"
+              id="update-location-inv-milk-cost-field-row"
+            >
+              <input
+                className="update-location-inv-field"
+                type="number"
+                id="update-location-inv-milk-cost-current-field"
+                readOnly={true}
+                disabled={true}
+              />
+              <p className="update-location-inv-right-arrow">
+                <strong>&rarr;</strong>
+              </p>
+              <input
+                className="update-location-inv-field"
+                type="number"
+                id="update-location-inv-milk-cost-new-field"
               />
             </div>
           </div>
@@ -90,39 +112,61 @@ function LocMgmtTabInvUpdate(params) {
           className="update-inv-at-location-control-panel-column"
         >
           <strong>Bread</strong>
-          <div id="bread-current-new-number-fields">
-            <div
-              className="update-inv-at-location-element"
-              id="update-inv-bread-current"
+          <div
+            className="update-location-inv-field-wrapper"
+            id="update-location-inv-bread-count-field-wrapper"
+          >
+            <p
+              className="update-location-inv-field-label"
+              id="update-location-inv-bread-count-field-label"
             >
-              <p
-                className="update-inv-at-location-element-text"
-                id="update-inv-bread-current-label"
-              >
-                Current
-              </p>
+              Inventory
+            </p>
+            <div
+              className="update-location-inv-field-row"
+              id="update-location-inv-bread-count-field-row"
+            >
               <input
-                className="udpate-inv-at-location-number-field"
+                className="update-location-inv-field"
                 type="number"
+                id="update-location-inv-bread-current-count-field"
                 readOnly={true}
                 disabled={true}
-                id="update-inv-at-location-bread-current-field"
               />
-            </div>
-            <div
-              className="update-inv-at-location-element"
-              id="update-inv-bread-new"
-            >
-              <p
-                className="update-inv-at-location-element-text"
-                id="update-inv-bread-new-label"
-              >
-                New
+              <p className="update-location-inv-right-arrow">
+                <strong>&rarr;</strong>
               </p>
               <input
-                className="udpate-inv-at-location-number-field"
-                id="update-inv-bread-new-field"
+                className="update-location-inv-field"
                 type="number"
+                id="update-location-inv-bread-count-new-field"
+              />
+            </div>
+
+            <p
+              className="update-location-inv-field-label"
+              id="update-location-inv-bread-cost-field-label"
+            >
+              Cost ($)
+            </p>
+            <div
+              className="update-location-inv-field-row"
+              id="update-location-inv-bread-cost-field-row"
+            >
+              <input
+                className="update-location-inv-field"
+                type="number"
+                id="update-location-inv-bread-cost-current-field"
+                readOnly={true}
+                disabled={true}
+              />
+              <p className="update-location-inv-right-arrow">
+                <strong>&rarr;</strong>
+              </p>
+              <input
+                className="update-location-inv-field"
+                type="number"
+                id="update-location-inv-bread-cost-new-field"
               />
             </div>
           </div>

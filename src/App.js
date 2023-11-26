@@ -308,15 +308,20 @@ function App() {
    */
   const initializeInvUpdatePanel = (locationKey) => {
     let invEditCurrentFields = getInvEditCurrentFields();
-    let invEditLocationId = invEditCurrentFields[0];
-    let invEditMilkCurrent = invEditCurrentFields[1];
-    let invEditBreadCurrent = invEditCurrentFields[2];
-
+    let invEditLocationId = invEditCurrentFields["invEditLocationId"];
+    let invEditMilkCurrentCount =
+      invEditCurrentFields["invEditMilkCurrentCount"];
+    let invEditMilkCurrentCost = invEditCurrentFields["invEditMilkCurrentCost"];
+    let invEditBreadCurrentCount =
+      invEditCurrentFields["invEditBreadCurrentCount"];
+    let invEditBreadCurrentCost =
+      invEditCurrentFields["invEditBreadCurrentCost"];
     invEditLocationId.value = locationKey;
-
     const locationObject = locationObjects[locationKey];
-    invEditBreadCurrent.value = locationObject["bread"];
-    invEditMilkCurrent.value = locationObject["milk"];
+    invEditMilkCurrentCount.value = locationObject["milk"];
+    invEditMilkCurrentCost.value = locationObject["milkCost"];
+    invEditBreadCurrentCount.value = locationObject["bread"];
+    invEditBreadCurrentCost.value = locationObject["breadCost"];
   };
 
   /**
@@ -326,26 +331,28 @@ function App() {
   const executeInventoryUpdate = () => {
     let locationObjectsTemp = locationObjects;
     let invEditNewFields = getInvEditNewFields();
-    let invEditLocationId = invEditNewFields[0];
-    let invEditMilkNew = invEditNewFields[1];
-    let invEditBreadNew = invEditNewFields[2];
+    let invEditLocationId = invEditNewFields["invEditLocationId"];
+    let invEditMilkNewCount = invEditNewFields["invEditMilkNewCount"];
+    let invEditBreadNewCount = invEditNewFields["invEditBreadNewCount"];
     const locationObject = locationObjectsTemp[invEditLocationId.value];
-    if (invEditBreadNew.value !== "" && invEditBreadNew.value >= 0) {
-      locationObject["bread"] = invEditBreadNew.value;
+    if (invEditBreadNewCount.value !== "" && invEditBreadNewCount.value >= 0) {
+      locationObject["bread"] = invEditBreadNewCount.value;
     }
-    if (invEditMilkNew.value !== "" && invEditMilkNew.value >= 0) {
-      locationObject["milk"] = invEditMilkNew.value;
+    if (invEditMilkNewCount.value !== "" && invEditMilkNewCount.value >= 0) {
+      locationObject["milk"] = invEditMilkNewCount.value;
     }
     locationObjectsTemp[invEditLocationId.value] = locationObject;
     setLocationObjects(locationObjectsTemp);
     invEditLocationId.value = "--";
-    invEditMilkNew.value = "";
-    invEditBreadNew.value = "";
+    invEditMilkNewCount.value = "";
+    invEditBreadNewCount.value = "";
     let invEditCurrentFields = getInvEditCurrentFields();
-    let invEditMilkCurrent = invEditCurrentFields[1];
-    let invEditBreadCurrent = invEditCurrentFields[2];
-    invEditMilkCurrent.value = "";
-    invEditBreadCurrent.value = "";
+    let invEditMilkCurrentCount =
+      invEditCurrentFields["invEditMilkCurrentCount"];
+    let invEditBreadCurrentCount =
+      invEditCurrentFields["invEditBreadCurrentCount"];
+    invEditMilkCurrentCount.value = "";
+    invEditBreadCurrentCount.value = "";
     updateMarkersOutputComponent();
     //resetInvUpdatePanel();
     //updateDbLocationInv_ById();
@@ -354,22 +361,33 @@ function App() {
   const fillInvManagementFields = (event) => {
     const locationKeyToSet = event.target.value;
     let invEditCurrentFields = getInvEditCurrentFields();
-    let invEditMilkCurrent = invEditCurrentFields[1];
-    let invEditBreadCurrent = invEditCurrentFields[2];
+    let invEditMilkCurrentCount =
+      invEditCurrentFields["invEditMilkCurrentCount"];
+    let invEditMilkCurrentCost = invEditCurrentFields["invEditMilkCurrentCost"];
+    let invEditBreadCurrentCount =
+      invEditCurrentFields["invEditBreadCurrentCount"];
+    let invEditBreadCurrentCost =
+      invEditCurrentFields["invEditBreadCurrentCost"];
     let currentInvMilkValueToSet = "";
+    let currentInvMilkCostValueToSet = "";
     let currentInvBreadValueToSet = "";
+    let currentInvBreadCostValueToSet = "";
     if (locationKeyToSet !== "--") {
       console.log(locationKeyToSet);
       for (const key in locationObjects) {
         if (locationKeyToSet === key) {
           const locationObject = locationObjects[key];
           currentInvMilkValueToSet = locationObject.milk;
+          currentInvMilkCostValueToSet = locationObject.milkCost;
           currentInvBreadValueToSet = locationObject.bread;
+          currentInvBreadCostValueToSet = locationObject.breadCost;
         }
       }
     }
-    invEditMilkCurrent.value = currentInvMilkValueToSet;
-    invEditBreadCurrent.value = currentInvBreadValueToSet;
+    invEditMilkCurrentCount.value = currentInvMilkValueToSet;
+    invEditMilkCurrentCost.value = currentInvMilkCostValueToSet;
+    invEditBreadCurrentCount.value = currentInvBreadValueToSet;
+    invEditBreadCurrentCost.value = currentInvBreadCostValueToSet;
   };
 
   const chooseAnalyticsTabOutputComponent = (event) => {
