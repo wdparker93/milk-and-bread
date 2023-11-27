@@ -2,14 +2,18 @@ import "../css/LocMgmtTabPathUpdate.css";
 import Locations from "./Locations.js";
 
 function LocMgmtTabPathUpdate(params) {
-  let startLocation = "--";
-  let endLocation = "--";
   const handleStartLocationChange = (event) => {
-    startLocation = event.target.value;
+    let startLocation = event.target.value;
+    let endLocation = document.getElementById(
+      "update-path-end-location-field"
+    ).value;
     params.lookupPathFromLocations(startLocation, endLocation);
   };
   const handleEndLocationChange = (event) => {
-    endLocation = event.target.value;
+    let startLocation = document.getElementById(
+      "update-path-start-location-field"
+    ).value;
+    let endLocation = event.target.value;
     params.lookupPathFromLocations(startLocation, endLocation);
   };
   return (

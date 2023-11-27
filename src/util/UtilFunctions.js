@@ -24,14 +24,11 @@ export const buildLocationsFromResultSet = (locationResultSet) => {
       locationObj["paths"] = {};
       locationMap[locationId] = locationObj;
     }
-    //console.log(locationMap);
     resolve(locationMap);
   });
 };
 
 export const buildPathsFromResultSet = (locationObjects, pathResultSet) => {
-  //console.log(locationObjects);
-  //console.log(pathResultSet);
   return new Promise((resolve) => {
     let locationMap = locationObjects;
     for (let i = 0; i < pathResultSet.length; i++) {
@@ -42,7 +39,6 @@ export const buildPathsFromResultSet = (locationObjects, pathResultSet) => {
       const time = rsRow["time"];
       let locationToUpdate = locationObjects[startLocation];
       locationToUpdate["paths"][endLocation] = { cost: cost, time: time };
-      //console.log(locationToUpdate);
     }
     resolve(locationMap);
   });
@@ -98,7 +94,9 @@ export const buildNewLocationObject = (address, data, locationObjKey) => {
   locationObj["userEnteredAddress"] = address;
   locationObj["coords"] = coords;
   locationObj["bread"] = 0;
+  locationObj["breadCost"] = 0.0;
   locationObj["milk"] = 0;
+  locationObj["milkCost"] = 0.0;
   locationObj["forecastData"] = [];
   locationObj["paths"] = {};
   let returnArray = [];
@@ -109,7 +107,7 @@ export const buildNewLocationObject = (address, data, locationObjKey) => {
 };
 
 export const deleteLocationFromMap_ById = (locationId, locationObjects) => {
-  console.log("Delete location from map by id");
+  console.log("Delete location from map state variable by id");
   for (const key in locationObjects) {
     if (locationId === key) {
       delete locationObjects[key];
@@ -221,4 +219,64 @@ export const buildPathsArrayFromLocationObjects = (locationObjects) => {
   }
   grandParentArray.push(parentArray);
   return grandParentArray;
+};
+
+export const resetInvUpdatePanel = () => {
+  let invEditNewFields = getInvEditNewFields();
+  let invEditLocationId = invEditNewFields["invEditLocationId"];
+  let invEditMilkNewCount = invEditNewFields["invEditMilkNewCount"];
+  let invEditMilkNewCost = invEditNewFields["invEditMilkNewCost"];
+  let invEditBreadNewCount = invEditNewFields["invEditBreadNewCount"];
+  let invEditBreadNewCost = invEditNewFields["invEditBreadNewCost"];
+  invEditLocationId.value = "--";
+  invEditMilkNewCount.value = "";
+  invEditMilkNewCost.value = "";
+  invEditBreadNewCount.value = "";
+  invEditBreadNewCost.value = "";
+  let invEditCurrentFields = getInvEditCurrentFields();
+  let invEditMilkCurrentCount = invEditCurrentFields["invEditMilkCurrentCount"];
+  let invEditMilkCurrentCost = invEditCurrentFields["invEditMilkCurrentCost"];
+  let invEditBreadCurrentCount =
+    invEditCurrentFields["invEditBreadCurrentCount"];
+  let invEditBreadCurrentCost = invEditCurrentFields["invEditBreadCurrentCost"];
+  invEditMilkCurrentCount.value = "";
+  invEditMilkCurrentCost.value = "";
+  invEditBreadCurrentCount.value = "";
+  invEditBreadCurrentCost.value = "";
+};
+
+export const finalizePathCreateUpdate = (
+  endLocation,
+  cost,
+  time,
+  locationObjectToUpdate
+) => {
+  let pathObjectToAdd = {};
+  pathObjectToAdd["cost"] = cost;
+  pathObjectToAdd["time"] = time;
+  locationObjectToUpdate["paths"][endLocation] = pathObjectToAdd;
+  resetPathUpdatePanel();
+  return locationObjectToUpdate;
+};
+
+export const finalizePathDelete = (endLocation, locationObjectToUpdate) => {
+  delete locationObjectToUpdate["paths"][endLocation];
+  resetPathUpdatePanel();
+  return locationObjectToUpdate;
+};
+
+export const resetPathUpdatePanel = () => {
+  let pathUpdatePanelFields = getPathUpdateFields();
+  let startLocation = pathUpdatePanelFields["startLocation"];
+  let endLocation = pathUpdatePanelFields["endLocation"];
+  let currentCost = pathUpdatePanelFields["costCurrent"];
+  let newCost = pathUpdatePanelFields["costNew"];
+  let currentTime = pathUpdatePanelFields["timeCurrent"];
+  let newTime = pathUpdatePanelFields["timeNew"];
+  startLocation.value = "--";
+  endLocation.value = "--";
+  currentCost.value = "";
+  newCost.value = "";
+  currentTime.value = "";
+  newTime.value = "";
 };

@@ -1,7 +1,7 @@
 import "./App.css";
 import Axios from "axios";
 import React, { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Polyline } from "react-leaflet";
+import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import {
@@ -24,13 +24,22 @@ import {
   getPathUpdateFields,
   buildPathsArrayFromLocationObjects,
   setPathUpdateFields,
+  resetInvUpdatePanel,
+  finalizePathCreateUpdate,
+  finalizePathDelete,
 } from "./util/UtilFunctions.js";
 import {
   locationExistsInDB,
   deleteLocationInDB_ById,
   insertLocationIntoDB,
+  updateDbLocationInv,
+} from "./data_agent/LocationDataAgent.js";
+import {
   lookupPath_ByLocations,
-} from "./util/DBUtilFunctions.js";
+  updateDbPath,
+  createDbPath,
+  deleteDbPath,
+} from "./data_agent/PathDataAgent.js";
 import AppHeader from "./components/js/AppHeader.js";
 import Markers from "./components/js/Markers.js";
 import Paths from "./components/js/Paths.js";
@@ -328,34 +337,43 @@ function App() {
    * Updates the inventory of the currently selected location
    * to the values set in the "New" fields.
    */
-  const executeInventoryUpdate = () => {
+  const executeInventoryUpdate = async () => {
     let locationObjectsTemp = locationObjects;
     let invEditNewFields = getInvEditNewFields();
     let invEditLocationId = invEditNewFields["invEditLocationId"];
     let invEditMilkNewCount = invEditNewFields["invEditMilkNewCount"];
+    let invEditMilkNewCost = invEditNewFields["invEditMilkNewCost"];
     let invEditBreadNewCount = invEditNewFields["invEditBreadNewCount"];
+    let invEditBreadNewCost = invEditNewFields["invEditBreadNewCost"];
     const locationObject = locationObjectsTemp[invEditLocationId.value];
-    if (invEditBreadNewCount.value !== "" && invEditBreadNewCount.value >= 0) {
-      locationObject["bread"] = invEditBreadNewCount.value;
-    }
     if (invEditMilkNewCount.value !== "" && invEditMilkNewCount.value >= 0) {
       locationObject["milk"] = invEditMilkNewCount.value;
     }
+    if (invEditMilkNewCost.value !== "" && invEditMilkNewCost.value >= 0) {
+      locationObject["milkCost"] = invEditMilkNewCost.value;
+    }
+    if (invEditBreadNewCount.value !== "" && invEditBreadNewCount.value >= 0) {
+      locationObject["bread"] = invEditBreadNewCount.value;
+    }
+    if (invEditBreadNewCost.value !== "" && invEditBreadNewCost.value >= 0) {
+      locationObject["breadCost"] = invEditBreadNewCost.value;
+    }
     locationObjectsTemp[invEditLocationId.value] = locationObject;
-    setLocationObjects(locationObjectsTemp);
-    invEditLocationId.value = "--";
-    invEditMilkNewCount.value = "";
-    invEditBreadNewCount.value = "";
-    let invEditCurrentFields = getInvEditCurrentFields();
-    let invEditMilkCurrentCount =
-      invEditCurrentFields["invEditMilkCurrentCount"];
-    let invEditBreadCurrentCount =
-      invEditCurrentFields["invEditBreadCurrentCount"];
-    invEditMilkCurrentCount.value = "";
-    invEditBreadCurrentCount.value = "";
-    updateMarkersOutputComponent();
-    //resetInvUpdatePanel();
-    //updateDbLocationInv_ById();
+    let dbInvUpdateParams = {};
+    dbInvUpdateParams["location_id"] = invEditLocationId.value;
+    dbInvUpdateParams["bread_inv"] = invEditBreadNewCount.value;
+    dbInvUpdateParams["bread_cost"] = invEditBreadNewCost.value;
+    dbInvUpdateParams["milk_inv"] = invEditMilkNewCount.value;
+    dbInvUpdateParams["milk_cost"] = invEditMilkNewCost.value;
+    const response = await updateDbLocationInv(dbInvUpdateParams);
+    if (response.status === 200) {
+      console.log("Location update successful");
+      setLocationObjects(locationObjectsTemp);
+      resetInvUpdatePanel();
+      updateMarkersOutputComponent();
+    } else {
+      console.log("Location update failed");
+    }
   };
 
   const fillInvManagementFields = (event) => {
@@ -373,7 +391,6 @@ function App() {
     let currentInvBreadValueToSet = "";
     let currentInvBreadCostValueToSet = "";
     if (locationKeyToSet !== "--") {
-      console.log(locationKeyToSet);
       for (const key in locationObjects) {
         if (locationKeyToSet === key) {
           const locationObject = locationObjects[key];
@@ -431,32 +448,107 @@ function App() {
     if (startLocation !== "--" && endLocation !== "--") {
       response = await lookupPath_ByLocations(startLocation, endLocation);
     }
-    console.log(response);
     let pathData = {};
     pathData["cost"] = "--";
     pathData["time"] = "--";
-    if (response.length > 0) {
-      pathData["cost"] = response[0]["cost"];
-      pathData["time"] = response[0]["time"];
+    if (response.status === 200 && response.data.length === 1) {
+      pathData["cost"] = response.data[0]["cost"];
+      pathData["time"] = response.data[0]["time"];
     }
     setPathUpdateFields(pathData);
   };
 
-  const createUpdatePath = () => {
-    console.log("Test createUpdatePath");
+  const createUpdatePath = async () => {
     let pathUpdateFields = getPathUpdateFields();
     const startLocation = pathUpdateFields["startLocation"].value;
     const endLocation = pathUpdateFields["endLocation"].value;
-    const costCurrent = pathUpdateFields["costCurrent"].value;
     const costNew = pathUpdateFields["costNew"].value;
-    const timeCurrent = pathUpdateFields["timeCurrent"].value;
     const timeNew = pathUpdateFields["timeNew"].value;
-    let startLocationObj = locationObjects[startLocation];
-    let endLocationObj = locationObjects[endLocation];
+    let dbParams = {};
+    let locationObjectToUpdate = "";
+    let response = "";
+    if (startLocation !== "--" && endLocation !== "--") {
+      locationObjectToUpdate = locationObjects[startLocation];
+      response = await lookupPath_ByLocations(startLocation, endLocation);
+    }
+    if (response.status === 200) {
+      dbParams["start_location"] = startLocation;
+      dbParams["end_location"] = endLocation;
+      dbParams["cost"] = costNew;
+      dbParams["time"] = timeNew;
+      if (response.data.length === 1) {
+        //Update existing path
+        const updateResponse = await updateDbPath(dbParams);
+        if (updateResponse.status === 200) {
+          console.log("Path update successful");
+          locationObjectToUpdate = finalizePathCreateUpdate(
+            endLocation,
+            costNew,
+            timeNew,
+            locationObjectToUpdate
+          );
+        } else {
+          console.log("Path update failed");
+        }
+      } else if (response.data.length === 0) {
+        //Create new path
+        const createResponse = await createDbPath(dbParams);
+        if (createResponse.status === 200) {
+          console.log("Path creation successful");
+          locationObjectToUpdate = finalizePathCreateUpdate(
+            endLocation,
+            costNew,
+            timeNew,
+            locationObjectToUpdate
+          );
+        } else {
+          console.log("Path creation failed");
+        }
+      }
+      let tempLocationObjects = locationObjects;
+      tempLocationObjects[startLocation] = locationObjectToUpdate;
+      setLocationObjects(tempLocationObjects);
+      updateMarkersOutputComponent();
+      updatePathsOutputComponent();
+    }
   };
 
-  const deletePath = () => {
-    console.log("Test deletePath");
+  const deletePath = async () => {
+    let pathUpdateFields = getPathUpdateFields();
+    const startLocation = pathUpdateFields["startLocation"].value;
+    const endLocation = pathUpdateFields["endLocation"].value;
+    let dbParams = {};
+    let locationObjectToUpdate = "";
+    let response = "";
+    if (startLocation !== "--" && endLocation !== "--") {
+      locationObjectToUpdate = locationObjects[startLocation];
+      response = await lookupPath_ByLocations(startLocation, endLocation);
+    }
+    if (response.status === 200) {
+      dbParams["start_location"] = startLocation;
+      dbParams["end_location"] = endLocation;
+      if (response.data.length === 1) {
+        //Path found. Delete it from the database.
+        const deleteResponse = await deleteDbPath(dbParams);
+        if (deleteResponse.status === 200) {
+          console.log("Path deletion successful");
+          locationObjectToUpdate = finalizePathDelete(
+            endLocation,
+            locationObjectToUpdate
+          );
+        } else {
+          console.log("Path update failed");
+        }
+      } else if (response.data.length === 0) {
+        //No path found. Do not proceed with deletion.
+        //Throw window for no path exists at a later date.
+      }
+      let tempLocationObjects = locationObjects;
+      tempLocationObjects[startLocation] = locationObjectToUpdate;
+      setLocationObjects(tempLocationObjects);
+      updateMarkersOutputComponent();
+      updatePathsOutputComponent();
+    }
   };
 
   return (

@@ -136,41 +136,101 @@ app.post("/api/delete/location/:location_id", (req, res) => {
   });
 });
 
-app.post("/api/update/location/:locationObjects", (req, res) => {
-  /*
-  //Need to update for inventory functionality
-  console.log("Update API Endpoint");
-  const locationObjects = req.params.locationObjects;
-  console.log(locationObjects);
-  let paramsArray = [];
-  let sqlUpdate = "UPDATE location ";
-  sqlUpdate += "SET forecast_data = CASE ";
-  for (const key in locationObjects) {
-    console.log(key);
-    console.log(locationObjects[key]["forecast_data"]);
-    sqlUpdate += "WHEN location_id = ? THEN forecast_data = ? ";
-    paramsArray.push(key);
-    paramsArray.push(locationObjects[key]["forecastData"]);
+app.post(
+  "/api/update/location/inv/:location_id/:bread_inv/:bread_cost/:milk_inv/:milk_cost",
+  (req, res) => {
+    const location_id = req.params.location_id;
+    const bread_inv = req.params.bread_inv;
+    const bread_cost = req.params.bread_cost;
+    const milk_inv = req.params.milk_inv;
+    const milk_cost = req.params.milk_cost;
+    let sqlUpdate = "UPDATE location ";
+    sqlUpdate +=
+      "SET bread_inv = ?, bread_cost = ?, milk_inv = ?, milk_cost = ? ";
+    sqlUpdate += "WHERE location_id = ?";
+    console.log(sqlUpdate);
+    db.query(
+      sqlUpdate,
+      [bread_inv, bread_cost, milk_inv, milk_cost, location_id],
+      (err, result) => {
+        if (err) {
+          console.error("Error updating location in the database:", err);
+          res.status(500).send("Internal Server Error");
+        } else {
+          console.log("Record(s) updated successfully");
+          res.send(result);
+        }
+      }
+    );
   }
-  sqlUpdate += "END WHERE location_id IN (";
-  for (let i = 0; i < Object.keys(locationObjects).length - 1; i++) {
-    sqlUpdate += "?, ";
+);
+
+app.post(
+  "/api/update/path/:start_location/:end_location/:cost/:time",
+  (req, res) => {
+    const start_location = req.params.start_location;
+    const end_location = req.params.end_location;
+    const cost = req.params.cost;
+    const time = req.params.time;
+    let sqlUpdate = "UPDATE path ";
+    sqlUpdate += "SET cost = ?, time = ? ";
+    sqlUpdate += "WHERE start_location = ? AND end_location = ?";
+    console.log(sqlUpdate);
+    db.query(
+      sqlUpdate,
+      [cost, time, start_location, end_location],
+      (err, result) => {
+        if (err) {
+          console.error("Error updating path in the database:", err);
+          res.status(500).send("Internal Server Error");
+        } else {
+          console.log("Path record updated successfully");
+          res.send(result);
+        }
+      }
+    );
   }
-  sqlUpdate += "?);";
-  for (const key in locationObjects) {
-    paramsArray.push(key);
+);
+
+app.post(
+  "/api/insert/path/:start_location/:end_location/:cost/:time",
+  (req, res) => {
+    const startLocation = req.params.start_location;
+    const endLocation = req.params.end_location;
+    const cost = req.params.cost;
+    const time = req.params.time;
+    const sqlInsert = `INSERT INTO path (start_location, end_location, cost, time) VALUES (?, ?, ?, ?)`;
+    console.log(sqlInsert);
+    db.query(
+      sqlInsert,
+      [startLocation, endLocation, cost, time],
+      (err, result) => {
+        if (err) {
+          console.error("Error inserting path record into the database:", err);
+          res.status(500).send("Internal Server Error");
+        } else {
+          console.log("Path record inserted successfully");
+          res.send(result);
+        }
+      }
+    );
   }
-  console.log(sqlUpdate);
-  db.query(sqlUpdate, paramsArray, (err, result) => {
+);
+
+app.post("/api/delete/path/:start_location/:end_location", (req, res) => {
+  const startLocation = req.params.start_location;
+  const endLocation = req.params.end_location;
+  const sqlDelete = `DELETE FROM path WHERE start_location = ? AND end_location = ?`;
+  console.log(sqlDelete);
+  db.query(sqlDelete, [startLocation, endLocation], (err, result) => {
     if (err) {
-      console.error("Error updating locations in the database:", err);
+      console.error("Error deleting path record into the database:", err);
       res.status(500).send("Internal Server Error");
     } else {
-      console.log("Record(s) updated successfully");
+      console.log("Path record deleted successfully");
       res.send(result);
     }
   });
-  */
 });
 
 app.listen(PORT, () => {

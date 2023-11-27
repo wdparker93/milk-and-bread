@@ -13,7 +13,7 @@ function LocationMgmtPanel(params) {
             onClick={() => params.chooseLocMgmtTabOutputComponent("invUpdate")}
             value="invUpdate"
           >
-            Update Inventory
+            Inventory Management
           </button>
 
           <button
@@ -21,7 +21,7 @@ function LocationMgmtPanel(params) {
             onClick={() => params.chooseLocMgmtTabOutputComponent("pathUpdate")}
             value="pathUdate"
           >
-            Update Paths
+            Path Management
           </button>
         </div>
         <div className="locmgmt-tab-content">

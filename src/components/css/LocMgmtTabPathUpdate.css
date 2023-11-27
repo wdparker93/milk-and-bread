@@ -1,6 +1,6 @@
 .update-path-controls-wrapper {
   display: grid;
-  grid-template-columns: 9vw 14vw 1fr;
+  grid-template-columns: 10vw 13vw 1fr;
   align-content: start;
   margin: 0 0.5vw 0 0.5vw;
 }
@@ -60,7 +60,7 @@
 }
 
 .update-path-weight-field {
-  width: 5vw;
+  width: 4.5vw;
 }
 
 .update-path-field-row {
