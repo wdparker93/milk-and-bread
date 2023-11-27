@@ -1,6 +1,7 @@
 import { Marker, Popup } from "react-leaflet";
 import React from "react";
 import { Icon } from "leaflet";
+import "../css/Markers.css";
 import { red, green } from "../../util/Constants.js";
 
 let latLngCoordsObjArr = [];
@@ -31,7 +32,9 @@ function Markers(params) {
       lat,
       lng,
       milk,
+      milkCost,
       bread,
+      breadCost,
       currentWeather,
       snowSleetAnticipated,
       currentlySnowingOrSleeting,
@@ -55,15 +58,31 @@ function Markers(params) {
           icon={iconToUse}
         >
           <Popup>
-            <span>
-              <h3>Location Overview</h3>
-              <p>Id : {locationId}</p>
-              <p>Address : {address}</p>
-              <p>Milk : {milk}</p>
-              <p>Bread : {bread}</p>
-              <p>Current Weather : {currentWeather}</p>
-              <p>
-                Snow or Sleet in 7-Day Forecast :{" "}
+            <span className="popup-content-wrapper">
+              <h3 style={{ margin: "0 0 10px 0" }}>Location Overview</h3>
+              <p style={{ margin: "0 0 2px 0" }}>
+                <strong>Id : </strong>
+                {locationId}
+              </p>
+              <p style={{ margin: "0 0 2px 0" }}>
+                <strong>Address : </strong>
+                {address}
+              </p>
+              <p style={{ margin: "0 0 2px 0" }}>
+                <strong>Milk : </strong>
+                {milk} unit(s) @ ${milkCost} each
+              </p>
+              <p style={{ margin: "0 0 2px 0" }}>
+                <strong>Bread : </strong>
+                {bread} unit(s) @ ${breadCost} each
+              </p>
+              <hr></hr>
+              <p style={{ margin: "0 0 2px 0" }}>
+                <strong>Current Weather : </strong>
+                {currentWeather}
+              </p>
+              <p style={{ margin: "0 0 10px 0" }}>
+                <strong>Snow or Sleet in 7-Day Forecast :</strong>{" "}
                 <strong style={{ color: yesNoColor }}>
                   {snowSleetAnticipated}
                 </strong>
@@ -100,7 +119,9 @@ function Markers(params) {
       const lat = location["coords"][0];
       const lng = location["coords"][1];
       const bread = location["bread"];
+      const breadCost = location["breadCost"];
       const milk = location["milk"];
+      const milkCost = location["milkCost"];
       const forecastData = location["forecastData"];
       let currentWeather = "";
       let snowSleetAnticipated = "No";
@@ -138,7 +159,9 @@ function Markers(params) {
       markerObj.lat = lat;
       markerObj.lng = lng;
       markerObj.milk = milk;
+      markerObj.milkCost = milkCost;
       markerObj.bread = bread;
+      markerObj.breadCost = breadCost;
       markerObj.currentWeather = currentWeather;
       markerObj.snowSleetAnticipated = snowSleetAnticipated;
       markerObj.currentlySnowingOrSleeting = currentlySnowingOrSleeting;
