@@ -555,7 +555,7 @@ function App() {
     <div className="App">
       <AppHeader />
       <div id="map-inv-mgmt-row" className="body-row">
-        <div id="map-column" className="body-column">
+        <div id="map-column" className="map-column-address-pane-hidden">
           <div id="map-section-wrapper">
             <MapControlPanel
               handleRegionChange={handleRegionChange}
@@ -590,7 +590,10 @@ function App() {
             addLocation={addLocation}
           />
         </div>
-        <div id="inv-update-analytics-column" className="body-column">
+        <div
+          id="inv-update-analytics-column"
+          className="inv-update-analytics-column-address-pane-hidden"
+        >
           <LocationMgmtPanel
             chooseLocMgmtTabOutputComponent={chooseLocMgmtTabOutputComponent}
             locMgmtTabOutputComponent={locMgmtTabOutputComponent}

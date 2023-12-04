@@ -1,4 +1,5 @@
 import UsStates from "./UsStates.js";
+import "../css/AddLocationAtAddressPanel.css";
 
 function AddLocationAtAddressPanel(params) {
   const handleAddressLine1Change = (event) => {
@@ -27,8 +28,11 @@ function AddLocationAtAddressPanel(params) {
 
   return (
     <>
-      <div id="add-marker-at-address-panel-wrapper">
-        <h3>Add Location At Address</h3>
+      <div
+        id="add-marker-at-address-panel-wrapper"
+        className="collapsible-address-panel-hidden"
+      >
+        <h3>Add Location at Address</h3>
         <div
           className="add-marker-at-address-panel-element"
           id="map-address-line-1"

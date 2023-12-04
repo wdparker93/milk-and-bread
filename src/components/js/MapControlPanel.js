@@ -1,4 +1,5 @@
 import UsStates from "./UsStates.js";
+import "../css/MapControlPanel.css";
 
 function MapControlPanel(params) {
   const handleRegionChange = (event) => {
@@ -9,10 +10,33 @@ function MapControlPanel(params) {
     params.handleUsStateChange(event);
   };
 
+  const toggleAddLocationVisibility = () => {
+    let addressPanel = document.getElementById(
+      "add-marker-at-address-panel-wrapper"
+    );
+    addressPanel.classList.toggle("collapsible-address-panel-expanded");
+    let mapColumn = document.getElementById("map-column");
+    mapColumn.classList.toggle("map-column-address-pane-visible");
+    let invAnalyticsColumn = document.getElementById(
+      "inv-update-analytics-column"
+    );
+    invAnalyticsColumn.classList.toggle(
+      "inv-update-analytics-column-address-pane-visible"
+    );
+  };
+
   return (
     <>
       <div id="map-control-panel-wrapper">
-        <h3>Map Control Panel</h3>
+        <div id="map-control-panel-header-block">
+          <h3>Map Control Panel</h3>
+          <button
+            id="toggle-add-location-panel-visibility"
+            onClick={() => toggleAddLocationVisibility()}
+          >
+            <strong>Show/Hide Add Location Panel</strong>
+          </button>
+        </div>
         <div id="map-control-panel-buttons-wrapper">
           <div
             className="map-control-panel-element-wrapper"

@@ -1,0 +1,15 @@
+.collapsible-address-panel-hidden {
+  display: none;
+}
+
+.collapsible-address-panel-expanded {
+  display: block;
+}
+
+#add-marker-at-address-panel-wrapper {
+  margin-left: 2vw;
+}
+
+#add-marker-at-address-button {
+  margin-top: 4vh;
+}

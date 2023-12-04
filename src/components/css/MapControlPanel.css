@@ -1,0 +1,13 @@
+#map-control-panel-header-block {
+  display: flex;
+  justify-content: space-between;
+}
+
+#toggle-add-location-panel-visibility {
+  padding: none;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  justify-content: flex-end;
+}

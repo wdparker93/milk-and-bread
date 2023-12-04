@@ -18,6 +18,10 @@
   padding: 0;
 }
 
+#update-inv-at-location-control-panel-column-1 {
+  background: rgba(9, 122, 3, 0.7);
+}
+
 #update-inv-location-id-field {
   margin: 2.5vh 0 2.25vh 0;
 }

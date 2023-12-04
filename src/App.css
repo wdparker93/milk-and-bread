@@ -41,7 +41,17 @@ body {
   margin: 2vh 0 0 1vw;
 }
 
-#map-column {
+.map-column-address-pane-hidden {
+  display: flex;
+  padding: 0 0.5vw;
+  color: black;
+  background: rgba(204, 204, 204, 0.6);
+  outline-style: solid;
+  width: 45vw;
+  height: 77vh;
+}
+
+.map-column-address-pane-visible {
   display: flex;
   padding: 0 0.5vw;
   color: black;
@@ -65,15 +75,29 @@ body {
   width: 45vw;
 }
 
-#add-marker-at-address-panel-wrapper {
-  margin-left: 2vw;
+#inv-update-analytics-column-TEST {
+  display: flex;
+  flex-direction: column;
+  color: black;
+  background: rgba(204, 204, 204, 0.6);
+  outline-style: solid;
+  height: 77vh;
+  width: 35vw;
+  margin-left: 1vw;
 }
 
-#add-marker-at-address-button {
-  margin-top: 4vh;
+.inv-update-analytics-column-address-pane-hidden {
+  display: flex;
+  flex-direction: column;
+  color: black;
+  background: rgba(204, 204, 204, 0.6);
+  outline-style: solid;
+  height: 77vh;
+  width: 50vw;
+  margin-left: 1vw;
 }
 
-#inv-update-analytics-column {
+.inv-update-analytics-column-address-pane-visible {
   display: flex;
   flex-direction: column;
   color: black;
