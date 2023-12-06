@@ -1,8 +1,10 @@
 import { Marker, Popup } from "react-leaflet";
 import React from "react";
-import { Icon } from "leaflet";
+import { Icon, extend } from "leaflet";
 import "../css/Markers.css";
 import { red, green } from "../../util/Constants.js";
+import { includesSnowOrSleet } from "../../util/UtilFunctions.js";
+import MarkerPopupForecastData from "./MarkerPopupForecastData.js";
 
 let latLngCoordsObjArr = [];
 
@@ -23,6 +25,15 @@ var defaultIcon = new Icon({
   popupAnchor: [0, -32],
 });
 
+const toggle7DForecastVisibility = () => {
+  let extendedForecastData = document.getElementById(
+    "marker-popup-7d-forecast-data"
+  );
+  extendedForecastData.classList.toggle(
+    "marker-popup-7d-forecast-data-visible"
+  );
+};
+
 function Markers(params) {
   const MarkerElement = (props) => {
     const { elementData } = props;
@@ -38,6 +49,7 @@ function Markers(params) {
       currentWeather,
       snowSleetAnticipated,
       currentlySnowingOrSleeting,
+      forecastData,
     } = elementData;
     let locationId = id;
     let iconToUse = defaultIcon;
@@ -86,7 +98,15 @@ function Markers(params) {
                 <strong style={{ color: yesNoColor }}>
                   {snowSleetAnticipated}
                 </strong>
+                <button
+                  className="show-7d-forecast-button"
+                  onClick={() => toggle7DForecastVisibility()}
+                >
+                  Expand Forecast
+                </button>
+                <MarkerPopupForecastData forecastData={forecastData} />
               </p>
+              <hr></hr>
               <button
                 className="update-inventory-button"
                 onClick={() => params.updateInvHandler(locationId)}
@@ -133,21 +153,15 @@ function Markers(params) {
           forecastData[0]["temperature"] +
           "°" +
           forecastData[0]["temperatureUnit"];
-        if (
-          currentWeather.toLowerCase().includes("snow") ||
-          currentWeather.toLowerCase().includes("sleet")
-        ) {
+        if (includesSnowOrSleet(currentWeather)) {
           currentlySnowingOrSleeting = "Yes";
         }
         for (let i = 0; i < forecastData.length; i++) {
-          let detailedForecast =
-            forecastData[i]["detailedForecast"].toLowerCase();
-          let shortForecast = forecastData[i]["shortForecast"].toLowerCase();
+          let detailedForecast = forecastData[i]["detailedForecast"];
+          let shortForecast = forecastData[i]["shortForecast"];
           if (
-            detailedForecast.includes("snow") ||
-            detailedForecast.includes("sleet") ||
-            shortForecast.includes("snow") ||
-            shortForecast.includes("sleet")
+            includesSnowOrSleet(detailedForecast) ||
+            includesSnowOrSleet(shortForecast)
           ) {
             snowSleetAnticipated = "Yes";
           }
@@ -165,6 +179,7 @@ function Markers(params) {
       markerObj.currentWeather = currentWeather;
       markerObj.snowSleetAnticipated = snowSleetAnticipated;
       markerObj.currentlySnowingOrSleeting = currentlySnowingOrSleeting;
+      markerObj.forecastData = forecastData;
       latLngCoordsObjArr.push(markerObj);
     }
   };

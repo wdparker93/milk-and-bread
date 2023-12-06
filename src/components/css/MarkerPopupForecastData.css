@@ -1,0 +1,36 @@
+.marker-popup-7d-forecast-data-hidden {
+  display: none;
+}
+
+.marker-popup-7d-forecast-data-visible {
+  display: flex;
+  background: rgba(204, 204, 204, 0.6);
+  margin-top: 5px;
+  overflow: auto;
+}
+
+#empty-weather-forecast-message {
+  color: red;
+  margin-top: 5px;
+}
+
+.forecast-period-row {
+  border: 1px solid black;
+  width: 5vw;
+  height: 5vh;
+  padding: 2px 0 2px 2px;
+}
+
+.forecast-temperature-row {
+  border: 1px solid black;
+  width: 5vw;
+  height: 2vh;
+  padding: 2px 0 2px 2px;
+}
+
+.forecast-row {
+  border: 1px solid black;
+  width: 5vw;
+  height: 9vh;
+  padding: 2px 0 2px 2px;
+}

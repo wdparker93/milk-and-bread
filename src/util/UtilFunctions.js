@@ -280,3 +280,14 @@ export const resetPathUpdatePanel = () => {
   currentTime.value = "";
   newTime.value = "";
 };
+
+export const includesSnowOrSleet = (forecastString) => {
+  let returnValue = false;
+  if (
+    forecastString.toLowerCase().includes("snow") ||
+    forecastString.toLowerCase().includes("sleet")
+  ) {
+    returnValue = true;
+  }
+  return returnValue;
+};
