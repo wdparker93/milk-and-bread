@@ -75,17 +75,6 @@ body {
   width: 45vw;
 }
 
-#inv-update-analytics-column-TEST {
-  display: flex;
-  flex-direction: column;
-  color: black;
-  background: rgba(204, 204, 204, 0.6);
-  outline-style: solid;
-  height: 77vh;
-  width: 35vw;
-  margin-left: 1vw;
-}
-
 .inv-update-analytics-column-address-pane-hidden {
   display: flex;
   flex-direction: column;

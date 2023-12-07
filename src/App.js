@@ -1,11 +1,9 @@
 import "./App.css";
-import Axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import {
-  backendPort,
   mapQuestKey,
   defaultCenter,
   defaultZoom,
@@ -63,7 +61,8 @@ function App() {
     useState("");
   const [locMgmtTabView, setLocMgmtTabView] = useState("invUpdate");
   const [analyticsTabOutputComponent, setAnalyticsTabOutputComponent] =
-    useState(<AnalyticsTabSummaryTable />);
+    useState("");
+  const [analyticsTabView, setAnalyticsTabView] = useState("summaryTable");
   const [locationObjects, setLocationObjects] = useState({});
   const [addressLine1, setAddressLine1] = useState("");
   const [addressLine2, setAddressLine2] = useState("");
@@ -78,30 +77,6 @@ function App() {
     iconUrl: require("leaflet/dist/images/marker-icon.png"),
     shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
   });
-
-  useEffect(() => {
-    // This effect runs whenever locationObjects gets updated
-    updateMarkersOutputComponent();
-    updatePathsOutputComponent();
-    chooseLocMgmtTabOutputComponent(locMgmtTabView);
-  }, [locationObjects]);
-
-  /**
-   * Runs on page load
-   */
-  useEffect(() => {
-    const fetchLocationsFromDB = async () => {
-      try {
-        const dbLocations = await initLocationsFromDB();
-        setLocationObjects(dbLocations);
-        const nextLocationNumber = getNextLocationIdNumber(dbLocations);
-        setLocationObjKey(nextLocationNumber);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchLocationsFromDB();
-  }, []);
 
   const refreshWeatherData = () => {
     fetchBaseNwsApiCall();
@@ -407,18 +382,25 @@ function App() {
     invEditBreadCurrentCost.value = currentInvBreadCostValueToSet;
   };
 
-  const chooseAnalyticsTabOutputComponent = (event) => {
-    const param = event;
-    if (param === "summaryTable") {
-      setAnalyticsTabOutputComponent(<AnalyticsTabSummaryTable />);
-    } else if (param === "invRiskAnalysis") {
-      setAnalyticsTabOutputComponent(<AnalyticsTabRiskAnalysis />);
-    } else if (param === "profitabilityAnalysis") {
-      setAnalyticsTabOutputComponent(<AnalyticsTabProfitabilityAnalysis />);
-    } else if (param === "performanceTracking") {
-      setAnalyticsTabOutputComponent(<AnalyticsTabPerformanceTracking />);
-    }
-  };
+  const chooseAnalyticsTabOutputComponent = useCallback(
+    (event) => {
+      const param = event;
+      setAnalyticsTabView(param);
+      console.log("chooseAnalyticsTabOutputComponent");
+      if (param === "summaryTable") {
+        setAnalyticsTabOutputComponent(
+          <AnalyticsTabSummaryTable locationObjects={locationObjects} />
+        );
+      } else if (param === "invRiskAnalysis") {
+        setAnalyticsTabOutputComponent(<AnalyticsTabRiskAnalysis />);
+      } else if (param === "profitabilityAnalysis") {
+        setAnalyticsTabOutputComponent(<AnalyticsTabProfitabilityAnalysis />);
+      } else if (param === "performanceTracking") {
+        setAnalyticsTabOutputComponent(<AnalyticsTabPerformanceTracking />);
+      }
+    },
+    [locationObjects]
+  );
 
   const chooseLocMgmtTabOutputComponent = (event) => {
     const param = event;
@@ -550,6 +532,33 @@ function App() {
       updatePathsOutputComponent();
     }
   };
+
+  useEffect(() => {
+    // This effect runs whenever locationObjects gets updated
+    updateMarkersOutputComponent();
+    updatePathsOutputComponent();
+    chooseLocMgmtTabOutputComponent(locMgmtTabView);
+    console.log("locationObjects was changed");
+    console.log(locationObjects);
+    chooseAnalyticsTabOutputComponent(analyticsTabView);
+  }, [locationObjects, chooseAnalyticsTabOutputComponent]);
+
+  /**
+   * Runs on page load
+   */
+  useEffect(() => {
+    const fetchLocationsFromDB = async () => {
+      try {
+        const dbLocations = await initLocationsFromDB();
+        setLocationObjects(dbLocations);
+        const nextLocationNumber = getNextLocationIdNumber(dbLocations);
+        setLocationObjKey(nextLocationNumber);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchLocationsFromDB();
+  }, []);
 
   return (
     <div className="App">

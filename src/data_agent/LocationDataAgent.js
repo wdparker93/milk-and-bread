@@ -77,7 +77,11 @@ export const insertLocationIntoDB = (locationObj) => {
       "/" +
       locationObj["bread"] +
       "/" +
+      locationObj["breadCost"] +
+      "/" +
       locationObj["milk"] +
+      "/" +
+      locationObj["milkCost"] +
       "/" +
       locationObj["userEnteredAddress"]
   ).then((response) => {

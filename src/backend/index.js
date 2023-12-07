@@ -95,19 +95,30 @@ app.get("/api/get/path/:start_location/:end_location", (req, res) => {
 });
 
 app.post(
-  "/api/insert/location/:location_id/:lat/:lng/:bread_inv/:milk_inv/:user_entered_address",
+  "/api/insert/location/:location_id/:lat/:lng/:bread_inv/:bread_cost/:milk_inv/:milk_cost/:user_entered_address",
   (req, res) => {
     const locationId = req.params.location_id;
     const lat = req.params.lat;
     const lng = req.params.lng;
     const breadInv = req.params.bread_inv;
+    const breadCost = req.params.bread_cost;
     const milkInv = req.params.milk_inv;
+    const milkCost = req.params.milk_cost;
     const userEnteredAddress = req.params.user_entered_address;
-    const sqlInsert = `INSERT INTO location (location_id, lat, lng, bread_inv, milk_inv, user_entered_address) VALUES (?, ?, ?, ?, ?, ?)`;
+    const sqlInsert = `INSERT INTO location (location_id, lat, lng, bread_inv, bread_cost, milk_inv, milk_cost, user_entered_address) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
     console.log(sqlInsert);
     db.query(
       sqlInsert,
-      [locationId, lat, lng, breadInv, milkInv, userEnteredAddress],
+      [
+        locationId,
+        lat,
+        lng,
+        breadInv,
+        breadCost,
+        milkInv,
+        milkCost,
+        userEnteredAddress,
+      ],
       (err, result) => {
         if (err) {
           console.error("Error inserting into the database:", err);

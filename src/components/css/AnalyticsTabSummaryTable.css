@@ -1,0 +1,50 @@
+#location-summary-header {
+  margin: 0 0 5px 0;
+}
+
+.location-summary-contents {
+  overflow: auto;
+  height: 15vw;
+}
+
+.location-summary-column-names {
+  font-weight: bold;
+}
+
+.location-summary-analysis-entries {
+  display: flex;
+}
+
+[class^="location-summary-analysis"][class$="-column"] {
+  border: 1px solid black;
+  border-right: 1px solid black;
+}
+
+.location-summary-analysis-location-id-column {
+  min-width: 6vw;
+}
+.location-summary-analysis-address-column {
+  min-width: 12vw;
+}
+.location-summary-analysis-current-weather-column {
+  min-width: 18vw;
+}
+.location-summary-analysis-snow-sleet-expected-column {
+  min-width: 13vw;
+}
+.location-summary-analysis-bread-inv-column {
+  min-width: 5vw;
+}
+.location-summary-analysis-bread-cost-column {
+  min-width: 7vw;
+}
+.location-summary-analysis-milk-inv-column {
+  min-width: 4vw;
+}
+.location-summary-analysis-milk-cost-column {
+  min-width: 6vw;
+}
+
+[class^="location-summary-analysis"][class$="-row"] {
+  padding-left: 2px;
+}

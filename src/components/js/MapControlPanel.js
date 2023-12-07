@@ -34,7 +34,9 @@ function MapControlPanel(params) {
             id="toggle-add-location-panel-visibility"
             onClick={() => toggleAddLocationVisibility()}
           >
-            <strong>Show/Hide Add Location Panel</strong>
+            <strong>
+              <u>Show / Hide Add Location Panel</u>
+            </strong>
           </button>
         </div>
         <div id="map-control-panel-buttons-wrapper">

@@ -14,23 +14,18 @@
   margin-top: 5px;
 }
 
-.forecast-period-row {
+.forecast-period-row,
+.forecast-temperature-row,
+.forecast-row {
   border: 1px solid black;
-  width: 5vw;
-  height: 5vh;
+  width: 6vw;
   padding: 2px 0 2px 2px;
 }
 
 .forecast-temperature-row {
-  border: 1px solid black;
-  width: 5vw;
   height: 2vh;
-  padding: 2px 0 2px 2px;
 }
 
 .forecast-row {
-  border: 1px solid black;
-  width: 5vw;
-  height: 9vh;
-  padding: 2px 0 2px 2px;
+  height: 10vh;
 }
