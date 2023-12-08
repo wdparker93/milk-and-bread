@@ -51,6 +51,7 @@ import AnalyticsTabSummaryTable from "./components/js/AnalyticsTabSummaryTable.j
 import AnalyticsTabRiskAnalysis from "./components/js/AnalyticsTabRiskAnalysis.js";
 import AnalyticsTabProfitabilityAnalysis from "./components/js/AnalyticsTabProfitabilityAnalysis.js";
 import AnalyticsTabPerformanceTracking from "./components/js/AnalyticsTabPerformanceTracking.js";
+import AnalyticsTabHistoricalSalesAnalysis from "./components/js/AnalyticsTabHistoricalSalesAnalysis.js";
 import LoadingResultsAnimation from "./components/js/LoadingResultsAnimation.js";
 
 function App() {
@@ -401,6 +402,8 @@ function App() {
         setAnalyticsTabOutputComponent(<AnalyticsTabProfitabilityAnalysis />);
       } else if (param === "performanceTracking") {
         setAnalyticsTabOutputComponent(<AnalyticsTabPerformanceTracking />);
+      } else if (param === "historicalSalesAnalytics") {
+        setAnalyticsTabOutputComponent(<AnalyticsTabHistoricalSalesAnalysis />);
       }
     },
     [locationObjects]

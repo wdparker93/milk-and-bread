@@ -42,6 +42,17 @@ function AnalyticsPanel(params) {
           >
             Perf. Tracking
           </button>
+          <button
+            className="tab-btn"
+            onClick={() =>
+              params.chooseAnalyticsTabOutputComponent(
+                "historicalSalesAnalytics"
+              )
+            }
+            value="historicalSalesAnalytics"
+          >
+            Historical Sales Analysis
+          </button>
         </div>
         <div className="analytics-tab-content">
           {params.analyticsTabOutputComponent}

@@ -1,0 +1,22 @@
+#historical-sales-data-content-wrapper {
+  display: flex;
+  flex-direction: row;
+  height: 38vh;
+}
+
+#historical-sales-data-parameter-buttons-wrapper {
+  margin-left: 1vw;
+}
+
+.historical-sales-data-button-label-text {
+  margin-bottom: 0;
+}
+
+.calendar-wrapper {
+  position: relative;
+  display: inline-block; /* or use display: block; */
+}
+
+#fetch-historical-grocery-sales-data {
+  margin-top: 3vh;
+}

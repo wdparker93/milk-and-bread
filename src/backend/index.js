@@ -94,6 +94,33 @@ app.get("/api/get/path/:start_location/:end_location", (req, res) => {
   });
 });
 
+/**
+ * Gets historical grocery sales data for a specified state,
+ * date range, and grocery category
+ */
+app.get(
+  "/api/get/grocery_sales_data/:state/:start_date/:end_date/:category",
+  (req, res) => {
+    const state = req.params.state;
+    const startDate = req.params.start_date;
+    const endDate = req.params.end_date;
+    const category = req.params.category;
+    const sqlSelect = `SELECT * FROM grocery_sales_data
+  WHERE state = ?
+  AND date >= ?
+  AND date <= ?
+  AND category = ?`;
+    console.log(sqlSelect);
+    db.query(
+      sqlSelect,
+      [state, startDate, endDate, category],
+      (err, result) => {
+        res.send(result);
+      }
+    );
+  }
+);
+
 app.post(
   "/api/insert/location/:location_id/:lat/:lng/:bread_inv/:bread_cost/:milk_inv/:milk_cost/:user_entered_address",
   (req, res) => {
