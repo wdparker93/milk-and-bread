@@ -51,6 +51,7 @@ import AnalyticsTabSummaryTable from "./components/js/AnalyticsTabSummaryTable.j
 import AnalyticsTabRiskAnalysis from "./components/js/AnalyticsTabRiskAnalysis.js";
 import AnalyticsTabProfitabilityAnalysis from "./components/js/AnalyticsTabProfitabilityAnalysis.js";
 import AnalyticsTabPerformanceTracking from "./components/js/AnalyticsTabPerformanceTracking.js";
+import LoadingResultsAnimation from "./components/js/LoadingResultsAnimation.js";
 
 function App() {
   const [usRegionSelection, setUsRegionSelection] = useState("--");
@@ -71,6 +72,7 @@ function App() {
   const [addressState, setAddressState] = useState("");
   const [addressZip, setAddressZip] = useState("");
   const [locationObjKey, setLocationObjKey] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   L.Icon.Default.mergeOptions({
     iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
@@ -80,7 +82,6 @@ function App() {
 
   const refreshWeatherData = () => {
     fetchBaseNwsApiCall();
-    //updateMarkersOutputComponent();
   };
 
   /**
@@ -93,6 +94,7 @@ function App() {
    */
   const fetchBaseNwsApiCall = async () => {
     try {
+      setLoading(true);
       let tempLocationObjects = {};
       if (Object.keys(locationObjects).length > 0) {
         for (const key in locationObjects) {
@@ -116,6 +118,8 @@ function App() {
       }
     } catch (error) {
       console.error("Error fetching data:", error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -561,61 +565,68 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <AppHeader />
-      <div id="map-inv-mgmt-row" className="body-row">
-        <div id="map-column" className="map-column-address-pane-hidden">
-          <div id="map-section-wrapper">
-            <MapControlPanel
-              handleRegionChange={handleRegionChange}
-              handleUsStateChange={handleUsStateChange}
-              refreshWeatherData={refreshWeatherData}
-            />
-            <br />
-            <MapContainer
-              id="leaflet-map-image"
-              center={defaultCenter}
-              zoom={defaultZoom}
-              scrollWheelZoom={true}
-              maxBounds={bounds}
-              minZoom={minZoom}
-              maxZoom={maxZoom}
-            >
-              <TileLayer
-                url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    <>
+      <div className="App">
+        <AppHeader />
+        <div id="map-inv-mgmt-row" className="body-row">
+          <div id="map-column" className="map-column-address-pane-hidden">
+            <div id="map-section-wrapper">
+              <MapControlPanel
+                handleRegionChange={handleRegionChange}
+                handleUsStateChange={handleUsStateChange}
+                refreshWeatherData={refreshWeatherData}
               />
-              <div>{markersOutputComponent}</div>
-              <div>{pathsOutputComponent}</div>
-            </MapContainer>
+              <br />
+              <MapContainer
+                id="leaflet-map-image"
+                center={defaultCenter}
+                zoom={defaultZoom}
+                scrollWheelZoom={true}
+                maxBounds={bounds}
+                minZoom={minZoom}
+                maxZoom={maxZoom}
+              >
+                <TileLayer
+                  url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                />
+                <div>{markersOutputComponent}</div>
+                <div>{pathsOutputComponent}</div>
+              </MapContainer>
+            </div>
+            <AddLocationAtAddressPanel
+              handleAddressLine1Change={handleAddressLine1Change}
+              handleAddressLine2Change={handleAddressLine2Change}
+              handleAddressLine3Change={handleAddressLine3Change}
+              handleAddressCityChange={handleAddressCityChange}
+              handleAddressStateChange={handleAddressStateChange}
+              handleAddressZipChange={handleAddressZipChange}
+              addLocation={addLocation}
+            />
           </div>
-          <AddLocationAtAddressPanel
-            handleAddressLine1Change={handleAddressLine1Change}
-            handleAddressLine2Change={handleAddressLine2Change}
-            handleAddressLine3Change={handleAddressLine3Change}
-            handleAddressCityChange={handleAddressCityChange}
-            handleAddressStateChange={handleAddressStateChange}
-            handleAddressZipChange={handleAddressZipChange}
-            addLocation={addLocation}
-          />
-        </div>
-        <div
-          id="inv-update-analytics-column"
-          className="inv-update-analytics-column-address-pane-hidden"
-        >
-          <LocationMgmtPanel
-            chooseLocMgmtTabOutputComponent={chooseLocMgmtTabOutputComponent}
-            locMgmtTabOutputComponent={locMgmtTabOutputComponent}
-          />
-          <AnalyticsPanel
-            chooseAnalyticsTabOutputComponent={
-              chooseAnalyticsTabOutputComponent
-            }
-            analyticsTabOutputComponent={analyticsTabOutputComponent}
-          />
+          <div
+            id="inv-update-analytics-column"
+            className="inv-update-analytics-column-address-pane-hidden"
+          >
+            <LocationMgmtPanel
+              chooseLocMgmtTabOutputComponent={chooseLocMgmtTabOutputComponent}
+              locMgmtTabOutputComponent={locMgmtTabOutputComponent}
+            />
+            <AnalyticsPanel
+              chooseAnalyticsTabOutputComponent={
+                chooseAnalyticsTabOutputComponent
+              }
+              analyticsTabOutputComponent={analyticsTabOutputComponent}
+            />
+          </div>
         </div>
       </div>
-    </div>
+      {loading && (
+        <div className="loading-spinner">
+          <LoadingResultsAnimation loadingText="Refreshing Weather Data" />
+        </div>
+      )}
+    </>
   );
 }
 

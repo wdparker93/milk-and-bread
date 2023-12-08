@@ -1,0 +1,15 @@
+.loading-spinner-content-wrapper {
+  background: rgba(238, 242, 245, 1);
+  width: 275px;
+  height: 150px;
+  border: 2px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-spinner-text-wrapper {
+  margin: 10px 0 10px 0;
+  font-weight: bold;
+}

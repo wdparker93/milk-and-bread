@@ -1,8 +1,12 @@
+import React, { useState } from "react";
 import UsStates from "./UsStates.js";
+import LoadingResultsAnimation from "./LoadingResultsAnimation.js";
 import "../css/MapControlPanel.css";
 import { fetchTopUSCities } from "../../data_agent/python/DefaultCitiesDataAgent.js";
 
 function MapControlPanel(params) {
+  const [loading, setLoading] = useState(false);
+
   const handleRegionChange = (event) => {
     params.handleRegionChange(event);
   };
@@ -28,12 +32,15 @@ function MapControlPanel(params) {
 
   const handleFetchTopUSCities = async () => {
     try {
+      setLoading(true); // Set loading to true before fetching
       await fetchTopUSCities();
       console.log(
         "Most populous U.S. cities fetched and inserted into DB successfully."
       );
     } catch (error) {
       console.error("Error fetching top U.S. cities:", error);
+    } finally {
+      setLoading(false); // Set loading back to false after fetching
     }
   };
 
@@ -111,6 +118,11 @@ function MapControlPanel(params) {
           </div>
         </div>
       </div>
+      {loading && (
+        <div className="loading-spinner">
+          <LoadingResultsAnimation loadingText="Fetching Default U.S. Cities" />
+        </div>
+      )}
     </>
   );
 }
