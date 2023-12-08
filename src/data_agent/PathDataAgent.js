@@ -1,4 +1,4 @@
-import { backendPort } from "../util/Constants.js";
+import { backendJSPort } from "../util/Constants.js";
 import Axios from "axios";
 
 export const lookupPath_ByLocations = async (startLocation, endLocation) => {
@@ -11,7 +11,7 @@ export const lookupPath_ByLocations = async (startLocation, endLocation) => {
     );
     const response = await Axios.get(
       "http://localhost:" +
-        backendPort +
+        backendJSPort +
         "/api/get/path/" +
         startLocation +
         "/" +
@@ -45,7 +45,7 @@ export const updateDbPath = async (params) => {
   try {
     const response = Axios.post(
       "http://localhost:" +
-        backendPort +
+        backendJSPort +
         "/api/update/path/" +
         params["start_location"] +
         "/" +
@@ -80,7 +80,7 @@ export const createDbPath = async (params) => {
   try {
     const response = Axios.post(
       "http://localhost:" +
-        backendPort +
+        backendJSPort +
         "/api/insert/path/" +
         params["start_location"] +
         "/" +
@@ -115,7 +115,7 @@ export const deleteDbPath = async (params) => {
   try {
     const response = Axios.post(
       "http://localhost:" +
-        backendPort +
+        backendJSPort +
         "/api/delete/path/" +
         params["start_location"] +
         "/" +

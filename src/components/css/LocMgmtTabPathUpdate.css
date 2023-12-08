@@ -1,6 +1,6 @@
 .update-path-controls-wrapper {
   display: grid;
-  grid-template-columns: 1fr 1fr 190px;
+  grid-template-columns: 1fr 1fr 0.5fr;
   align-content: start;
   margin: 0 0.5vw 0 0.5vw;
 }

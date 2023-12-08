@@ -245,5 +245,5 @@ app.post("/api/delete/path/:start_location/:end_location", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log("Backend server is running on port " + PORT);
+  console.log("Backend JS server is running on port " + PORT);
 });

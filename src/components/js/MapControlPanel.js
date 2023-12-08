@@ -1,5 +1,6 @@
 import UsStates from "./UsStates.js";
 import "../css/MapControlPanel.css";
+import { fetchTopUSCities } from "../../data_agent/python/DefaultCitiesDataAgent.js";
 
 function MapControlPanel(params) {
   const handleRegionChange = (event) => {
@@ -25,69 +26,88 @@ function MapControlPanel(params) {
     );
   };
 
+  const handleFetchTopUSCities = async () => {
+    try {
+      await fetchTopUSCities();
+      console.log(
+        "Most populous U.S. cities fetched and inserted into DB successfully."
+      );
+    } catch (error) {
+      console.error("Error fetching top U.S. cities:", error);
+    }
+  };
+
   return (
     <>
       <div id="map-control-panel-wrapper">
         <div id="map-control-panel-header-block">
-          <h3>Map Control Panel</h3>
+          <h3 id="map-control-panel-header-title">Map Control Panel</h3>
           <button
             id="toggle-add-location-panel-visibility"
             onClick={() => toggleAddLocationVisibility()}
           >
-            <strong>
-              <u>Show / Hide Add Location Panel</u>
-            </strong>
+            <strong>Show / Hide Add Location Panel</strong>
           </button>
         </div>
+        <hr id="map-control-panel-header-buttons-divider"></hr>
         <div id="map-control-panel-buttons-wrapper">
-          <div
-            className="map-control-panel-element-wrapper"
-            id="region-selector-wrapper"
-          >
-            <p
-              className="map-control-panel-element-text"
-              id="region-selector-label"
+          <div id="map-selector-fields-wrapper">
+            <div
+              className="map-control-panel-element-wrapper"
+              id="region-selector-wrapper"
             >
-              Regional Focus
-            </p>
-            <select id="region-selector" onChange={handleRegionChange}>
-              <option value="--">--</option>
-              <option value="West">West</option>
-              <option value="Midwest">Midwest</option>
-              <option value="South">South</option>
-              <option value="Northeast">Northeast</option>
-            </select>
+              <p
+                className="map-control-panel-element-text"
+                id="region-selector-label"
+              >
+                Regional Focus
+              </p>
+              <select id="region-selector" onChange={handleRegionChange}>
+                <option value="--">--</option>
+                <option value="West">West</option>
+                <option value="Midwest">Midwest</option>
+                <option value="South">South</option>
+                <option value="Northeast">Northeast</option>
+              </select>
+            </div>
+            <div
+              className="map-control-panel-element-wrapper"
+              id="state-selector-wrapper"
+            >
+              <p
+                className="map-control-panel-element-text"
+                id="state-selector-label"
+              >
+                State Focus
+              </p>
+              <select id="state-selector" onChange={handleUsStateChange}>
+                <UsStates />
+              </select>
+            </div>
           </div>
-          <div
-            className="map-control-panel-element-wrapper"
-            id="state-selector-wrapper"
-          >
-            <p
-              className="map-control-panel-element-text"
-              id="state-selector-label"
+          <div id="map-control-panel-backend-buttons-wrapper">
+            <div
+              className="map-control-panel-element-wrapper"
+              id="map-refresh-button-wrapper"
             >
-              State Focus
-            </p>
-            <select id="state-selector" onChange={handleUsStateChange}>
-              <UsStates />
-            </select>
-          </div>
-          <div
-            className="map-control-panel-element-wrapper"
-            id="map-refresh-button-wrapper"
-          >
-            <p
-              className="map-control-panel-element-text"
-              id="map-refresh-button-label"
+              <button
+                id="refresh-button"
+                onClick={() => params.refreshWeatherData()}
+              >
+                <strong>Refresh Weather Data</strong>
+              </button>
+            </div>
+            <div
+              className="map-control-panel-element-wrapper"
+              id="fetch-default-us-cities-wrapper"
             >
-              Refresh Weather Data
-            </p>
-            <button
-              id="refresh-button"
-              onClick={() => params.refreshWeatherData()}
-            >
-              <strong>Refresh Weather Data</strong>
-            </button>
+              <button
+                id="fetch-default-us-cities-button"
+                onClick={handleFetchTopUSCities}
+              >
+                <strong>Fetch Default U.S. Cities</strong>
+              </button>
+            </div>
           </div>
         </div>
       </div>

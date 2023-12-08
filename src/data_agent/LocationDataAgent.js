@@ -1,10 +1,10 @@
-import { backendPort } from "../util/Constants.js";
+import { backendJSPort } from "../util/Constants.js";
 import Axios from "axios";
 
 export const locationExistsInDB = (locationObj) => {
   Axios.get(
     "http://localhost:" +
-      backendPort +
+      backendJSPort +
       "/api/get/location/" +
       locationObj["id"] +
       "/" +
@@ -27,7 +27,7 @@ export const locationExistsInDB = (locationObj) => {
 export const locationExistsInDB_ById = async (locationId) => {
   try {
     const response = await Axios.get(
-      "http://localhost:" + backendPort + "/api/get/location/" + locationId
+      "http://localhost:" + backendJSPort + "/api/get/location/" + locationId
     );
     if (response.data.length === 0) {
       console.log("Location not found in database.");
@@ -48,7 +48,10 @@ export const deleteLocationInDB_ById = async (locationId) => {
     if (locationExists) {
       console.log("Deleting location with locationId : " + locationId);
       const response = await Axios.post(
-        "http://localhost:" + backendPort + "/api/delete/location/" + locationId
+        "http://localhost:" +
+          backendJSPort +
+          "/api/delete/location/" +
+          locationId
       );
       return response.status;
     }
@@ -67,7 +70,7 @@ export const insertLocationIntoDB = (locationObj) => {
   );
   Axios.post(
     "http://localhost:" +
-      backendPort +
+      backendJSPort +
       "/api/insert/location/" +
       locationObj["id"] +
       "/" +
@@ -90,7 +93,7 @@ export const insertLocationIntoDB = (locationObj) => {
 };
 
 export const getLocationSummary = (event) => {
-  Axios.get("http://localhost:" + backendPort + "/api/get/location/").then(
+  Axios.get("http://localhost:" + backendJSPort + "/api/get/location/").then(
     (response) => {
       console.log(response);
     }
@@ -108,7 +111,7 @@ export const updateDbLocationInv = async (params) => {
   try {
     const response = Axios.post(
       "http://localhost:" +
-        backendPort +
+        backendJSPort +
         "/api/update/location/inv/" +
         params["location_id"] +
         "/" +

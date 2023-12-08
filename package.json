@@ -21,7 +21,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "start-dev": "concurrently \"npm start\" \"cd src/backend && node index.js\""
+    "start-dev-js-only": "concurrently \"npm start\" \"cd src/backend && node index.js\"",
+    "start-dev": "concurrently \"npm start\" \".\\venv\\Scripts\\activate && python src/backend/python/app.py\" \"cd src/backend && node index.js\""
   },
   "eslintConfig": {
     "extends": [

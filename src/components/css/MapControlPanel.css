@@ -1,13 +1,40 @@
 #map-control-panel-header-block {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
-#toggle-add-location-panel-visibility {
-  padding: none;
-  background-color: transparent;
+#map-control-panel-header-title {
+  margin-bottom: 1vh;
+}
+
+#map-control-panel-buttons-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+#map-selector-fields-wrapper {
+  display: flex;
+}
+
+#region-selector-wrapper {
+  margin-right: 1vw;
+}
+
+#map-control-panel-backend-buttons-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5vh;
+}
+
+#map-control-panel-header-buttons-divider {
+  color: black;
+  background-color: black;
+  height: 2px;
   border: none;
-  outline: none;
-  cursor: pointer;
-  justify-content: flex-end;
+}
+
+#map-refresh-button-wrapper,
+#fetch-default-us-cities-wrapper {
+  margin-left: auto; /* Align to the right */
 }

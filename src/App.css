@@ -61,15 +61,6 @@ body {
   height: 77vh;
 }
 
-#map-control-panel-buttons-wrapper {
-  display: flex;
-  margin-right: 0.5vw;
-}
-
-.map-control-panel-element-wrapper {
-  padding: 0 1vw;
-}
-
 #leaflet-map-image {
   height: 55vh;
   width: 45vw;

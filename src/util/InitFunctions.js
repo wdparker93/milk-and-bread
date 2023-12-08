@@ -1,4 +1,4 @@
-import { backendPort } from "../util/Constants.js";
+import { backendJSPort } from "../util/Constants.js";
 import {
   buildLocationsFromResultSet,
   buildPathsFromResultSet,
@@ -8,13 +8,13 @@ import Axios from "axios";
 export const initLocationsFromDB = async () => {
   try {
     const locationResponse = await Axios.get(
-      "http://localhost:" + backendPort + "/api/get/location/"
+      "http://localhost:" + backendJSPort + "/api/get/location/"
     );
     let returnLocationMap = await buildLocationsFromResultSet(
       locationResponse.data
     );
     const pathResponse = await Axios.get(
-      "http://localhost:" + backendPort + "/api/get/path/"
+      "http://localhost:" + backendJSPort + "/api/get/path/"
     );
     returnLocationMap = await buildPathsFromResultSet(
       returnLocationMap,
@@ -31,7 +31,7 @@ export const initPathsFromDB = async (locationObjects) => {
   console.log(locationObjects);
   try {
     const response = await Axios.get(
-      "http://localhost:" + backendPort + "/api/get/path/"
+      "http://localhost:" + backendJSPort + "/api/get/path/"
     );
     const returnPathMap = await buildPathsFromResultSet(
       locationObjects,
