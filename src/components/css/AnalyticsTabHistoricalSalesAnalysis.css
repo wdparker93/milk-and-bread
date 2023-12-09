@@ -1,7 +1,7 @@
 #historical-sales-data-content-wrapper {
   display: flex;
   flex-direction: row;
-  height: 38vh;
+  height: 36vh;
 }
 
 #historical-sales-data-parameter-buttons-wrapper {
@@ -17,6 +17,6 @@
   display: inline-block; /* or use display: block; */
 }
 
-#fetch-historical-grocery-sales-data {
+#build-analytics-report-button {
   margin-top: 3vh;
 }

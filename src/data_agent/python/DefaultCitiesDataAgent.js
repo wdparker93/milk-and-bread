@@ -5,7 +5,7 @@ import { backendPythonPort } from "../../util/Constants.js";
  * most populous U.S. cities to be used as locations.
  */
 export const fetchTopUSCities = async () => {
-  console.log("Fetching top 100 most populous U.S. cities for locations");
+  console.log("Fetching top 200 most populous U.S. cities for locations");
   try {
     const response = await fetch(
       "http://localhost:" + backendPythonPort + "/fetch_default_cities",
@@ -23,7 +23,8 @@ export const fetchTopUSCities = async () => {
     }
 
     const result = await response.json();
-    console.log(result.output);
+    console.log("Fetch top 200 U.S. cities results : " + result.output);
+    console.log("Error(s) encountered : " + result.error);
   } catch (error) {
     console.error("There was a problem with the fetch operation:", error);
   }

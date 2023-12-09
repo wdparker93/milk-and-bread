@@ -17,5 +17,5 @@ def fetch_default_cities():
     return jsonify({'output': result.stdout, 'error': result.stderr})
 
 if __name__ == '__main__':
-    print('Backend python server is running on port ' + str(FLASK_PORT))
+    print('Backend Python server is running on port ' + str(FLASK_PORT))
     app.run(debug=True, port=FLASK_PORT)

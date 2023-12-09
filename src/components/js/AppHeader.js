@@ -25,6 +25,22 @@ function AppHeader() {
             &nbsp;, &nbsp;
             <a
               className="data-link"
+              href="https://open-meteo.com/"
+              target="_blank"
+            >
+              Open-Meteo
+            </a>
+            &nbsp;, &nbsp;
+            <a
+              className="data-link"
+              href="https://www.ers.usda.gov/data-products/weekly-retail-food-sales/"
+              target="_blank"
+            >
+              USDA ERS
+            </a>
+            &nbsp;, &nbsp;
+            <a
+              className="data-link"
               href="https://leafletjs.com/"
               target="_blank"
             >

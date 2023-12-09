@@ -13,3 +13,5 @@ export const northEastBound = L.latLng(49.345786, -66.93457);
 export const bounds = L.latLngBounds(southWestBound, northEastBound).pad(2);
 export const minZoom = 3;
 export const maxZoom = 12;
+export const minGrocerySalesDataDate = "2019-10-06";
+export const maxGrocerySalesDataDate = "2023-05-07";

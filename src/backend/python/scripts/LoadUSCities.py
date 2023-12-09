@@ -24,12 +24,12 @@ def fetchUSCitiesFromWeb():
 
         if table:
             # Iterate over rows in the table
-            for row in table.find('tr')[1:101]:  # Skip the header row and get the first 100 rows
+            for row in table.find('tr')[1:201]:  # Skip the header row and get the first 100 rows
                 # Extract the city name from the first column
                 city_name = row.find('td')[0].text.strip()
                 # Extract the state name from the second column
                 state_name = row.find('td')[1].text.strip()
-                if (state_name != "Hawaii"):
+                if (state_name != 'Hawaii' and state_name != 'Alaska'):
                     cities.append(city_name)
                     states.append(state_name)
         
@@ -46,7 +46,7 @@ def generateInsertArray():
         sqlInsertStatement = "INSERT INTO default_cities(city, state, city_state_key) VALUES ("
         sqlInsertStatement += "'" + cities[i] + "', "   #city
         sqlInsertStatement += "'" + states[i] + "', "     #state
-        sqlInsertStatement += "'" + cities[i] + "," + states[i] + "'"     #city_state_key
+        sqlInsertStatement += "'" + cities[i] + ", " + states[i] + "'"     #city_state_key
         sqlInsertStatement += ");"
         returnStatementArray.append(sqlInsertStatement)
     return returnStatementArray

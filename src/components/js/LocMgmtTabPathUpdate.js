@@ -131,7 +131,7 @@ function LocMgmtTabPathUpdate(params) {
               id="create-path-button"
               onClick={() => params.createUpdatePath()}
             >
-              <strong>Create/Update</strong>
+              <strong>Create / Update</strong>
             </button>
           </div>
           <div className="delete-path-row">

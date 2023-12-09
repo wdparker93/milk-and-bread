@@ -16,6 +16,10 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+//Get Methods
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 app.get("/api/get/location", (req, res) => {
   const sqlSelect = `SELECT * FROM location`;
   console.log(sqlSelect);
@@ -120,6 +124,23 @@ app.get(
     );
   }
 );
+
+/**
+ * Gets all default U.S. cities for a given state
+ */
+app.get("/api/get/default_cities/:state", (req, res) => {
+  const state = req.params.state;
+  const sqlSelect = `SELECT * FROM default_cities
+  WHERE state = ?`;
+  console.log(sqlSelect);
+  db.query(sqlSelect, [state], (err, result) => {
+    res.send(result);
+  });
+});
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+//Post Methods
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 app.post(
   "/api/insert/location/:location_id/:lat/:lng/:bread_inv/:bread_cost/:milk_inv/:milk_cost/:user_entered_address",
